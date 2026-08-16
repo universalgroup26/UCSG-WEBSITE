@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   ArrowLeft,
   MapPin,
@@ -7,6 +8,7 @@ import {
   Users,
   Award,
   CheckCircle,
+  CheckCircle2,
   BookOpen,
   Building,
   Globe,
@@ -17,10 +19,21 @@ import {
   ArrowRight,
   GraduationCap,
   TrendingUp,
+  Star,
+  Wifi,
+  Shield,
+  BadgeCheck,
+  Sparkles,
+  Target,
+  BarChart3,
+  ChevronRight,
+  Mail,
+  Phone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { UniversityData } from '@/lib/data/universities';
+import { universities } from '@/lib/data/universities';
 
 const iconMap: Record<string, React.ElementType> = {
   calendar: Calendar,
@@ -39,12 +52,76 @@ const iconMap: Record<string, React.ElementType> = {
   trophy: Award,
 };
 
+const amenityIcons: Record<string, React.ElementType> = {
+  'Library': BookOpen,
+  'Computer Lab': Globe,
+  'Computer Labs': Globe,
+  'Student Center': Users,
+  'Student Union': Users,
+  'Student Lounge': Users,
+  'Fitness Center': Star,
+  'Athletic Fields': Star,
+  'Athletic Complex': Star,
+  'Athletic Facilities': Star,
+  'Science Labs': GraduationCap,
+  'Science Building': GraduationCap,
+  'Dining Hall': Sparkles,
+  'Cafeteria': Sparkles,
+  'Career Center': Briefcase,
+  'Career Services': Briefcase,
+  'Chapel': Shield,
+  'Nursing Lab': CheckCircle2,
+  'Nursing Simulation Lab': CheckCircle2,
+  'Innovation Lab': Wifi,
+  'Innovation Hub': Wifi,
+  'Maker Space': Wifi,
+  'Research Labs': GraduationCap,
+  'AI Lab': Globe,
+  'Art Gallery': Sparkles,
+  'Art Studio': Sparkles,
+  'Art Therapy Studio': Sparkles,
+  'Music Hall': Sparkles,
+  'Performing Arts Center': Sparkles,
+  'Outdoor Recreation': Star,
+  'Recreation Center': Star,
+  'Writing Center': BookOpen,
+  'Tutoring Center': BookOpen,
+  'Counseling Center': Users,
+  'Online Learning Hub': Wifi,
+  'Study Lounges': BookOpen,
+  'Study Rooms': BookOpen,
+  'Study Areas': BookOpen,
+  'Coworking Space': Wifi,
+  'Business Center': Briefcase,
+  'Health Science Center': CheckCircle2,
+  'Law School': Shield,
+  'Law School Facilities': Shield,
+  'Meditation Room': Shield,
+  'Aviation Training Center': GraduationCap,
+  'Performing Arts': Sparkles,
+  'International Center': Globe,
+  'Tech Lab': Wifi,
+  'Student Commons': Users,
+  'Student Services': Users,
+  'Career Development': Briefcase,
+  'Urban Campus': Building,
+};
+
+function getAmenityIcon(name: string): React.ElementType {
+  return amenityIcons[name] || Building;
+}
+
 interface Props {
   university: UniversityData;
   onBack: () => void;
 }
 
 export default function UniversityPage({ university, onBack }: Props) {
+  const compareSuggestions = universities
+    .filter((u) => u.id !== university.id)
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 3);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Back Bar */}
@@ -68,10 +145,23 @@ export default function UniversityPage({ university, onBack }: Props) {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8">
-            {/* Logo Shield */}
-            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl" style={{ color: university.color }}>
-              {university.initials}
-            </div>
+            {/* Logo / Shield */}
+            {university.logoPath ? (
+              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/30 bg-white shadow-lg sm:h-28 sm:w-28">
+                <Image
+                  src={university.logoPath}
+                  alt={`${university.name} logo`}
+                  width={112}
+                  height={112}
+                  className="h-full w-full object-contain p-2"
+                  unoptimized
+                />
+              </div>
+            ) : (
+              <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl" style={{ color: university.color }}>
+                {university.initials}
+              </div>
+            )}
             <div className="flex-1">
               <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
                 SEVP Certified
@@ -153,6 +243,93 @@ export default function UniversityPage({ university, onBack }: Props) {
                 <p className="mt-3 leading-relaxed text-[#64748B]">{university.cptInfo}</p>
               </div>
 
+              {/* Why Choose This University - 2x2 Grid */}
+              <div className="mt-10">
+                <div className="mb-6 flex items-center gap-2">
+                  <Sparkles className="h-6 w-6 text-[#0070F3]" />
+                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Why Choose This University?</h2>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Rankings Card */}
+                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+                        <BarChart3 className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <h4 className="font-semibold text-[#111827]">Rankings &amp; Reputation</h4>
+                    </div>
+                    <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
+                    <p className="mt-1.5 text-xs text-[#64748B]">
+                      {university.ranking !== 'Unranked'
+                        ? 'Recognized for academic excellence and student outcomes.'
+                        : 'A growing institution focused on practical, career-oriented education.'}
+                    </p>
+                  </div>
+
+                  {/* Campus & Location Card */}
+                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
+                        <MapPin className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <h4 className="font-semibold text-[#111827]">Campus &amp; Location</h4>
+                    </div>
+                    <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
+                    <p className="mt-1.5 text-xs text-[#64748B]">
+                      Located in {university.location} · {university.studentFacultyRatio} student-to-faculty ratio
+                    </p>
+                  </div>
+
+                  {/* Flexibility Card */}
+                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                        <Wifi className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <h4 className="font-semibold text-[#111827]">Flexibility</h4>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+                        <Globe className="mr-1 h-3 w-3" />
+                        Online Programs
+                      </Badge>
+                      <Badge className={university.hybridOption ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+                        <Clock className="mr-1 h-3 w-3" />
+                        Hybrid Option
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-xs text-[#64748B]">
+                      {university.onlinePrograms && university.hybridOption
+                        ? 'Full online and hybrid learning available for maximum flexibility.'
+                        : university.onlinePrograms
+                        ? 'Online programs available to study from anywhere.'
+                        : 'Campus-based programs with a focused learning experience.'}
+                    </p>
+                  </div>
+
+                  {/* Affordability Card */}
+                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                        <DollarSign className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <h4 className="font-semibold text-[#111827]">Affordability</h4>
+                    </div>
+                    <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      {university.scholarshipsAvailable ? (
+                        <>
+                          <BadgeCheck className="h-4 w-4 text-purple-600" />
+                          <span className="text-xs font-medium text-purple-700">Scholarships Available</span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-[#64748B]">Contact admissions for financial aid options</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Programs */}
               <div className="mt-10">
                 <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">
@@ -190,6 +367,156 @@ export default function UniversityPage({ university, onBack }: Props) {
                   ))}
                 </div>
               </div>
+
+              {/* Admissions Requirements */}
+              <div className="mt-10">
+                <div className="mb-6 flex items-center gap-2">
+                  <Shield className="h-6 w-6 text-[#0070F3]" />
+                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Admissions Requirements</h2>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {/* GPA */}
+                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F0FDF4]">
+                      <TrendingUp className="h-6 w-6 text-emerald-600" />
+                    </div>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Average GPA</p>
+                    <p className="mt-1 text-2xl font-bold text-[#111827]">{university.averageGPA}</p>
+                  </div>
+
+                  {/* English Requirements */}
+                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
+                      <Globe className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">English Requirements</p>
+                    <p className="mt-1 text-sm font-bold text-[#111827]">{university.englishRequirements}</p>
+                  </div>
+
+                  {/* Application Fee */}
+                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF7ED]">
+                      <DollarSign className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Application Fee</p>
+                    <p className="mt-1 text-2xl font-bold text-[#111827]">{university.applicationFee}</p>
+                  </div>
+
+                  {/* Semester Starts */}
+                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FDF4FF]">
+                      <Calendar className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Semester Starts</p>
+                    <p className="mt-1 text-sm font-bold text-[#111827]">{university.semesterStarts}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Campus Highlights */}
+              <div className="mt-10">
+                <div className="mb-6 flex items-center gap-2">
+                  <Star className="h-6 w-6 text-[#0070F3]" />
+                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Campus Highlights</h2>
+                </div>
+
+                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                  {/* Notable Alumni */}
+                  {university.notableAlumni.length > 0 && (
+                    <div>
+                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#111827]">
+                        <Award className="h-4 w-4 text-amber-500" />
+                        Notable Alumni
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {university.notableAlumni.map((alumnus) => (
+                          <Badge
+                            key={alumnus}
+                            className="border-amber-200 bg-amber-50 px-3 py-1.5 text-amber-800"
+                          >
+                            {alumnus}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Campus Amenities */}
+                  <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
+                    <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#111827]">
+                      <Building className="h-4 w-4 text-[#0070F3]" />
+                      Campus Amenities
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {university.campusAmenities.map((amenity) => {
+                        const Icon = getAmenityIcon(amenity);
+                        return (
+                          <div
+                            key={amenity}
+                            className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F8FAFC] p-3"
+                          >
+                            <Icon className="h-4 w-4 shrink-0 text-[#0070F3]" />
+                            <span className="text-sm text-[#334155]">{amenity}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Compare This University */}
+              <div className="mt-10">
+                <div className="mb-6 flex items-center gap-2">
+                  <BarChart3 className="h-6 w-6 text-[#0070F3]" />
+                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Compare This University</h2>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {compareSuggestions.map((suggestion) => (
+                    <div
+                      key={suggestion.id}
+                      className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#0070F3]/30 hover:shadow-md"
+                    >
+                      {suggestion.logoPath ? (
+                        <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+                          <Image
+                            src={suggestion.logoPath}
+                            alt={`${suggestion.name} logo`}
+                            width={64}
+                            height={64}
+                            className="h-full w-full object-contain p-1"
+                            unoptimized
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className="flex h-16 w-16 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
+                          style={{ backgroundColor: suggestion.color }}
+                        >
+                          {suggestion.initials}
+                        </div>
+                      )}
+                      <div className="text-center">
+                        <p className="text-sm font-semibold text-[#111827]">{suggestion.shortName}</p>
+                        <p className="mt-1 text-xs text-[#64748B]">{suggestion.location}</p>
+                        <p className="mt-1 text-xs font-medium text-[#0070F3]">{suggestion.tuitionRange}</p>
+                      </div>
+                      <div className="flex flex-wrap justify-center gap-1.5">
+                        <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#64748B]">
+                          <CheckCircle className="mr-0.5 h-2.5 w-2.5" />
+                          Day 1 CPT
+                        </Badge>
+                        {suggestion.onlinePrograms && (
+                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#64748B]">
+                            <Globe className="mr-0.5 h-2.5 w-2.5" />
+                            Online
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Sidebar */}
@@ -203,6 +530,14 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <span className="text-sm font-medium text-[#111827]">{university.accreditation}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Ranking</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.ranking}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Campus Size</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.campusSize}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
                     <span className="text-sm text-[#64748B]">Tuition Range</span>
                     <span className="text-sm font-medium text-[#111827]">{university.tuitionRange}</span>
                   </div>
@@ -211,12 +546,56 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <span className="text-sm font-medium text-[#111827]">{university.acceptanceRate}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Online Programs</span>
+                    <span className={`text-sm font-medium ${university.onlinePrograms ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+                      {university.onlinePrograms ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Hybrid Option</span>
+                    <span className={`text-sm font-medium ${university.hybridOption ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+                      {university.hybridOption ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Scholarships</span>
+                    <span className={`text-sm font-medium ${university.scholarshipsAvailable ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+                      {university.scholarshipsAvailable ? 'Available' : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">GPA Requirement</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.averageGPA}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">English Reqs</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.englishRequirements}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
                     <span className="text-sm text-[#64748B]">Total Enrollment</span>
                     <span className="text-sm font-medium text-[#111827]">{university.enrollment}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#64748B]">Website</span>
                     <span className="text-sm font-medium text-[#0070F3]">{university.website}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Card */}
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <h3 className="font-semibold text-[#111827]">Contact Admissions</h3>
+                <div className="mt-4 space-y-3">
+                  <a
+                    href={`mailto:${university.contactEmail}`}
+                    className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#334155] transition-colors hover:bg-[#F1F5F9]"
+                  >
+                    <Mail className="h-4 w-4 text-[#0070F3]" />
+                    {university.contactEmail}
+                  </a>
+                  <div className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#334155]">
+                    <Phone className="h-4 w-4 text-[#0070F3]" />
+                    +1 (978) 606-5493
                   </div>
                 </div>
               </div>
