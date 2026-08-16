@@ -1,0 +1,265 @@
+'use client';
+
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  Users,
+  Award,
+  CheckCircle,
+  BookOpen,
+  Building,
+  Globe,
+  Clock,
+  Briefcase,
+  DollarSign,
+  MessageCircle,
+  ArrowRight,
+  GraduationCap,
+  TrendingUp,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import type { UniversityData } from '@/lib/data/universities';
+
+const iconMap: Record<string, React.ElementType> = {
+  calendar: Calendar,
+  users: Users,
+  award: Award,
+  'check-circle': CheckCircle,
+  'book-open': BookOpen,
+  building: Building,
+  'map-pin': MapPin,
+  globe: Globe,
+  clock: Clock,
+  target: TrendingUp,
+  flask: GraduationCap,
+  'dollar-sign': DollarSign,
+  briefcase: Briefcase,
+  trophy: Award,
+};
+
+interface Props {
+  university: UniversityData;
+  onBack: () => void;
+}
+
+export default function UniversityPage({ university, onBack }: Props) {
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Back Bar */}
+      <div className="border-b border-gray-100 bg-gray-50/50">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-sm font-medium text-[#64748B] transition-colors hover:text-[#0070F3]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Universities
+          </button>
+        </div>
+      </div>
+
+      {/* Hero */}
+      <section
+        className="relative overflow-hidden"
+        style={{ backgroundColor: university.color }}
+      >
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8">
+            {/* Logo Shield */}
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl" style={{ color: university.color }}>
+              {university.initials}
+            </div>
+            <div className="flex-1">
+              <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
+                SEVP Certified
+              </Badge>
+              <h1 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+                {university.name}
+              </h1>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-blue-100">
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4" />
+                  {university.location}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  Est. {university.founded}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Building className="h-4 w-4" />
+                  {university.type}
+                </span>
+              </div>
+            </div>
+            <div className="shrink-0">
+              <Button className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: university.color }}>
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Apply Now
+              </Button>
+            </div>
+          </div>
+        </div>
+        {/* Wave bottom */}
+        <svg viewBox="0 0 1440 60" fill="none" className="block w-full" preserveAspectRatio="none">
+          <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60 Z" fill="white" />
+        </svg>
+      </section>
+
+      {/* Key Facts Infographic Bar */}
+      <section className="-mt-2">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {university.keyFacts.map((fact) => {
+              const Icon = iconMap[fact.icon] || CheckCircle;
+              return (
+                <div
+                  key={fact.label}
+                  className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${university.color}15`, color: university.color }}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-[#64748B]">{fact.label}</p>
+                    <p className="text-sm font-semibold text-[#111827]">{fact.value}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Description + Sidebar */}
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-3">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">About {university.shortName}</h2>
+              <p className="mt-4 leading-relaxed text-[#64748B]">{university.description}</p>
+
+              {/* CPT Info Box */}
+              <div className="mt-8 rounded-2xl border-2 border-[#0070F3]/20 bg-[#F8FAFC] p-6">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0070F3]">
+                    <CheckCircle className="h-4 w-4 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-[#111827]">Day 1 CPT Authorization</h3>
+                </div>
+                <p className="mt-3 leading-relaxed text-[#64748B]">{university.cptInfo}</p>
+              </div>
+
+              {/* Programs */}
+              <div className="mt-10">
+                <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">
+                  Available Programs
+                </h2>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {university.programs.map((program) => (
+                    <div
+                      key={program.name}
+                      className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#0070F3]/30 hover:shadow-md"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F1F5F9]">
+                          <GraduationCap className="h-5 w-5 text-[#64748B]" />
+                        </div>
+                        <div className="flex gap-2">
+                          {program.stem && (
+                            <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">STEM</Badge>
+                          )}
+                          <Badge className="border-gray-200 bg-gray-50 text-[#64748B]">{program.level}</Badge>
+                        </div>
+                      </div>
+                      <h4 className="mt-3 font-semibold text-[#111827]">{program.name}</h4>
+                      <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {program.duration}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Briefcase className="h-3.5 w-3.5" />
+                          Day 1 CPT
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Quick Info Card */}
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <h3 className="font-semibold text-[#111827]">Quick Information</h3>
+                <div className="mt-4 space-y-4">
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Accreditation</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.accreditation}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Tuition Range</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.tuitionRange}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Acceptance Rate</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.acceptanceRate}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <span className="text-sm text-[#64748B]">Total Enrollment</span>
+                    <span className="text-sm font-medium text-[#111827]">{university.enrollment}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[#64748B]">Website</span>
+                    <span className="text-sm font-medium text-[#0070F3]">{university.website}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Card */}
+              <div className="rounded-2xl bg-[#0B1120] p-6 text-white">
+                <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
+                <p className="mt-2 text-sm text-[#94A3B8]">
+                  Get a free consultation to learn about admission requirements, CPT authorization, and enrollment timelines.
+                </p>
+                <Button className="mt-5 w-full rounded-full bg-[#0070F3] text-white hover:bg-[#0060D3]">
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Chat on WhatsApp
+                </Button>
+                <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10">
+                  Get Free Consultation
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Process Card */}
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <h3 className="font-semibold text-[#111827]">How to Apply</h3>
+                <div className="mt-4 space-y-4">
+                  {[
+                    'Free consultation with advisor',
+                    'Document collection & review',
+                    'Application submission',
+                    'I-20 issuance & enrollment',
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0070F3] text-xs font-bold text-white">
+                        {i + 1}
+                      </div>
+                      <span className="text-sm text-[#64748B]">{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

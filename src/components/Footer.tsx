@@ -9,6 +9,8 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Logo from './Logo';
+import Image from 'next/image';
 
 const resourceLinks = [
   'Day 1 CPT',
@@ -24,7 +26,11 @@ const quickHelpLinks = [
   'Day 1 CPT options',
 ];
 
-export default function Footer() {
+interface Props {
+  onNavigate?: (view: string, id?: string) => void;
+}
+
+export default function Footer({ onNavigate }: Props) {
   return (
     <footer className="bg-[#0B1120] text-white">
       {/* CTA Section */}
@@ -35,7 +41,7 @@ export default function Footer() {
               Get Free Consultation
             </h3>
             <p className="mt-3 text-base text-[#94A3B8]">
-              Expert guidance from CPT Mentor - Available 24/7
+              Expert guidance from UCSG - Available 24/7
             </p>
             <div className="mt-8">
               <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#0B1120] shadow-lg hover:bg-gray-100">
@@ -53,12 +59,7 @@ export default function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Column 1: Logo & Description */}
           <div>
-            <a href="/" className="flex items-center gap-1">
-              <span className="text-xl font-bold text-white">CPT</span>
-              <span className="inline-block rounded-md border-2 border-white px-2 py-0.5 text-xl font-bold text-white">
-                Mentor
-              </span>
-            </a>
+            <Logo variant="light" size="lg" />
             <p className="mt-4 text-sm leading-relaxed text-[#94A3B8]">
               Your trusted resource for university transfers, SEVIS reinstatement,
               Day 1 CPT guidance, Change of Status support, and end-to-end F-1 visa
@@ -74,12 +75,15 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               {resourceLinks.map((link) => (
                 <li key={link}>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => {
+                      const id = link === 'Day 1 CPT' ? 'day1-cpt' : link === 'University Transfers' ? 'university-transfers' : link === 'Change of Status' ? 'change-of-status' : 'sevis-reinstatement';
+                      onNavigate?.('resource', id);
+                    }}
                     className="text-sm text-[#94A3B8] transition-colors hover:text-white"
                   >
                     {link}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -112,7 +116,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-4">
               <li>
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+19786065493"
                   className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
@@ -123,13 +127,13 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:info@cptmentor.com"
+                  href="mailto:info@ucsg.com"
                   className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
                     <Mail className="h-4 w-4 text-[#94A3B8]" />
                   </div>
-                  info@cptmentor.com
+                  info@ucsg.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-[#94A3B8]">

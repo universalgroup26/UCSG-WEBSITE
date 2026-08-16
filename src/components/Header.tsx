@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Logo from './Logo';
 
 const universitiesLinks = [
   'Rivier University',
@@ -36,28 +37,32 @@ const resourcesLinks = [
   'STEM OPT Support',
 ];
 
-export default function Header() {
+interface Props {
+  onNavigate?: (view: string, id?: string) => void;
+}
+
+export default function Header({ onNavigate }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleNav = (view: string, id?: string) => {
+    setMobileOpen(false);
+    onNavigate?.(view, id);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-1">
-          <span className="text-xl font-bold text-[#111827]">CPT</span>
-          <span className="inline-block rounded-md border-2 border-[#111827] px-2 py-0.5 text-xl font-bold text-[#111827]">
-            Mentor
-          </span>
-        </a>
+        <Logo size="md" />
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-1 md:flex">
-          <a
-            href="/"
+          <button
+            onClick={() => handleNav('home')}
             className="rounded-full bg-[#DBEAFE] px-4 py-1.5 text-sm font-medium text-[#0070F3] transition-colors hover:bg-[#BFDBFE]"
           >
             Home
-          </a>
+          </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100 outline-none">
@@ -93,12 +98,12 @@ export default function Header() {
           >
             Webinars
           </a>
-          <a
-            href="#get-started"
+          <button
+            onClick={() => handleNav('home')}
             className="rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100"
           >
             Get Started
-          </a>
+          </button>
         </nav>
 
         {/* Desktop CTA */}
@@ -120,54 +125,48 @@ export default function Header() {
           </SheetTrigger>
           <SheetContent side="right" className="w-80 overflow-y-auto">
             <SheetHeader>
-              <SheetTitle className="flex items-center gap-1 text-left">
-                <span className="text-xl font-bold text-[#111827]">CPT</span>
-                <span className="inline-block rounded-md border-2 border-[#111827] px-2 py-0.5 text-xl font-bold text-[#111827]">
-                  Mentor
-                </span>
+              <SheetTitle className="flex items-center gap-2 text-left">
+                <Logo size="sm" />
               </SheetTitle>
             </SheetHeader>
             <nav className="mt-6 flex flex-col gap-1">
-              <a
-                href="/"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg bg-[#DBEAFE] px-4 py-2.5 text-sm font-medium text-[#0070F3]"
+              <button
+                onClick={() => handleNav('home')}
+                className="rounded-lg bg-[#DBEAFE] px-4 py-2.5 text-left text-sm font-medium text-[#0070F3]"
               >
                 Home
-              </a>
+              </button>
 
               <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Universities
               </div>
               {universitiesLinks.map((name) => (
-                <a
+                <button
                   key={name}
-                  href="#"
-                  onClick={() => setMobileOpen(false)}
-                  className="px-4 py-2 text-sm text-[#111827] hover:bg-gray-50 rounded-lg"
+                  onClick={() => handleNav('home')}
+                  className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
                 >
                   {name}
-                </a>
+                </button>
               ))}
 
               <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Resources
               </div>
               {resourcesLinks.map((name) => (
-                <a
+                <button
                   key={name}
-                  href="#"
-                  onClick={() => setMobileOpen(false)}
-                  className="px-4 py-2 text-sm text-[#111827] hover:bg-gray-50 rounded-lg"
+                  onClick={() => handleNav('home')}
+                  className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
                 >
                   {name}
-                </a>
+                </button>
               ))}
 
               <a
                 href="#webinars"
                 onClick={() => setMobileOpen(false)}
-                className="px-4 py-2.5 text-sm font-medium text-[#111827] hover:bg-gray-50 rounded-lg"
+                className="rounded-lg px-4 py-2.5 text-sm font-medium text-[#111827] hover:bg-gray-50"
               >
                 Webinars
               </a>

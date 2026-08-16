@@ -8,25 +8,23 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CPT MENTOR - University Transfers & SEVIS Support",
+  title: "UCSG - University Consulting Service Group",
   description:
-    "Enroll in an accredited graduate program with Integral CPT. University transfers, Day 1 CPT, Change of Status, SEVIS Reinstatement, and STEM OPT Denials support.",
+    "Fast, reliable support for international students facing SEVIS termination, university transfers, change of status, and visa issues. Available 24/7.",
   keywords: [
-    "CPT",
+    "UCSG",
     "Day 1 CPT",
     "University Transfers",
-    "SEVIS",
-    "F1 Visa",
-    "STEM OPT",
-    "CPT Mentor",
+    "SEVIS Reinstatement",
+    "Change of Status",
+    "F-1 Visa",
+    "International Students",
+    "CPT",
   ],
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
-    title: "CPT MENTOR - University Transfers & SEVIS Support",
+    title: "UCSG - University Consulting Service Group",
     description:
-      "Enroll in an accredited graduate program with Integral CPT.",
+      "Expert support for international students navigating SEVIS termination, university transfers, and visa status challenges.",
     type: "website",
   },
 };
@@ -38,7 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased bg-white text-[#111827]`}>
+      <body
+        className={`${inter.variable} font-sans antialiased bg-white text-foreground`}
+      >
         {children}
       </body>
     </html>

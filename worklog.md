@@ -64,3 +64,33 @@ Stage Summary:
 - Responsive design verified on desktop and mobile
 - All interactive elements functional
 - Production-ready clone at 8.5/10 overall fidelity
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Rebrand to UCSG, add university/resource detail pages
+
+Work Log:
+- Analyzed uploaded USCG.png logo via VLM - circular badge with 'UCSG' + 'UNIVERSAL CONSULTING SERVICE GROUP'
+- Copied logo to public/ucsg-logo.png
+- Created src/lib/data/universities.ts - comprehensive data for all 29 universities (programs, facts, CPT info, tuition, etc.)
+- Created src/lib/data/resources.ts - detailed data for 4 resources (Day 1 CPT, Transfers, COS, SEVIS Reinstatement) with steps, FAQs, key facts, benefits
+- Created src/components/Logo.tsx - reusable UCSG logo component using Next.js Image
+- Created src/components/pages/UniversityPage.tsx - full detail page with colored hero, stats infographic, programs grid, CPT info box, sidebar with quick info/CTA/apply steps
+- Created src/components/pages/ResourcePage.tsx - full resource page with gradient hero, key facts infographic, process timeline, benefits checklist, FAQ accordion, dark CTA
+- Rebranded Header.tsx - replaced CPT MENTOR text logo with UCSG image logo
+- Rebranded Footer.tsx - UCSG logo, UCSG reference in CTA, updated email to info@ucsg.com
+- Updated UniversitiesSection.tsx - added click handler to navigate to detail page
+- Updated ServicesSection.tsx - added click handlers to navigate to resource pages
+- Updated page.tsx - implemented client-side routing with history API, browser back button support
+- Updated layout.tsx - changed metadata to UCSG, font to Inter
+- Verified all navigation flows: home → university detail → back, home → resource page → back
+- VLM rated university page 8.5/10, resource page 8/10
+- ESLint passes clean
+
+Stage Summary:
+- Complete UCSG rebrand across all components
+- 29 university detail pages with infographics, program cards, and sidebar CTAs
+- 4 resource pages with timelines, key facts, benefits, and FAQ accordions
+- Client-side SPA routing with browser back button support
+- All interactive elements verified working
