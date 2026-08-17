@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import type { UniversityData } from '@/lib/data/universities';
 import { getUniversityById } from '@/lib/data/universities';
+import CampusVisual from '@/components/CampusVisual';
 
 interface Props {
   onUniversityClick?: (university: UniversityData) => void;
@@ -103,6 +104,15 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
             </motion.button>
           ))}
         </div>
+
+        <motion.div
+          className="mx-auto mb-10 max-w-5xl lg:mb-14"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <CampusVisual />
+        </motion.div>
 
         <motion.p
           className="mt-10 text-center text-sm text-[#6B7280]"

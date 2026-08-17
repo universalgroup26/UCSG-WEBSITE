@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import {
   ArrowLeft,
   MessageCircle,
@@ -153,12 +154,24 @@ export default function ResourcePage({ resource, onBack }: Props) {
         </div>
       </section>
 
-      {/* Overview */}
+      {/* Overview with Visual */}
       <ScrollReveal className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Overview</h2>
-            <p className="mt-4 leading-relaxed text-[#6B7280]">{resource.overview}</p>
+          <div className="grid items-center gap-8 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Overview</h2>
+              <p className="mt-4 leading-relaxed text-[#6B7280]">{resource.overview}</p>
+            </div>
+            <div className="relative hidden overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2 lg:block">
+              <Image
+                src="/images/documents.png"
+                alt="Professional document guidance"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
+            </div>
           </div>
         </div>
       </ScrollReveal>

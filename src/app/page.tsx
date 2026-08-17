@@ -8,6 +8,8 @@ import StudentJourneyInfographic from '@/components/infographics/StudentJourneyI
 import ServicesSection from '@/components/ServicesSection';
 import ServicesMindmap from '@/components/infographics/ServicesMindmap';
 import UniversitiesSection from '@/components/UniversitiesSection';
+import TrustSection from '@/components/TrustSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -109,6 +111,8 @@ export default function HomePage() {
               <StudentJourneyInfographic />
               <ServicesSection onResourceClick={handleResourceClick} />
               <ServicesMindmap />
+              <TrustSection />
+              <TestimonialsSection />
               <UniversitiesSection onUniversityClick={handleUniversityClick} />
             </motion.div>
           )}
