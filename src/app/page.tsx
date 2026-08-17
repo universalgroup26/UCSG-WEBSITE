@@ -7,6 +7,7 @@ import HeroSection from '@/components/HeroSection';
 import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
 import ServicesSection from '@/components/ServicesSection';
 import ServicesMindmap from '@/components/infographics/ServicesMindmap';
+import AboutUCSGSection from '@/components/AboutUCSGSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
 import TrustSection from '@/components/TrustSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
@@ -14,6 +15,7 @@ import Footer from '@/components/Footer';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
 import ContactPage from '@/components/pages/ContactPage';
+import ScholarshipsPage from '@/components/pages/ScholarshipsPage';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
 
@@ -21,7 +23,8 @@ type ViewType =
   | { type: 'home' }
   | { type: 'university'; university: UniversityData }
   | { type: 'resource'; resource: ResourceData }
-  | { type: 'contact' };
+  | { type: 'contact' }
+  | { type: 'scholarships' };
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -40,6 +43,11 @@ export default function HomePage() {
     }
     if (_view === 'contact') {
       setView({ type: 'contact' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (_view === 'scholarships') {
+      setView({ type: 'scholarships' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -83,6 +91,8 @@ export default function HomePage() {
       history.pushState({ resourceId: v.resource.id }, '', `#/resource/${v.resource.id}`);
     } else if (v.type === 'contact') {
       history.pushState({}, '', '#/contact');
+    } else if (v.type === 'scholarships') {
+      history.pushState({}, '', '#/scholarships');
     } else {
       history.pushState({}, '', '/');
     }
@@ -120,6 +130,7 @@ export default function HomePage() {
               <StudentJourneyInfographic />
               <ServicesSection onResourceClick={handleResourceClick} />
               <ServicesMindmap />
+              <AboutUCSGSection />
               <TrustSection />
               <TestimonialsSection />
               <UniversitiesSection onUniversityClick={handleUniversityClick} />
@@ -128,6 +139,11 @@ export default function HomePage() {
           {view.type === 'contact' && (
             <motion.div key="contact" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <ContactPage onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'scholarships' && (
+            <motion.div key="scholarships" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <ScholarshipsPage onBack={goHome} />
             </motion.div>
           )}
           {view.type === 'university' && (

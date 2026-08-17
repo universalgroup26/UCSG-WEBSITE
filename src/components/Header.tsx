@@ -107,6 +107,12 @@ export default function Header({ onNavigate }: Props) {
             Day 1 CPT
           </button>
           <button
+            onClick={() => handleNav('scholarships')}
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
+          >
+            Scholarships
+          </button>
+          <button
             onClick={() => handleNav('contact')}
             className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
           >
@@ -173,6 +179,13 @@ export default function Header({ onNavigate }: Props) {
                   {item.name}
                 </button>
               ))}
+
+              <button
+                onClick={() => handleNav('scholarships')}
+                className="rounded-lg px-4 py-2.5 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
+              >
+                Scholarships
+              </button>
 
               <button
                 onClick={() => handleNav('contact')}

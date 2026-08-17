@@ -98,6 +98,9 @@ export default function ContactPage({ onBack }: Props) {
     name: '',
     email: '',
     phone: '',
+    whatsapp: '',
+    nationality: '',
+    englishLevel: '',
     service: '',
     message: '',
   });
@@ -106,7 +109,7 @@ export default function ContactPage({ onBack }: Props) {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
-    setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+    setFormData({ name: '', email: '', phone: '', whatsapp: '', nationality: '', englishLevel: '', service: '', message: '' });
   };
 
   return (
@@ -271,7 +274,7 @@ export default function ContactPage({ onBack }: Props) {
                         />
                       </div>
                     </div>
-                    <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="grid gap-5 sm:grid-cols-3">
                       <div>
                         <label className="mb-1.5 block text-sm font-medium text-[#1E2D3B]">
                           Phone Number
@@ -286,6 +289,31 @@ export default function ContactPage({ onBack }: Props) {
                       </div>
                       <div>
                         <label className="mb-1.5 block text-sm font-medium text-[#1E2D3B]">
+                          WhatsApp Number
+                        </label>
+                        <Input
+                          type="tel"
+                          placeholder="+Country XXX XXX"
+                          value={formData.whatsapp}
+                          onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus-visible:border-[#006F8F] focus-visible:ring-[#006F8F]/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-medium text-[#1E2D3B]">
+                          Nationality
+                        </label>
+                        <Input
+                          placeholder="e.g. Bangladeshi"
+                          value={formData.nationality}
+                          onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus-visible:border-[#006F8F] focus-visible:ring-[#006F8F]/20"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-medium text-[#1E2D3B]">
                           Service Needed
                         </label>
                         <select
@@ -297,6 +325,22 @@ export default function ContactPage({ onBack }: Props) {
                           {services.map((s) => (
                             <option key={s} value={s}>{s}</option>
                           ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-medium text-[#1E2D3B]">
+                          English Level
+                        </label>
+                        <select
+                          value={formData.englishLevel}
+                          onChange={(e) => setFormData({ ...formData, englishLevel: e.target.value })}
+                          className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3 text-sm text-[#1E2D3B] focus:border-[#006F8F] focus:outline-none focus:ring-2 focus:ring-[#006F8F]/20"
+                        >
+                          <option value="">Select...</option>
+                          <option value="beginner">Beginner</option>
+                          <option value="intermediate">Intermediate</option>
+                          <option value="advanced">Advanced</option>
+                          <option value="fluent">Fluent / Native</option>
                         </select>
                       </div>
                     </div>
