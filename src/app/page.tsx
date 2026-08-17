@@ -4,7 +4,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
+import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
 import ServicesSection from '@/components/ServicesSection';
+import ServicesMindmap from '@/components/infographics/ServicesMindmap';
 import UniversitiesSection from '@/components/UniversitiesSection';
 import Footer from '@/components/Footer';
 import UniversityPage from '@/components/pages/UniversityPage';
@@ -104,7 +106,9 @@ export default function HomePage() {
           {view.type === 'home' && (
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <HeroSection />
+              <StudentJourneyInfographic />
               <ServicesSection onResourceClick={handleResourceClick} />
+              <ServicesMindmap />
               <UniversitiesSection onUniversityClick={handleUniversityClick} />
             </motion.div>
           )}

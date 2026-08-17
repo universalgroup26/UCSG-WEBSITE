@@ -36,6 +36,7 @@ import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import UniversityMindmap from '@/components/infographics/UniversityMindmap';
 
 const iconMap: Record<string, React.ElementType> = {
   calendar: Calendar,
@@ -244,6 +245,18 @@ export default function UniversityPage({ university, onBack }: Props) {
           </div>
         </div>
       </section>
+
+      {/* University Mindmap Infographic */}
+      <UniversityMindmap
+        universityName={university.name}
+        color={university.color}
+        cptAvailable={university.cptAvailable}
+        programs={university.programs}
+        location={university.location}
+        tuitionRange={university.tuitionRange}
+        onlineAvailable={university.onlinePrograms}
+        hybridAvailable={university.hybridOption}
+      />
 
       {/* Description + Sidebar */}
       <section className="py-12 sm:py-16">

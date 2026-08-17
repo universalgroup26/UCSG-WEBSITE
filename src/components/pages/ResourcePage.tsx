@@ -18,6 +18,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import type { ResourceData } from '@/lib/data/resources';
+import ResourceMindmap from '@/components/infographics/ResourceMindmap';
+import CPTvsOPTInfographic from '@/components/infographics/CPTvsOPTInfographic';
+import VisaPathwayFlowchart from '@/components/infographics/VisaPathwayFlowchart';
+import SEVISRecoveryFlowchart from '@/components/infographics/SEVISRecoveryFlowchart';
 
 const iconComponents: Record<string, React.ElementType> = {
   briefcase: Briefcase,
@@ -158,6 +162,14 @@ export default function ResourcePage({ resource, onBack }: Props) {
           </div>
         </div>
       </ScrollReveal>
+
+      {/* Topic-Specific Mindmap */}
+      <ResourceMindmap resourceId={resource.id} />
+
+      {/* Topic-Specific Infographic */}
+      {resource.id === 'day1-cpt' && <CPTvsOPTInfographic />}
+      {resource.id === 'change-of-status' && <VisaPathwayFlowchart />}
+      {resource.id === 'sevis-reinstatement' && <SEVISRecoveryFlowchart />}
 
       {/* Process Timeline */}
       <section className="bg-[#F7F7F7] py-12 sm:py-16">

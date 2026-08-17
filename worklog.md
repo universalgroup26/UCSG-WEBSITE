@@ -193,3 +193,32 @@ Stage Summary:
 - Animation types: staggered fade-up, scroll-triggered reveals, spring physics, AnimatePresence page transitions, hover/tap micro-interactions, floating decorative elements
 - Zero console errors, clean ESLint, mobile verified
 - Performance: all scroll triggers use once:true, margins set for early triggers
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Add related infographics and mindmaps across all pages
+
+Work Log:
+- Created `src/components/infographics/` directory with 6 new components:
+  1. **StudentJourneyInfographic.tsx** — 6-step horizontal timeline (Consultation → Eligibility → Admission → I-20 → Work → H-1B) with colored step nodes, icons, and stats bar (5,000+ students, 99% success, 29+ universities, 24/7 support). Responsive: horizontal on desktop, vertical with connectors on mobile.
+  2. **ServicesMindmap.tsx** — Radial mindmap with central UCSG hub and 5 color-coded service branches (Transfers, Day 1 CPT, COS, SEVIS, STEM OPT), each with 3 sub-items. Desktop: 2x2 grid + center bottom card around UCSG hub. Mobile: stacked cards with central hub connector.
+  3. **ResourceMindmap.tsx** — Dynamic 2x2 mindmap with topic-specific content for all 5 resources (Day 1 CPT: Eligibility/Process/Benefits/Rules; Transfers: Why/Process/Handling/Outcomes; COS: B1/B2/H4/J1/Requirements; SEVIS: Causes/Path/Evidence/Denied; STEM OPT: Facts/Denied/Backup/Tips).
+  4. **UniversityMindmap.tsx** — University-specific 2x2 mindmap (Location & Flexibility, Programs Offered, CPT & Work Authorization, Costs & Value) with dynamic data from university props.
+  5. **CPTvsOPTInfographic.tsx** — Side-by-side comparison table (7 features) with teal CPT vs purple OPT columns, UCSG recommendation callout box.
+  6. **VisaPathwayFlowchart.tsx** — 4 pathway cards (B1/B2, H4, J1/J2, F2) showing step-by-step COS process with timeline/difficulty badges, converging to F-1 + CPT outcome.
+  7. **SEVISRecoveryFlowchart.tsx** — Decision tree (YES: Reinstatement path / NO: Transfer or Travel path) with step details, sub-paths for denied cases, and UCSG recommendation.
+- Integrated into page.tsx: StudentJourneyInfographic between Hero and Services, ServicesMindmap between Services and Universities
+- Integrated into ResourcePage.tsx: ResourceMindmap (all 5 pages) + CPTvsOPTInfographic (Day 1 CPT) + VisaPathwayFlowchart (Change of Status) + SEVISRecoveryFlowchart (SEVIS Reinstatement)
+- Integrated into UniversityPage.tsx: UniversityMindmap between Key Facts and Description sections
+- All components use Framer Motion: scroll-triggered reveals, staggered animations, spring physics, hover interactions
+- ESLint clean, zero console errors, dev server compiles without errors
+- Browser verified: homepage (5 sections including 2 new), Day 1 CPT (mindmap + comparison table), Change of Status (pathway flowchart), SEVIS Reinstatement (decision tree), university page (university mindmap), mobile responsive (390x844)
+
+Stage Summary:
+- 7 new infographic/mindmap components created in src/components/infographics/
+- Homepage: +2 sections (Student Journey timeline + Services Mindmap)
+- 5 resource pages: +1 mindmap each (ResourceMindmap) + topic-specific infographic (CPT vs OPT, Visa Pathways, SEVIS Decision Tree)
+- 29 university pages: +1 University Mindmap each with dynamic data
+- Total: 36 new infographic sections added across the site
+- All animated with Framer Motion, responsive on mobile, brand-color consistent

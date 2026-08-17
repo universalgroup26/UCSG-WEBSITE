@@ -1,0 +1,686 @@
+     1→'use client';
+     2→
+     3→import Image from 'next/image';
+     4→import {
+     5→  ArrowLeft,
+     6→  MapPin,
+     7→  Calendar,
+     8→  Users,
+     9→  Award,
+    10→  CheckCircle,
+    11→  CheckCircle2,
+    12→  BookOpen,
+    13→  Building,
+    14→  Globe,
+    15→  Clock,
+    16→  Briefcase,
+    17→  DollarSign,
+    18→  MessageCircle,
+    19→  ArrowRight,
+    20→  GraduationCap,
+    21→  TrendingUp,
+    22→  Star,
+    23→  Wifi,
+    24→  Shield,
+    25→  BadgeCheck,
+    26→  Sparkles,
+    27→  Target,
+    28→  BarChart3,
+    29→  ChevronRight,
+    30→  Mail,
+    31→  Phone,
+    32→} from 'lucide-react';
+    33→import { Button } from '@/components/ui/button';
+    34→import { Badge } from '@/components/ui/badge';
+    35→import type { UniversityData } from '@/lib/data/universities';
+    36→import { universities } from '@/lib/data/universities';
+    37→import { motion, useInView } from 'framer-motion';
+    38→import { useRef } from 'react';
+    39→
+    40→const iconMap: Record<string, React.ElementType> = {
+    41→  calendar: Calendar,
+    42→  users: Users,
+    43→  award: Award,
+    44→  'check-circle': CheckCircle,
+    45→  'book-open': BookOpen,
+    46→  building: Building,
+    47→  'map-pin': MapPin,
+    48→  globe: Globe,
+    49→  clock: Clock,
+    50→  target: TrendingUp,
+    51→  flask: GraduationCap,
+    52→  'dollar-sign': DollarSign,
+    53→  briefcase: Briefcase,
+    54→  trophy: Award,
+    55→};
+    56→
+    57→const amenityIcons: Record<string, React.ElementType> = {
+    58→  'Library': BookOpen,
+    59→  'Computer Lab': Globe,
+    60→  'Computer Labs': Globe,
+    61→  'Student Center': Users,
+    62→  'Student Union': Users,
+    63→  'Student Lounge': Users,
+    64→  'Fitness Center': Star,
+    65→  'Athletic Fields': Star,
+    66→  'Athletic Complex': Star,
+    67→  'Athletic Facilities': Star,
+    68→  'Science Labs': GraduationCap,
+    69→  'Science Building': GraduationCap,
+    70→  'Dining Hall': Sparkles,
+    71→  'Cafeteria': Sparkles,
+    72→  'Career Center': Briefcase,
+    73→  'Career Services': Briefcase,
+    74→  'Chapel': Shield,
+    75→  'Nursing Lab': CheckCircle2,
+    76→  'Nursing Simulation Lab': CheckCircle2,
+    77→  'Innovation Lab': Wifi,
+    78→  'Innovation Hub': Wifi,
+    79→  'Maker Space': Wifi,
+    80→  'Research Labs': GraduationCap,
+    81→  'AI Lab': Globe,
+    82→  'Art Gallery': Sparkles,
+    83→  'Art Studio': Sparkles,
+    84→  'Art Therapy Studio': Sparkles,
+    85→  'Music Hall': Sparkles,
+    86→  'Performing Arts Center': Sparkles,
+    87→  'Outdoor Recreation': Star,
+    88→  'Recreation Center': Star,
+    89→  'Writing Center': BookOpen,
+    90→  'Tutoring Center': BookOpen,
+    91→  'Counseling Center': Users,
+    92→  'Online Learning Hub': Wifi,
+    93→  'Study Lounges': BookOpen,
+    94→  'Study Rooms': BookOpen,
+    95→  'Study Areas': BookOpen,
+    96→  'Coworking Space': Wifi,
+    97→  'Business Center': Briefcase,
+    98→  'Health Science Center': CheckCircle2,
+    99→  'Law School': Shield,
+   100→  'Law School Facilities': Shield,
+   101→  'Meditation Room': Shield,
+   102→  'Aviation Training Center': GraduationCap,
+   103→  'Performing Arts': Sparkles,
+   104→  'International Center': Globe,
+   105→  'Tech Lab': Wifi,
+   106→  'Student Commons': Users,
+   107→  'Student Services': Users,
+   108→  'Career Development': Briefcase,
+   109→  'Urban Campus': Building,
+   110→};
+   111→
+   112→function getAmenityIcon(name: string): React.ElementType {
+   113→  return amenityIcons[name] || Building;
+   114→}
+   115→
+   116→function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+   117→  const ref = useRef(null);
+   118→  const isInView = useInView(ref, { once: true, margin: '-60px' });
+   119→  return (
+   120→    <motion.div
+   121→      ref={ref}
+   122→      className={className}
+   123→      initial={{ opacity: 0, y: 24 }}
+   124→      animate={isInView ? { opacity: 1, y: 0 } : {}}
+   125→      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   126→    >
+   127→      {children}
+   128→    </motion.div>
+   129→  );
+   130→}
+   131→
+   132→interface Props {
+   133→  university: UniversityData;
+   134→  onBack: () => void;
+   135→}
+   136→
+   137→export default function UniversityPage({ university, onBack }: Props) {
+   138→  const compareSuggestions = universities
+   139→    .filter((u) => u.id !== university.id)
+   140→    .sort(() => 0.5 - Math.random())
+   141→    .slice(0, 3);
+   142→
+   143→  return (
+   144→    <div className="min-h-screen bg-white">
+   145→      {/* Back Bar */}
+   146→      <div className="border-b border-gray-100 bg-gray-50/50">
+   147→        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+   148→          <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+   149→            <button
+   150→              onClick={onBack}
+   151→              className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
+   152→            >
+   153→              <ArrowLeft className="h-4 w-4" />
+   154→              Back to Universities
+   155→            </button>
+   156→          </motion.div>
+   157→        </div>
+   158→      </div>
+   159→
+   160→      {/* Hero */}
+   161→      <section
+   162→        className="relative overflow-hidden"
+   163→        style={{ backgroundColor: university.color }}
+   164→      >
+   165→        <div className="absolute inset-0 bg-black/20" />
+   166→        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+   167→          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8">
+   168→            {/* Logo / Shield */}
+   169→            {university.logoPath ? (
+   170→              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/30 bg-white shadow-lg sm:h-28 sm:w-28">
+   171→                <Image
+   172→                  src={university.logoPath}
+   173→                  alt={`${university.name} logo`}
+   174→                  width={112}
+   175→                  height={112}
+   176→                  className="h-full w-full object-contain p-2"
+   177→                  unoptimized
+   178→                />
+   179→              </div>
+   180→            ) : (
+   181→              <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl" style={{ color: university.color }}>
+   182→                {university.initials}
+   183→              </div>
+   184→            )}
+   185→            <div className="flex-1">
+   186→              <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
+   187→                SEVP Certified
+   188→              </Badge>
+   189→              <h1 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+   190→                {university.name}
+   191→              </h1>
+   192→              <div className="mt-3 flex flex-wrap items-center gap-4 text-teal-100">
+   193→                <span className="flex items-center gap-1.5">
+   194→                  <MapPin className="h-4 w-4" />
+   195→                  {university.location}
+   196→                </span>
+   197→                <span className="flex items-center gap-1.5">
+   198→                  <Calendar className="h-4 w-4" />
+   199→                  Est. {university.founded}
+   200→                </span>
+   201→                <span className="flex items-center gap-1.5">
+   202→                  <Building className="h-4 w-4" />
+   203→                  {university.type}
+   204→                </span>
+   205→              </div>
+   206→            </div>
+   207→            <div className="shrink-0">
+   208→              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+   209→                <Button className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: university.color }}>
+   210→                  <MessageCircle className="mr-2 h-5 w-5" />
+   211→                  Apply Now
+   212→                </Button>
+   213→              </motion.div>
+   214→            </div>
+   215→          </div>
+   216→        </div>
+   217→        {/* Wave bottom */}
+   218→        <svg viewBox="0 0 1440 60" fill="none" className="block w-full" preserveAspectRatio="none">
+   219→          <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60 Z" fill="white" />
+   220→        </svg>
+   221→      </section>
+   222→
+   223→      {/* Key Facts Infographic Bar */}
+   224→      <section className="-mt-2">
+   225→        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   226→          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+   227→            {university.keyFacts.map((fact) => {
+   228→              const Icon = iconMap[fact.icon] || CheckCircle;
+   229→              return (
+   230→                <div
+   231→                  key={fact.label}
+   232→                  className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+   233→                >
+   234→                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${university.color}15`, color: university.color }}>
+   235→                    <Icon className="h-5 w-5" />
+   236→                  </div>
+   237→                  <div>
+   238→                    <p className="text-xs text-[#6B7280]">{fact.label}</p>
+   239→                    <p className="text-sm font-semibold text-[#1E2D3B]">{fact.value}</p>
+   240→                  </div>
+   241→                </div>
+   242→              );
+   243→            })}
+   244→          </div>
+   245→        </div>
+   246→      </section>
+   247→
+   248→      {/* Description + Sidebar */}
+   249→      <section className="py-12 sm:py-16">
+   250→        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   251→          <div className="grid gap-10 lg:grid-cols-3">
+   252→            {/* Main Content */}
+   253→            <div className="lg:col-span-2">
+   254→              <ScrollReveal>
+   255→                <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">About {university.shortName}</h2>
+   256→                <p className="mt-4 leading-relaxed text-[#6B7280]">{university.description}</p>
+   257→              </ScrollReveal>
+   258→
+   259→              {/* CPT Info Box */}
+   260→              <ScrollReveal delay={0.1}>
+   261→                <div className="mt-8 rounded-2xl border-2 border-[#006F8F]/20 bg-[#F7F7F7] p-6">
+   262→                  <div className="flex items-center gap-2">
+   263→                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#006F8F]">
+   264→                      <CheckCircle className="h-4 w-4 text-white" />
+   265→                    </div>
+   266→                    <h3 className="font-semibold text-[#1E2D3B]">Day 1 CPT Authorization</h3>
+   267→                  </div>
+   268→                  <p className="mt-3 leading-relaxed text-[#6B7280]">{university.cptInfo}</p>
+   269→                </div>
+   270→              </ScrollReveal>
+   271→
+   272→              {/* Why Choose This University - 2x2 Grid */}
+   273→              <ScrollReveal delay={0.05}>
+   274→                <div className="mt-10">
+   275→                  <div className="mb-6 flex items-center gap-2">
+   276→                    <Sparkles className="h-6 w-6 text-[#006F8F]" />
+   277→                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose This University?</h2>
+   278→                  </div>
+   279→                  <div className="grid gap-4 sm:grid-cols-2">
+   280→                    {/* Rankings Card */}
+   281→                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+   282→                      <div className="flex items-center gap-2.5">
+   283→                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+   284→                          <BarChart3 className="h-5 w-5 text-amber-600" />
+   285→                        </div>
+   286→                        <h4 className="font-semibold text-[#1E2D3B]">Rankings &amp; Reputation</h4>
+   287→                      </div>
+   288→                      <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
+   289→                      <p className="mt-1.5 text-xs text-[#6B7280]">
+   290→                        {university.ranking !== 'Unranked'
+   291→                          ? 'Recognized for academic excellence and student outcomes.'
+   292→                          : 'A growing institution focused on practical, career-oriented education.'}
+   293→                      </p>
+   294→                    </div>
+   295→
+   296→                    {/* Campus & Location Card */}
+   297→                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+   298→                      <div className="flex items-center gap-2.5">
+   299→                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
+   300→                          <MapPin className="h-5 w-5 text-emerald-600" />
+   301→                        </div>
+   302→                        <h4 className="font-semibold text-[#1E2D3B]">Campus &amp; Location</h4>
+   303→                      </div>
+   304→                      <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
+   305→                      <p className="mt-1.5 text-xs text-[#6B7280]">
+   306→                        Located in {university.location} · {university.studentFacultyRatio} student-to-faculty ratio
+   307→                      </p>
+   308→                    </div>
+   309→
+   310→                    {/* Flexibility Card */}
+   311→                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+   312→                      <div className="flex items-center gap-2.5">
+   313→                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+   314→                          <Wifi className="h-5 w-5 text-blue-600" />
+   315→                        </div>
+   316→                        <h4 className="font-semibold text-[#1E2D3B]">Flexibility</h4>
+   317→                      </div>
+   318→                      <div className="mt-3 flex flex-wrap gap-2">
+   319→                        <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+   320→                          <Globe className="mr-1 h-3 w-3" />
+   321→                          Online Programs
+   322→                        </Badge>
+   323→                        <Badge className={university.hybridOption ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+   324→                          <Clock className="mr-1 h-3 w-3" />
+   325→                          Hybrid Option
+   326→                        </Badge>
+   327→                      </div>
+   328→                      <p className="mt-2 text-xs text-[#6B7280]">
+   329→                        {university.onlinePrograms && university.hybridOption
+   330→                          ? 'Full online and hybrid learning available for maximum flexibility.'
+   331→                          : university.onlinePrograms
+   332→                          ? 'Online programs available to study from anywhere.'
+   333→                          : 'Campus-based programs with a focused learning experience.'}
+   334→                      </p>
+   335→                    </div>
+   336→
+   337→                    {/* Affordability Card */}
+   338→                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm">
+   339→                      <div className="flex items-center gap-2.5">
+   340→                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+   341→                          <DollarSign className="h-5 w-5 text-purple-600" />
+   342→                        </div>
+   343→                        <h4 className="font-semibold text-[#1E2D3B]">Affordability</h4>
+   344→                      </div>
+   345→                      <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
+   346→                      <div className="mt-2 flex items-center gap-1.5">
+   347→                        {university.scholarshipsAvailable ? (
+   348→                          <>
+   349→                            <BadgeCheck className="h-4 w-4 text-purple-600" />
+   350→                            <span className="text-xs font-medium text-purple-700">Scholarships Available</span>
+   351→                          </>
+   352→                        ) : (
+   353→                          <span className="text-xs text-[#6B7280]">Contact admissions for financial aid options</span>
+   354→                        )}
+   355→                      </div>
+   356→                    </div>
+   357→                  </div>
+   358→                </div>
+   359→              </ScrollReveal>
+   360→
+   361→              {/* Programs */}
+   362→              <ScrollReveal>
+   363→                <div className="mt-10">
+   364→                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+   365→                    Available Programs
+   366→                  </h2>
+   367→                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+   368→                    {university.programs.map((program, index) => (
+   369→                      <ScrollReveal key={program.name} delay={index * 0.08}>
+   370→                        <div
+   371→                          className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
+   372→                        >
+   373→                          <div className="flex items-start justify-between">
+   374→                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F1F5F9]">
+   375→                              <GraduationCap className="h-5 w-5 text-[#6B7280]" />
+   376→                            </div>
+   377→                            <div className="flex gap-2">
+   378→                              {program.stem && (
+   379→                                <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">STEM</Badge>
+   380→                              )}
+   381→                              <Badge className="border-gray-200 bg-gray-50 text-[#6B7280]">{program.level}</Badge>
+   382→                            </div>
+   383→                          </div>
+   384→                          <h4 className="mt-3 font-semibold text-[#1E2D3B]">{program.name}</h4>
+   385→                          <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
+   386→                            <span className="flex items-center gap-1">
+   387→                              <Clock className="h-3.5 w-3.5" />
+   388→                              {program.duration}
+   389→                            </span>
+   390→                            <span className="flex items-center gap-1">
+   391→                              <Briefcase className="h-3.5 w-3.5" />
+   392→                              Day 1 CPT
+   393→                            </span>
+   394→                          </div>
+   395→                        </div>
+   396→                      </ScrollReveal>
+   397→                    ))}
+   398→                  </div>
+   399→                </div>
+   400→              </ScrollReveal>
+   401→
+   402→              {/* Admissions Requirements */}
+   403→              <ScrollReveal>
+   404→                <div className="mt-10">
+   405→                  <div className="mb-6 flex items-center gap-2">
+   406→                    <Shield className="h-6 w-6 text-[#006F8F]" />
+   407→                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Admissions Requirements</h2>
+   408→                  </div>
+   409→                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+   410→                    {/* GPA */}
+   411→                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+   412→                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F0FDF4]">
+   413→                        <TrendingUp className="h-6 w-6 text-emerald-600" />
+   414→                      </div>
+   415→                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Average GPA</p>
+   416→                      <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.averageGPA}</p>
+   417→                    </div>
+   418→
+   419→                    {/* English Requirements */}
+   420→                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+   421→                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
+   422→                        <Globe className="h-6 w-6 text-blue-600" />
+   423→                      </div>
+   424→                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">English Requirements</p>
+   425→                      <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.englishRequirements}</p>
+   426→                    </div>
+   427→
+   428→                    {/* Application Fee */}
+   429→                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+   430→                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF7ED]">
+   431→                        <DollarSign className="h-6 w-6 text-orange-600" />
+   432→                      </div>
+   433→                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Application Fee</p>
+   434→                      <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.applicationFee}</p>
+   435→                    </div>
+   436→
+   437→                    {/* Semester Starts */}
+   438→                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+   439→                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FDF4FF]">
+   440→                        <Calendar className="h-6 w-6 text-purple-600" />
+   441→                      </div>
+   442→                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Semester Starts</p>
+   443→                      <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.semesterStarts}</p>
+   444→                    </div>
+   445→                  </div>
+   446→                </div>
+   447→              </ScrollReveal>
+   448→
+   449→              {/* Campus Highlights */}
+   450→              <ScrollReveal>
+   451→                <div className="mt-10">
+   452→                  <div className="mb-6 flex items-center gap-2">
+   453→                    <Star className="h-6 w-6 text-[#006F8F]" />
+   454→                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Campus Highlights</h2>
+   455→                  </div>
+   456→
+   457→                  <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+   458→                    {/* Notable Alumni */}
+   459→                    {university.notableAlumni.length > 0 && (
+   460→                      <div>
+   461→                        <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
+   462→                          <Award className="h-4 w-4 text-amber-500" />
+   463→                          Notable Alumni
+   464→                        </h4>
+   465→                        <div className="flex flex-wrap gap-2">
+   466→                          {university.notableAlumni.map((alumnus) => (
+   467→                            <Badge
+   468→                              key={alumnus}
+   469→                              className="border-amber-200 bg-amber-50 px-3 py-1.5 text-amber-800"
+   470→                            >
+   471→                              {alumnus}
+   472→                            </Badge>
+   473→                          ))}
+   474→                        </div>
+   475→                      </div>
+   476→                    )}
+   477→
+   478→                    {/* Campus Amenities */}
+   479→                    <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
+   480→                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
+   481→                        <Building className="h-4 w-4 text-[#006F8F]" />
+   482→                        Campus Amenities
+   483→                      </h4>
+   484→                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+   485→                        {university.campusAmenities.map((amenity) => {
+   486→                          const Icon = getAmenityIcon(amenity);
+   487→                          return (
+   488→                            <div
+   489→                              key={amenity}
+   490→                              className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F7F7F7] p-3"
+   491→                            >
+   492→                              <Icon className="h-4 w-4 shrink-0 text-[#006F8F]" />
+   493→                              <span className="text-sm text-[#1E2D3B]">{amenity}</span>
+   494→                            </div>
+   495→                          );
+   496→                        })}
+   497→                      </div>
+   498→                    </div>
+   499→                  </div>
+   500→                </div>
+   501→              </ScrollReveal>
+   502→
+   503→              {/* Compare This University */}
+   504→              <ScrollReveal>
+   505→                <div className="mt-10">
+   506→                  <div className="mb-6 flex items-center gap-2">
+   507→                    <BarChart3 className="h-6 w-6 text-[#006F8F]" />
+   508→                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Compare This University</h2>
+   509→                  </div>
+   510→                  <div className="grid gap-4 sm:grid-cols-3">
+   511→                    {compareSuggestions.map((suggestion) => (
+   512→                      <div
+   513→                        key={suggestion.id}
+   514→                        className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
+   515→                      >
+   516→                        {suggestion.logoPath ? (
+   517→                          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+   518→                            <Image
+   519→                              src={suggestion.logoPath}
+   520→                              alt={`${suggestion.name} logo`}
+   521→                              width={64}
+   522→                              height={64}
+   523→                              className="h-full w-full object-contain p-1"
+   524→                              unoptimized
+   525→                            />
+   526→                          </div>
+   527→                        ) : (
+   528→                          <div
+   529→                            className="flex h-16 w-16 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
+   530→                            style={{ backgroundColor: suggestion.color }}
+   531→                          >
+   532→                            {suggestion.initials}
+   533→                          </div>
+   534→                        )}
+   535→                        <div className="text-center">
+   536→                          <p className="text-sm font-semibold text-[#1E2D3B]">{suggestion.shortName}</p>
+   537→                          <p className="mt-1 text-xs text-[#6B7280]">{suggestion.location}</p>
+   538→                          <p className="mt-1 text-xs font-medium text-[#006F8F]">{suggestion.tuitionRange}</p>
+   539→                        </div>
+   540→                        <div className="flex flex-wrap justify-center gap-1.5">
+   541→                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
+   542→                            <CheckCircle className="mr-0.5 h-2.5 w-2.5" />
+   543→                            Day 1 CPT
+   544→                          </Badge>
+   545→                          {suggestion.onlinePrograms && (
+   546→                            <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
+   547→                              <Globe className="mr-0.5 h-2.5 w-2.5" />
+   548→                              Online
+   549→                            </Badge>
+   550→                          )}
+   551→                        </div>
+   552→                      </div>
+   553→                    ))}
+   554→                  </div>
+   555→                </div>
+   556→              </ScrollReveal>
+   557→            </div>
+   558→
+   559→            {/* Sidebar */}
+   560→            <div className="space-y-6">
+   561→              {/* Quick Info Card */}
+   562→              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+   563→                <h3 className="font-semibold text-[#1E2D3B]">Quick Information</h3>
+   564→                <div className="mt-4 space-y-4">
+   565→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   566→                    <span className="text-sm text-[#6B7280]">Accreditation</span>
+   567→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.accreditation}</span>
+   568→                  </div>
+   569→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   570→                    <span className="text-sm text-[#6B7280]">Ranking</span>
+   571→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.ranking}</span>
+   572→                  </div>
+   573→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   574→                    <span className="text-sm text-[#6B7280]">Campus Size</span>
+   575→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.campusSize}</span>
+   576→                  </div>
+   577→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   578→                    <span className="text-sm text-[#6B7280]">Tuition Range</span>
+   579→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.tuitionRange}</span>
+   580→                  </div>
+   581→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   582→                    <span className="text-sm text-[#6B7280]">Acceptance Rate</span>
+   583→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.acceptanceRate}</span>
+   584→                  </div>
+   585→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   586→                    <span className="text-sm text-[#6B7280]">Online Programs</span>
+   587→                    <span className={`text-sm font-medium ${university.onlinePrograms ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+   588→                      {university.onlinePrograms ? 'Yes' : 'No'}
+   589→                    </span>
+   590→                  </div>
+   591→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   592→                    <span className="text-sm text-[#6B7280]">Hybrid Option</span>
+   593→                    <span className={`text-sm font-medium ${university.hybridOption ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+   594→                      {university.hybridOption ? 'Yes' : 'No'}
+   595→                    </span>
+   596→                  </div>
+   597→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   598→                    <span className="text-sm text-[#6B7280]">Scholarships</span>
+   599→                    <span className={`text-sm font-medium ${university.scholarshipsAvailable ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
+   600→                      {university.scholarshipsAvailable ? 'Available' : 'N/A'}
+   601→                    </span>
+   602→                  </div>
+   603→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   604→                    <span className="text-sm text-[#6B7280]">GPA Requirement</span>
+   605→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.averageGPA}</span>
+   606→                  </div>
+   607→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   608→                    <span className="text-sm text-[#6B7280]">English Reqs</span>
+   609→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.englishRequirements}</span>
+   610→                  </div>
+   611→                  <div className="flex items-center justify-between border-b border-gray-50 pb-3">
+   612→                    <span className="text-sm text-[#6B7280]">Total Enrollment</span>
+   613→                    <span className="text-sm font-medium text-[#1E2D3B]">{university.enrollment}</span>
+   614→                  </div>
+   615→                  <div className="flex items-center justify-between">
+   616→                    <span className="text-sm text-[#6B7280]">Website</span>
+   617→                    <span className="text-sm font-medium text-[#006F8F]">{university.website}</span>
+   618→                  </div>
+   619→                </div>
+   620→              </div>
+   621→
+   622→              {/* Contact Card */}
+   623→              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+   624→                <h3 className="font-semibold text-[#1E2D3B]">Contact Admissions</h3>
+   625→                <div className="mt-4 space-y-3">
+   626→                  <a
+   627→                    href={`mailto:${university.contactEmail}`}
+   628→                    className="flex items-center gap-3 rounded-lg bg-[#F7F7F7] p-3 text-sm text-[#1E2D3B] transition-colors hover:bg-[#F1F5F9]"
+   629→                  >
+   630→                    <Mail className="h-4 w-4 text-[#006F8F]" />
+   631→                    {university.contactEmail}
+   632→                  </a>
+   633→                  <div className="flex items-center gap-3 rounded-lg bg-[#F7F7F7] p-3 text-sm text-[#1E2D3B]">
+   634→                    <Phone className="h-4 w-4 text-[#006F8F]" />
+   635→                    +1 (302) 893-5594
+   636→                  </div>
+   637→                </div>
+   638→              </div>
+   639→
+   640→              {/* CTA Card */}
+   641→              <ScrollReveal delay={0.15}>
+   642→                <div className="rounded-2xl bg-[#1E2D3B] p-6 text-white">
+   643→                  <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
+   644→                  <p className="mt-2 text-sm text-[#94A3B8]">
+   645→                    UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
+   646→                  </p>
+   647→                  <Button className="mt-5 w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]">
+   648→                    <MessageCircle className="mr-2 h-4 w-4" />
+   649→                    Chat on WhatsApp
+   650→                  </Button>
+   651→                  <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10">
+   652→                    Get Free Consultation
+   653→                    <ArrowRight className="ml-1 h-4 w-4" />
+   654→                  </Button>
+   655→                </div>
+   656→              </ScrollReveal>
+   657→
+   658→              {/* Process Card */}
+   659→              <ScrollReveal delay={0.2}>
+   660→                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+   661→                  <h3 className="font-semibold text-[#1E2D3B]">How to Apply</h3>
+   662→                  <div className="mt-4 space-y-4">
+   663→                    {[
+   664→                      'Free consultation with advisor',
+   665→                      'Document collection & review',
+   666→                      'Application submission',
+   667→                      'I-20 issuance & enrollment',
+   668→                    ].map((step, i) => (
+   669→                      <div key={i} className="flex items-start gap-3">
+   670→                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-xs font-bold text-white">
+   671→                          {i + 1}
+   672→                        </div>
+   673→                        <span className="text-sm text-[#6B7280]">{step}</span>
+   674→                      </div>
+   675→                    ))}
+   676→                  </div>
+   677→                </div>
+   678→              </ScrollReveal>
+   679→            </div>
+   680→          </div>
+   681→        </div>
+   682→      </section>
+   683→    </div>
+   684→  );
+   685→}
+   686→
