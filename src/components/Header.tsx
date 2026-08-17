@@ -17,24 +17,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Logo from './Logo';
+import { getUniversityById } from '@/lib/data/universities';
+import type { UniversityData } from '@/lib/data/universities';
 
 const universitiesLinks = [
-  'Rivier University',
-  'Indiana Wesleyan University',
-  'Avila University',
-  'New England College',
-  'Monroe University',
-  'Anderson University',
-  'Regis University',
-  'Harrisburg University',
+  { name: 'Rivier University', id: 'rivier' },
+  { name: 'Indiana Wesleyan University', id: 'indiana-wesleyan' },
+  { name: 'Avila University (AZ)', id: 'avila-az' },
+  { name: 'Avila University (KC)', id: 'avila-kc' },
+  { name: 'New England College', id: 'new-england' },
+  { name: 'Monroe University', id: 'monroe' },
+  { name: 'Anderson University', id: 'anderson' },
+  { name: 'Regis University', id: 'regis' },
 ];
 
 const resourcesLinks = [
-  'Day 1 CPT Guide',
-  'University Transfers',
-  'Change of Status',
-  'SEVIS Reinstatement',
-  'STEM OPT Support',
+  { name: 'Day 1 CPT Guide', id: 'day1-cpt' },
+  { name: 'University Transfers', id: 'university-transfers' },
+  { name: 'Change of Status', id: 'change-of-status' },
+  { name: 'SEVIS Reinstatement', id: 'sevis-reinstatement' },
+  { name: 'STEM OPT Support', id: 'stem-opt' },
 ];
 
 interface Props {
@@ -70,9 +72,13 @@ export default function Header({ onNavigate }: Props) {
               <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-56">
-              {universitiesLinks.map((name) => (
-                <DropdownMenuItem key={name} className="cursor-pointer">
-                  {name}
+              {universitiesLinks.map((item) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  className="cursor-pointer"
+                  onClick={() => handleNav('university', item.id)}
+                >
+                  {item.name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -84,9 +90,13 @@ export default function Header({ onNavigate }: Props) {
               <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-48">
-              {resourcesLinks.map((name) => (
-                <DropdownMenuItem key={name} className="cursor-pointer">
-                  {name}
+              {resourcesLinks.map((item) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  className="cursor-pointer"
+                  onClick={() => handleNav('resource', item.id)}
+                >
+                  {item.name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -110,9 +120,12 @@ export default function Header({ onNavigate }: Props) {
         <Button
           className="hidden rounded-full bg-[#0070F3] px-5 text-sm font-medium text-white hover:bg-[#0060D3] md:inline-flex"
           size="default"
+          asChild
         >
-          <MessageCircle className="mr-1.5 h-4 w-4" />
-          WhatsApp 24/7
+          <a href="tel:+13028935594">
+            <MessageCircle className="mr-1.5 h-4 w-4" />
+            Call Now
+          </a>
         </Button>
 
         {/* Mobile Menu */}
@@ -140,26 +153,26 @@ export default function Header({ onNavigate }: Props) {
               <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Universities
               </div>
-              {universitiesLinks.map((name) => (
+              {universitiesLinks.map((item) => (
                 <button
-                  key={name}
-                  onClick={() => handleNav('home')}
+                  key={item.id}
+                  onClick={() => handleNav('university', item.id)}
                   className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
                 >
-                  {name}
+                  {item.name}
                 </button>
               ))}
 
               <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Resources
               </div>
-              {resourcesLinks.map((name) => (
+              {resourcesLinks.map((item) => (
                 <button
-                  key={name}
-                  onClick={() => handleNav('home')}
+                  key={item.id}
+                  onClick={() => handleNav('resource', item.id)}
                   className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
                 >
-                  {name}
+                  {item.name}
                 </button>
               ))}
 
@@ -172,9 +185,11 @@ export default function Header({ onNavigate }: Props) {
               </a>
 
               <div className="mt-4 px-4">
-                <Button className="w-full rounded-full bg-[#0070F3] text-white hover:bg-[#0060D3]">
-                  <MessageCircle className="mr-1.5 h-4 w-4" />
-                  WhatsApp 24/7
+                <Button className="w-full rounded-full bg-[#0070F3] text-white hover:bg-[#0060D3]" asChild>
+                  <a href="tel:+13028935594">
+                    <MessageCircle className="mr-1.5 h-4 w-4" />
+                    Call +1 (302) 893-5594
+                  </a>
                 </Button>
               </div>
             </nav>

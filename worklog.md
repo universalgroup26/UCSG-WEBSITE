@@ -123,3 +123,27 @@ Stage Summary:
 - University detail pages now feature 5 major content sections with infographic-rich design
 - Sidebar expanded with all new data points and contact information
 - Used shadcn/ui Badge and Button components throughout
+---
+Task ID: 1
+Agent: Main Agent
+Task: Rebrand site from CPT Mentor to UCSG with real Facebook/LinkedIn info
+
+Work Log:
+- Fetched UCSG Facebook page (www.facebook.com/universalconsultingservicesgroup) and LinkedIn profile
+- Extracted key info: Founder Joy Chowdhury, Phone +1 (302) 893-5594, Email Info@universalconsultingservices.com, Address 3707 74th Street Suite 8 (3rd FL) Jackson Heights NY 11372
+- Generated new UCSG logo using AI image generation
+- Updated Footer.tsx: correct phone, email, address, and company description
+- Updated layout.tsx: proper UCSG metadata with full description and keywords
+- Updated HeroSection.tsx: UCSG-specific messaging with real phone number and tagline
+- Updated Header.tsx: dropdown links now navigate to actual university/resource pages, phone CTA button
+- Added STEM OPT Support resource to resources.ts (5 resources total now)
+- Updated ServicesSection.tsx: STEM OPT card now links to dedicated stem-opt resource
+- Ran ESLint - clean, no errors
+- Browser verified: home page, university detail pages, all 5 resource pages, mobile responsive, footer contact info, navigation dropdowns
+
+Stage Summary:
+- All CPT Mentor references replaced with UCSG branding
+- Real UCSG contact information from Facebook/LinkedIn integrated
+- 29 university pages + 5 resource pages (Day 1 CPT, University Transfers, Change of Status, SEVIS Reinstatement, STEM OPT Support) all working
+- Navigation fully functional: header dropdowns, footer links, mobile sheet menu
+- Mobile responsive verified at 390x844

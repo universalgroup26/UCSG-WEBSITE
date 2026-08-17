@@ -8,11 +8,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "UCSG - University Consulting Service Group",
+  title: "UCSG — Universal Consulting Service Group",
   description:
-    "Fast, reliable support for international students facing SEVIS termination, university transfers, change of status, and visa issues. Available 24/7.",
+    "UCSG specializes in connecting students to affordable, well-ranked colleges and universities that offer hybrid programs, CPT/OPT opportunities, and real-world experience. Founded by Joy Chowdhury in New York City.",
   keywords: [
     "UCSG",
+    "Universal Consulting Service Group",
     "Day 1 CPT",
     "University Transfers",
     "SEVIS Reinstatement",
@@ -20,11 +21,16 @@ export const metadata: Metadata = {
     "F-1 Visa",
     "International Students",
     "CPT",
+    "OPT",
+    "STEM OPT",
+    "Study in USA",
+    "H-1B Visa",
+    "Immigration Consultation",
   ],
   openGraph: {
-    title: "UCSG - University Consulting Service Group",
+    title: "UCSG — Universal Consulting Service Group",
     description:
-      "Expert support for international students navigating SEVIS termination, university transfers, and visa status challenges.",
+      "UCSG specializes in connecting students to affordable, well-ranked colleges and universities that offer hybrid programs, CPT/OPT opportunities. Driven by students' happiness.",
     type: "website",
   },
 };

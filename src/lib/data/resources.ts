@@ -316,6 +316,80 @@ export const resources: ResourceData[] = [
     ],
     ctaText: 'Request SEVIS Reinstatement Help',
   },
+  {
+    id: 'stem-opt',
+    title: 'STEM OPT Support',
+    subtitle: 'Navigate STEM OPT Denials & Extensions with Confidence',
+    description:
+      'If your STEM OPT is denied, expiring, or you need guidance on the extension process, UCSG provides backup university admissions and expert support so you can continue studying and working in the USA.',
+    icon: 'refresh-cw',
+    heroGradient: 'from-[#D97706] to-[#B45309]',
+    overview:
+      'The STEM OPT Extension allows F-1 students who earned degrees in STEM (Science, Technology, Engineering, Mathematics) fields to extend their post-completion OPT by 24 months. However, denials, RFEs (Requests for Evidence), and timing issues can jeopardize your status. UCSG helps students navigate these challenges by providing backup university admissions with Day 1 CPT, ensuring you never fall out of status while resolving OPT issues.',
+    steps: [
+      {
+        step: 1,
+        title: 'Free Status Assessment',
+        description: 'Share your current OPT/STEM OPT situation, denial notice, or timeline. We assess your options and create a personalized action plan.',
+        timeline: 'Same day',
+      },
+      {
+        step: 2,
+        title: 'Backup University Admission',
+        description: 'If your STEM OPT is at risk, we secure admission to a Day 1 CPT university so you can maintain lawful F-1 status immediately.',
+        timeline: '1-3 days',
+      },
+      {
+        step: 3,
+        title: 'I-20 Transfer & CPT Authorization',
+        description: 'Your new I-20 is issued with CPT work authorization, allowing you to continue working while resolving your STEM OPT situation.',
+        timeline: '3-7 days',
+      },
+      {
+        step: 4,
+        title: 'Continue Working & Resolve',
+        description: 'Work legally on CPT while pursuing your new degree. We continue to assist with any USCIS matters or future immigration steps.',
+        timeline: 'Ongoing',
+      },
+    ],
+    keyFacts: [
+      { label: 'STEM Extension Duration', value: '24 Months', color: '#D97706' },
+      { label: 'Eligible Degrees', value: 'STEM Fields Only', color: '#0070F3' },
+      { label: 'Backup Admission Time', value: '1-3 Days', color: '#059669' },
+      { label: 'Work Authorization', value: 'Day 1 CPT', color: '#7C3AED' },
+    ],
+    faqs: [
+      {
+        question: 'What is STEM OPT Extension?',
+        answer: 'The STEM OPT Extension is a 24-month extension of post-completion OPT for F-1 students who earned degrees in qualifying STEM fields. It allows you to continue working in the US for up to 3 years total after graduation.',
+      },
+      {
+        question: 'My STEM OPT was denied. What are my options?',
+        answer: 'If your STEM OPT is denied, you have a grace period before you must depart. UCSG can secure emergency university admission with Day 1 CPT within 1-3 days, allowing you to maintain F-1 status and continue working legally.',
+      },
+      {
+        question: 'Can I apply for STEM OPT if I already used 12 months of regular OPT?',
+        answer: 'Yes, the STEM extension is in addition to your initial 12-month post-completion OPT, giving you a total of 36 months of work authorization if you qualify.',
+      },
+      {
+        question: 'What should I do if my STEM OPT is expiring soon?',
+        answer: 'Plan early! Contact UCSG at least 2-3 months before your STEM OPT expires. We can enroll you in a Day 1 CPT university to ensure continuous work authorization without any gap.',
+      },
+      {
+        question: 'Can I switch from STEM OPT to CPT at a new university?',
+        answer: 'Yes. Transferring to a new university with a Day 1 CPT program is a common and effective strategy. UCSG handles the entire transfer process, including SEVIS record transfer and new I-20 issuance.',
+      },
+    ],
+    benefits: [
+      'Emergency backup admission within 1-3 days',
+      'Day 1 CPT work authorization at new university',
+      'No gap in employment authorization',
+      'SEVIS record transfer handled for you',
+      'Guidance on STEM OPT RFE responses',
+      'Long-term immigration strategy planning',
+    ],
+    ctaText: 'Get STEM OPT Backup Plan',
+  },
 ];
 
 export function getResourceById(id: string): ResourceData | undefined {

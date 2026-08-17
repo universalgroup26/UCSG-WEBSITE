@@ -46,10 +46,10 @@ const services = [
   {
     icon: RefreshCw,
     title: 'STEM OPT Denials',
-    resourceId: 'sevis-reinstatement',
+    resourceId: 'stem-opt',
     description:
-      'If your STEM OPT is denied or rejected, we provide backup university admissions and support so you can continue studying and staying in the USA.',
-    cta: 'Fix My STEM OPT Issue',
+      'If your STEM OPT is denied, expiring, or you need a backup plan, UCSG provides emergency university admissions with Day 1 CPT so you can continue working legally in the USA.',
+    cta: 'Get STEM OPT Backup Plan',
   },
 ];
 

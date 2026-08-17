@@ -41,7 +41,7 @@ export default function Footer({ onNavigate }: Props) {
               Get Free Consultation
             </h3>
             <p className="mt-3 text-base text-[#94A3B8]">
-              Expert guidance from UCSG - Available 24/7
+              Expert guidance from UCSG — Universal Consulting Service Group. Available 24/7.
             </p>
             <div className="mt-8">
               <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#0B1120] shadow-lg hover:bg-gray-100">
@@ -61,9 +61,10 @@ export default function Footer({ onNavigate }: Props) {
           <div>
             <Logo variant="light" size="lg" />
             <p className="mt-4 text-sm leading-relaxed text-[#94A3B8]">
-              Your trusted resource for university transfers, SEVIS reinstatement,
-              Day 1 CPT guidance, Change of Status support, and end-to-end F-1 visa
-              solutions for international students.
+              UCSG — Universal Consulting Service Group. Founded by Joy Chowdhury in
+              New York City, we offer transparent and seamless guidance for international
+              students seeking college admission, CPT/OPT opportunities, and visa solutions.
+              Driven by students&apos; happiness.
             </p>
           </div>
 
@@ -116,24 +117,24 @@ export default function Footer({ onNavigate }: Props) {
             <ul className="mt-4 space-y-4">
               <li>
                 <a
-                  href="tel:+19786065493"
+                  href="tel:+13028935594"
                   className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
                     <Phone className="h-4 w-4 text-[#94A3B8]" />
                   </div>
-                  +1 (978) 606-5493
+                  +1 (302) 893-5594
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@ucsg.com"
+                  href="mailto:Info@universalconsultingservices.com"
                   className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
                     <Mail className="h-4 w-4 text-[#94A3B8]" />
                   </div>
-                  info@ucsg.com
+                  Info@universalconsultingservices.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-[#94A3B8]">
@@ -159,7 +160,7 @@ export default function Footer({ onNavigate }: Props) {
               <span className="hidden sm:block text-white/20">|</span>
               <span className="flex items-start gap-1.5 text-xs text-[#94A3B8]">
                 <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                447 Broadway 2nd floor #1483, New York, NY 10013, USA
+                3707 74th Street, Suite 8 (3rd FL), Jackson Heights, NY 11372, USA
               </span>
             </div>
             <div className="flex items-center gap-3 text-xs text-[#94A3B8]">
