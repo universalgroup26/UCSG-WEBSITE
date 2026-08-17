@@ -304,6 +304,7 @@ export default function TrustSection() {
                   width={260}
                   height={180}
                   className="h-auto w-full object-cover"
+                  style={{ height: 'auto' }}
                   sizes="260px"
                 />
               </div>
@@ -373,6 +374,7 @@ export default function TrustSection() {
                   width={320}
                   height={220}
                   className="h-auto w-full object-cover"
+                  style={{ height: 'auto' }}
                   sizes="(max-width: 767px) 80vw, 320px"
                 />
               </div>

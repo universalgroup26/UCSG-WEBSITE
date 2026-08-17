@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight,
@@ -120,7 +120,7 @@ export default function VisaPathwayFlowchart() {
                 <div className="px-4 py-4 sm:px-6 sm:py-5">
                   <div className="flex flex-wrap items-center gap-2">
                     {path.steps.map((step, j) => (
-                      <>
+                      <React.Fragment key={`${i}-${j}`}>
                         <motion.div
                           key={step}
                           className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs sm:text-sm"
@@ -138,7 +138,7 @@ export default function VisaPathwayFlowchart() {
                         {j < path.steps.length - 1 && (
                           <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#B3E5EC]" />
                         )}
-                      </>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>

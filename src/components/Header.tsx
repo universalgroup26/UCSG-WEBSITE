@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, ChevronDown, MessageCircle } from 'lucide-react';
+import { Menu, ChevronDown, Phone, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -17,8 +17,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Logo from './Logo';
-import { getUniversityById } from '@/lib/data/universities';
-import type { UniversityData } from '@/lib/data/universities';
 
 const universitiesLinks = [
   { name: 'Rivier University', id: 'rivier' },
@@ -52,13 +50,13 @@ export default function Header({ onNavigate }: Props) {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Logo size="md" />
+        <Logo size="md" showText />
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           <button
             onClick={() => handleNav('home')}
             className="rounded-full bg-[#E0F4F8] px-4 py-1.5 text-sm font-medium text-[#006F8F] transition-colors hover:bg-[#B3E5EC]"
@@ -102,44 +100,44 @@ export default function Header({ onNavigate }: Props) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <a
-            href="#webinars"
+          <button
+            onClick={() => handleNav('resource', 'day1-cpt')}
             className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
           >
-            Webinars
-          </a>
+            Day 1 CPT
+          </button>
           <button
             onClick={() => handleNav('home')}
             className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
           >
-            Get Started
+            Contact
           </button>
         </nav>
 
         {/* Desktop CTA */}
         <Button
-          className="hidden rounded-full bg-[#006F8F] px-5 text-sm font-medium text-white hover:bg-[#005A73] md:inline-flex"
+          className="hidden rounded-full bg-[#006F8F] px-5 text-sm font-medium text-white hover:bg-[#005A73] lg:inline-flex"
           size="default"
           asChild
         >
           <a href="tel:+13028935594">
-            <MessageCircle className="mr-1.5 h-4 w-4" />
+            <Phone className="mr-1.5 h-4 w-4" />
             Call Now
           </a>
         </Button>
 
         {/* Mobile Menu */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild className="md:hidden">
+          <SheetTrigger asChild className="lg:hidden">
             <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               <span className="sr-only">Open menu</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-80 overflow-y-auto">
             <SheetHeader>
               <SheetTitle className="flex items-center gap-2 text-left">
-                <Logo size="sm" />
+                <Logo size="sm" showText />
               </SheetTitle>
             </SheetHeader>
             <nav className="mt-6 flex flex-col gap-1">
@@ -176,18 +174,10 @@ export default function Header({ onNavigate }: Props) {
                 </button>
               ))}
 
-              <a
-                href="#webinars"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-4 py-2.5 text-sm font-medium text-[#1E2D3B] hover:bg-[#F0F7F9]"
-              >
-                Webinars
-              </a>
-
               <div className="mt-4 px-4">
                 <Button className="w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]" asChild>
                   <a href="tel:+13028935594">
-                    <MessageCircle className="mr-1.5 h-4 w-4" />
+                    <Phone className="mr-1.5 h-4 w-4" />
                     Call +1 (302) 893-5594
                   </a>
                 </Button>

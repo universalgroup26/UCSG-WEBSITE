@@ -4,27 +4,48 @@ import Image from 'next/image';
 
 interface LogoProps {
   variant?: 'dark' | 'light';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  showText?: boolean;
 }
 
-export default function Logo({ variant = 'dark', size = 'md' }: LogoProps) {
+export default function Logo({ variant = 'dark', size = 'md', showText = false }: LogoProps) {
   const sizes = {
-    sm: { width: 36, height: 36 },
-    md: { width: 44, height: 44 },
-    lg: { width: 56, height: 56 },
+    sm: { img: 36, text: 'text-sm' },
+    md: { img: 42, text: 'text-base' },
+    lg: { img: 52, text: 'text-lg' },
+    xl: { img: 64, text: 'text-xl' },
   };
 
+  const textColor = variant === 'light' ? 'text-white' : 'text-[#1E2D3B]';
+  const subColor = variant === 'light' ? 'text-white/60' : 'text-[#6B7280]';
+
   return (
-    <a href="#" onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'home' } })); }}
-      className="flex items-center gap-2">
+    <a
+      href="#"
+      onClick={(e) => {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'home' } }));
+      }}
+      className="flex items-center gap-2.5"
+    >
       <Image
         src="/ucsg-logo.png"
         alt="UCSG Logo"
-        width={sizes[size].width}
-        height={sizes[size].height}
-        className="object-contain"
+        width={sizes[size].img}
+        height={sizes[size].img}
+        className="shrink-0 object-contain"
         priority
       />
+      {showText && (
+        <div className="flex flex-col leading-none">
+          <span className={`font-bold tracking-tight ${sizes[size].text} ${textColor}`}>
+            UCSG
+          </span>
+          <span className={`text-[10px] font-medium tracking-wide ${subColor}`}>
+            Universal Consulting Service Group
+          </span>
+        </div>
+      )}
     </a>
   );
 }

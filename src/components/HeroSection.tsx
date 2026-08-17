@@ -57,7 +57,7 @@ export default function HeroSection() {
         <div className="absolute -top-1/2 -right-1/4 h-[120%] w-[70%] rotate-[35deg] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
       </motion.div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-28 pt-20 sm:px-6 sm:pb-36 sm:pt-28 lg:px-8 lg:pb-40 lg:pt-36">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:px-8 lg:pb-40 lg:pt-32">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Left: Text Content */}
           <div>
@@ -147,9 +147,12 @@ export default function HeroSection() {
                   className="h-12 rounded-full border-2 border-white bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10"
                   size="lg"
                   variant="outline"
+                  asChild
                 >
-                  <MessageCircle className="mr-1.5 h-4 w-4" />
-                  WhatsApp 24/7
+                  <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="mr-1.5 h-4 w-4" />
+                    WhatsApp 24/7
+                  </a>
                 </Button>
               </motion.div>
             </motion.div>
@@ -193,6 +196,7 @@ export default function HeroSection() {
                   height={400}
                   className="h-auto w-full object-cover"
                   unoptimized
+                  loading="eager"
                 />
                 {/* Gradient overlay at bottom */}
                 <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#005A73]/60 to-transparent" />

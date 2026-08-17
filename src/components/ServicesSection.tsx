@@ -75,7 +75,7 @@ export default function ServicesSection({ onResourceClick }: Props) {
                   <Button
                     variant="default"
                     onClick={() => onResourceClick?.(service.resourceId)}
-                    className="w-full justify-start rounded-lg bg-[#006F8F] px-4 py-5 text-sm font-medium text-white hover:bg-[#005A73]"
+                    className="w-full justify-start rounded-lg bg-[#006F8F] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#005A73]"
                   >
                     {service.cta}
                     <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -162,7 +162,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Overview</h2>
               <p className="mt-4 leading-relaxed text-[#6B7280]">{resource.overview}</p>
             </div>
-            <div className="relative hidden overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2 lg:block">
+            <div className="relative hidden h-64 overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2 lg:block">
               <Image
                 src="/images/documents.png"
                 alt="Professional document guidance"
@@ -307,9 +307,11 @@ export default function ResourcePage({ resource, onBack }: Props) {
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  <Button className="h-12 rounded-full bg-white px-8 font-semibold text-[#1E2D3B] shadow-lg hover:bg-gray-100">
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    Chat on WhatsApp
+                  <Button className="h-12 rounded-full bg-[#25D366] px-8 font-semibold text-white shadow-lg hover:bg-[#1EB954]" asChild>
+                    <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="mr-2 h-5 w-5" />
+                      Chat on WhatsApp
+                    </a>
                   </Button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>

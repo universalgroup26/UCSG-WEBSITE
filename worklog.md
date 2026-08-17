@@ -257,3 +257,27 @@ Stage Summary:
 - University section now has campus visual banner
 - Homepage visual flow: Hero(illustration) → Journey → Services → Mindmap → Trust(world map, credentials, process visual) → Testimonials(photos) → Universities(campus visual)
 - Total new visual elements: 7 images + 4 components = 11 additions across 35+ page variants
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Update UCSG logo and fix UI/UX issues across the site
+
+Work Log:
+- Downloaded new UCSG circular logo (640x640 PNG) from user's imgbb link
+- Rewrote Logo.tsx: added showText prop, xl size variant, brand text next to logo
+- Updated Header.tsx: logo with text, replaced dead 'Webinars'/'Get Started' links with 'Day 1 CPT'/'Contact', changed breakpoint from md to lg, added backdrop-blur, replaced MessageCircle icon with Phone for CTA, added X icon for close state
+- Rewrote TestimonialsSection.tsx: replaced wrong tech-interview content with UCSG-relevant testimonials (SEVIS termination, B1/B2 to F1 change, STEM OPT denial), fixed invalid style={{ringColor}} to ring-[#006F8F] Tailwind class, removed all dark: classes, added bg-[#F8FAFC] background
+- Rewrote Footer.tsx: WhatsApp CTA button now links to wa.me/13028935594 with green #25D366 color, Quick Help links now navigate to resource pages instead of '#', added WhatsApp contact entry, removed dead Privacy Policy link, simplified bottom bar disclaimer
+- Updated HeroSection.tsx: reduced mobile top padding (pt-20→pt-12), WhatsApp button now links to wa.me, added loading="eager" for LCP optimization
+- Fixed ServicesSection.tsx: CTA button height reduced (py-5→py-2.5)
+- Fixed ResourcePage.tsx: documents.png container given h-64 for fill mode, WhatsApp CTA button given proper green color and wa.me link
+- Fixed VisaPathwayFlowchart.tsx: added React.Fragment with keys to fix 'unique key' warning
+- Fixed TrustSection.tsx: added style={{height:'auto'}} to fix 'width/height modified' warnings on consultation.png images
+
+Stage Summary:
+- Logo updated: circular UCSG seal with brand text in header and footer
+- 8 UI/UX issues fixed: wrong testimonials, dead links, invalid styles, oversized buttons, missing WhatsApp links, excessive padding, React key warnings, image dimension warnings
+- All WhatsApp CTAs now properly link to wa.me/13028935594
+- All Quick Help/Resource links navigate to actual resource pages
+- Clean lint and no console errors
