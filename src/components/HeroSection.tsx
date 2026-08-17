@@ -29,15 +29,18 @@ export default function HeroSection() {
         className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-white/5"
         animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />\n      <motion.div
+      />
+      <motion.div
         className="pointer-events-none absolute -right-16 bottom-32 h-48 w-48 rounded-full bg-white/5"
         animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-      />\n      <motion.div
+      />
+      <motion.div
         className="pointer-events-none absolute right-1/4 top-10 h-32 w-32 rounded-full bg-white/[0.03]"
         animate={{ x: [0, 15, 0], y: [0, 15, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />\n
+      />
+
       {/* Subtle dot pattern overlay */}
       <div
         className="pointer-events-none absolute inset-0 z-0 opacity-[0.06]"
