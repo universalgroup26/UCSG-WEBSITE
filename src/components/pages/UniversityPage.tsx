@@ -34,6 +34,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 const iconMap: Record<string, React.ElementType> = {
   calendar: Calendar,
@@ -111,6 +113,22 @@ function getAmenityIcon(name: string): React.ElementType {
   return amenityIcons[name] || Building;
 }
 
+function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 interface Props {
   university: UniversityData;
   onBack: () => void;
@@ -127,13 +145,15 @@ export default function UniversityPage({ university, onBack }: Props) {
       {/* Back Bar */}
       <div className="border-b border-gray-100 bg-gray-50/50">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Universities
-          </button>
+          <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Universities
+            </button>
+          </motion.div>
         </div>
       </div>
 
@@ -185,10 +205,12 @@ export default function UniversityPage({ university, onBack }: Props) {
               </div>
             </div>
             <div className="shrink-0">
-              <Button className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: university.color }}>
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Apply Now
-              </Button>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <Button className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: university.color }}>
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  Apply Now
+                </Button>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -229,294 +251,309 @@ export default function UniversityPage({ university, onBack }: Props) {
           <div className="grid gap-10 lg:grid-cols-3">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">About {university.shortName}</h2>
-              <p className="mt-4 leading-relaxed text-[#6B7280]">{university.description}</p>
+              <ScrollReveal>
+                <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">About {university.shortName}</h2>
+                <p className="mt-4 leading-relaxed text-[#6B7280]">{university.description}</p>
+              </ScrollReveal>
 
               {/* CPT Info Box */}
-              <div className="mt-8 rounded-2xl border-2 border-[#006F8F]/20 bg-[#F7F7F7] p-6">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#006F8F]">
-                    <CheckCircle className="h-4 w-4 text-white" />
+              <ScrollReveal delay={0.1}>
+                <div className="mt-8 rounded-2xl border-2 border-[#006F8F]/20 bg-[#F7F7F7] p-6">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#006F8F]">
+                      <CheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-[#1E2D3B]">Day 1 CPT Authorization</h3>
                   </div>
-                  <h3 className="font-semibold text-[#1E2D3B]">Day 1 CPT Authorization</h3>
+                  <p className="mt-3 leading-relaxed text-[#6B7280]">{university.cptInfo}</p>
                 </div>
-                <p className="mt-3 leading-relaxed text-[#6B7280]">{university.cptInfo}</p>
-              </div>
+              </ScrollReveal>
 
               {/* Why Choose This University - 2x2 Grid */}
-              <div className="mt-10">
-                <div className="mb-6 flex items-center gap-2">
-                  <Sparkles className="h-6 w-6 text-[#006F8F]" />
-                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose This University?</h2>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {/* Rankings Card */}
-                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
-                        <BarChart3 className="h-5 w-5 text-amber-600" />
-                      </div>
-                      <h4 className="font-semibold text-[#1E2D3B]">Rankings &amp; Reputation</h4>
-                    </div>
-                    <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
-                    <p className="mt-1.5 text-xs text-[#6B7280]">
-                      {university.ranking !== 'Unranked'
-                        ? 'Recognized for academic excellence and student outcomes.'
-                        : 'A growing institution focused on practical, career-oriented education.'}
-                    </p>
+              <ScrollReveal delay={0.05}>
+                <div className="mt-10">
+                  <div className="mb-6 flex items-center gap-2">
+                    <Sparkles className="h-6 w-6 text-[#006F8F]" />
+                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose This University?</h2>
                   </div>
-
-                  {/* Campus & Location Card */}
-                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
-                        <MapPin className="h-5 w-5 text-emerald-600" />
-                      </div>
-                      <h4 className="font-semibold text-[#1E2D3B]">Campus &amp; Location</h4>
-                    </div>
-                    <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
-                    <p className="mt-1.5 text-xs text-[#6B7280]">
-                      Located in {university.location} · {university.studentFacultyRatio} student-to-faculty ratio
-                    </p>
-                  </div>
-
-                  {/* Flexibility Card */}
-                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                        <Wifi className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <h4 className="font-semibold text-[#1E2D3B]">Flexibility</h4>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
-                        <Globe className="mr-1 h-3 w-3" />
-                        Online Programs
-                      </Badge>
-                      <Badge className={university.hybridOption ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
-                        <Clock className="mr-1 h-3 w-3" />
-                        Hybrid Option
-                      </Badge>
-                    </div>
-                    <p className="mt-2 text-xs text-[#6B7280]">
-                      {university.onlinePrograms && university.hybridOption
-                        ? 'Full online and hybrid learning available for maximum flexibility.'
-                        : university.onlinePrograms
-                        ? 'Online programs available to study from anywhere.'
-                        : 'Campus-based programs with a focused learning experience.'}
-                    </p>
-                  </div>
-
-                  {/* Affordability Card */}
-                  <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-                        <DollarSign className="h-5 w-5 text-purple-600" />
-                      </div>
-                      <h4 className="font-semibold text-[#1E2D3B]">Affordability</h4>
-                    </div>
-                    <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      {university.scholarshipsAvailable ? (
-                        <>
-                          <BadgeCheck className="h-4 w-4 text-purple-600" />
-                          <span className="text-xs font-medium text-purple-700">Scholarships Available</span>
-                        </>
-                      ) : (
-                        <span className="text-xs text-[#6B7280]">Contact admissions for financial aid options</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Programs */}
-              <div className="mt-10">
-                <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">
-                  Available Programs
-                </h2>
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  {university.programs.map((program) => (
-                    <div
-                      key={program.name}
-                      className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F1F5F9]">
-                          <GraduationCap className="h-5 w-5 text-[#6B7280]" />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {/* Rankings Card */}
+                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+                          <BarChart3 className="h-5 w-5 text-amber-600" />
                         </div>
-                        <div className="flex gap-2">
-                          {program.stem && (
-                            <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">STEM</Badge>
-                          )}
-                          <Badge className="border-gray-200 bg-gray-50 text-[#6B7280]">{program.level}</Badge>
+                        <h4 className="font-semibold text-[#1E2D3B]">Rankings &amp; Reputation</h4>
+                      </div>
+                      <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
+                      <p className="mt-1.5 text-xs text-[#6B7280]">
+                        {university.ranking !== 'Unranked'
+                          ? 'Recognized for academic excellence and student outcomes.'
+                          : 'A growing institution focused on practical, career-oriented education.'}
+                      </p>
+                    </div>
+
+                    {/* Campus & Location Card */}
+                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
+                          <MapPin className="h-5 w-5 text-emerald-600" />
                         </div>
+                        <h4 className="font-semibold text-[#1E2D3B]">Campus &amp; Location</h4>
                       </div>
-                      <h4 className="mt-3 font-semibold text-[#1E2D3B]">{program.name}</h4>
-                      <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5" />
-                          {program.duration}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Briefcase className="h-3.5 w-3.5" />
-                          Day 1 CPT
-                        </span>
-                      </div>
+                      <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
+                      <p className="mt-1.5 text-xs text-[#6B7280]">
+                        Located in {university.location} · {university.studentFacultyRatio} student-to-faculty ratio
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Admissions Requirements */}
-              <div className="mt-10">
-                <div className="mb-6 flex items-center gap-2">
-                  <Shield className="h-6 w-6 text-[#006F8F]" />
-                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Admissions Requirements</h2>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {/* GPA */}
-                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F0FDF4]">
-                      <TrendingUp className="h-6 w-6 text-emerald-600" />
-                    </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Average GPA</p>
-                    <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.averageGPA}</p>
-                  </div>
-
-                  {/* English Requirements */}
-                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
-                      <Globe className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">English Requirements</p>
-                    <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.englishRequirements}</p>
-                  </div>
-
-                  {/* Application Fee */}
-                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF7ED]">
-                      <DollarSign className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Application Fee</p>
-                    <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.applicationFee}</p>
-                  </div>
-
-                  {/* Semester Starts */}
-                  <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FDF4FF]">
-                      <Calendar className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Semester Starts</p>
-                    <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.semesterStarts}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Campus Highlights */}
-              <div className="mt-10">
-                <div className="mb-6 flex items-center gap-2">
-                  <Star className="h-6 w-6 text-[#006F8F]" />
-                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Campus Highlights</h2>
-                </div>
-
-                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                  {/* Notable Alumni */}
-                  {university.notableAlumni.length > 0 && (
-                    <div>
-                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
-                        <Award className="h-4 w-4 text-amber-500" />
-                        Notable Alumni
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {university.notableAlumni.map((alumnus) => (
-                          <Badge
-                            key={alumnus}
-                            className="border-amber-200 bg-amber-50 px-3 py-1.5 text-amber-800"
-                          >
-                            {alumnus}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Campus Amenities */}
-                  <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
-                    <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
-                      <Building className="h-4 w-4 text-[#006F8F]" />
-                      Campus Amenities
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      {university.campusAmenities.map((amenity) => {
-                        const Icon = getAmenityIcon(amenity);
-                        return (
-                          <div
-                            key={amenity}
-                            className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F7F7F7] p-3"
-                          >
-                            <Icon className="h-4 w-4 shrink-0 text-[#006F8F]" />
-                            <span className="text-sm text-[#1E2D3B]">{amenity}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Compare This University */}
-              <div className="mt-10">
-                <div className="mb-6 flex items-center gap-2">
-                  <BarChart3 className="h-6 w-6 text-[#006F8F]" />
-                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Compare This University</h2>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {compareSuggestions.map((suggestion) => (
-                    <div
-                      key={suggestion.id}
-                      className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
-                    >
-                      {suggestion.logoPath ? (
-                        <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
-                          <Image
-                            src={suggestion.logoPath}
-                            alt={`${suggestion.name} logo`}
-                            width={64}
-                            height={64}
-                            className="h-full w-full object-contain p-1"
-                            unoptimized
-                          />
+                    {/* Flexibility Card */}
+                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                          <Wifi className="h-5 w-5 text-blue-600" />
                         </div>
-                      ) : (
-                        <div
-                          className="flex h-16 w-16 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
-                          style={{ backgroundColor: suggestion.color }}
-                        >
-                          {suggestion.initials}
-                        </div>
-                      )}
-                      <div className="text-center">
-                        <p className="text-sm font-semibold text-[#1E2D3B]">{suggestion.shortName}</p>
-                        <p className="mt-1 text-xs text-[#6B7280]">{suggestion.location}</p>
-                        <p className="mt-1 text-xs font-medium text-[#006F8F]">{suggestion.tuitionRange}</p>
+                        <h4 className="font-semibold text-[#1E2D3B]">Flexibility</h4>
                       </div>
-                      <div className="flex flex-wrap justify-center gap-1.5">
-                        <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
-                          <CheckCircle className="mr-0.5 h-2.5 w-2.5" />
-                          Day 1 CPT
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+                          <Globe className="mr-1 h-3 w-3" />
+                          Online Programs
                         </Badge>
-                        {suggestion.onlinePrograms && (
-                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
-                            <Globe className="mr-0.5 h-2.5 w-2.5" />
-                            Online
-                          </Badge>
+                        <Badge className={university.hybridOption ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
+                          <Clock className="mr-1 h-3 w-3" />
+                          Hybrid Option
+                        </Badge>
+                      </div>
+                      <p className="mt-2 text-xs text-[#6B7280]">
+                        {university.onlinePrograms && university.hybridOption
+                          ? 'Full online and hybrid learning available for maximum flexibility.'
+                          : university.onlinePrograms
+                          ? 'Online programs available to study from anywhere.'
+                          : 'Campus-based programs with a focused learning experience.'}
+                      </p>
+                    </div>
+
+                    {/* Affordability Card */}
+                    <div className="rounded-xl border border-gray-100 bg-gradient-to-br from-purple-50 to-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                          <DollarSign className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <h4 className="font-semibold text-[#1E2D3B]">Affordability</h4>
+                      </div>
+                      <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
+                      <div className="mt-2 flex items-center gap-1.5">
+                        {university.scholarshipsAvailable ? (
+                          <>
+                            <BadgeCheck className="h-4 w-4 text-purple-600" />
+                            <span className="text-xs font-medium text-purple-700">Scholarships Available</span>
+                          </>
+                        ) : (
+                          <span className="text-xs text-[#6B7280]">Contact admissions for financial aid options</span>
                         )}
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
+
+              {/* Programs */}
+              <ScrollReveal>
+                <div className="mt-10">
+                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+                    Available Programs
+                  </h2>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    {university.programs.map((program, index) => (
+                      <ScrollReveal key={program.name} delay={index * 0.08}>
+                        <div
+                          className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F1F5F9]">
+                              <GraduationCap className="h-5 w-5 text-[#6B7280]" />
+                            </div>
+                            <div className="flex gap-2">
+                              {program.stem && (
+                                <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">STEM</Badge>
+                              )}
+                              <Badge className="border-gray-200 bg-gray-50 text-[#6B7280]">{program.level}</Badge>
+                            </div>
+                          </div>
+                          <h4 className="mt-3 font-semibold text-[#1E2D3B]">{program.name}</h4>
+                          <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              {program.duration}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Briefcase className="h-3.5 w-3.5" />
+                              Day 1 CPT
+                            </span>
+                          </div>
+                        </div>
+                      </ScrollReveal>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Admissions Requirements */}
+              <ScrollReveal>
+                <div className="mt-10">
+                  <div className="mb-6 flex items-center gap-2">
+                    <Shield className="h-6 w-6 text-[#006F8F]" />
+                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Admissions Requirements</h2>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {/* GPA */}
+                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F0FDF4]">
+                        <TrendingUp className="h-6 w-6 text-emerald-600" />
+                      </div>
+                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Average GPA</p>
+                      <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.averageGPA}</p>
+                    </div>
+
+                    {/* English Requirements */}
+                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
+                        <Globe className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">English Requirements</p>
+                      <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.englishRequirements}</p>
+                    </div>
+
+                    {/* Application Fee */}
+                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF7ED]">
+                        <DollarSign className="h-6 w-6 text-orange-600" />
+                      </div>
+                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Application Fee</p>
+                      <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.applicationFee}</p>
+                    </div>
+
+                    {/* Semester Starts */}
+                    <div className="rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FDF4FF]">
+                        <Calendar className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Semester Starts</p>
+                      <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.semesterStarts}</p>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Campus Highlights */}
+              <ScrollReveal>
+                <div className="mt-10">
+                  <div className="mb-6 flex items-center gap-2">
+                    <Star className="h-6 w-6 text-[#006F8F]" />
+                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Campus Highlights</h2>
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                    {/* Notable Alumni */}
+                    {university.notableAlumni.length > 0 && (
+                      <div>
+                        <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
+                          <Award className="h-4 w-4 text-amber-500" />
+                          Notable Alumni
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {university.notableAlumni.map((alumnus) => (
+                            <Badge
+                              key={alumnus}
+                              className="border-amber-200 bg-amber-50 px-3 py-1.5 text-amber-800"
+                            >
+                              {alumnus}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Campus Amenities */}
+                    <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
+                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
+                        <Building className="h-4 w-4 text-[#006F8F]" />
+                        Campus Amenities
+                      </h4>
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {university.campusAmenities.map((amenity) => {
+                          const Icon = getAmenityIcon(amenity);
+                          return (
+                            <div
+                              key={amenity}
+                              className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F7F7F7] p-3"
+                            >
+                              <Icon className="h-4 w-4 shrink-0 text-[#006F8F]" />
+                              <span className="text-sm text-[#1E2D3B]">{amenity}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Compare This University */}
+              <ScrollReveal>
+                <div className="mt-10">
+                  <div className="mb-6 flex items-center gap-2">
+                    <BarChart3 className="h-6 w-6 text-[#006F8F]" />
+                    <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Compare This University</h2>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    {compareSuggestions.map((suggestion) => (
+                      <div
+                        key={suggestion.id}
+                        className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
+                      >
+                        {suggestion.logoPath ? (
+                          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+                            <Image
+                              src={suggestion.logoPath}
+                              alt={`${suggestion.name} logo`}
+                              width={64}
+                              height={64}
+                              className="h-full w-full object-contain p-1"
+                              unoptimized
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="flex h-16 w-16 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
+                            style={{ backgroundColor: suggestion.color }}
+                          >
+                            {suggestion.initials}
+                          </div>
+                        )}
+                        <div className="text-center">
+                          <p className="text-sm font-semibold text-[#1E2D3B]">{suggestion.shortName}</p>
+                          <p className="mt-1 text-xs text-[#6B7280]">{suggestion.location}</p>
+                          <p className="mt-1 text-xs font-medium text-[#006F8F]">{suggestion.tuitionRange}</p>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-1.5">
+                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
+                            <CheckCircle className="mr-0.5 h-2.5 w-2.5" />
+                            Day 1 CPT
+                          </Badge>
+                          {suggestion.onlinePrograms && (
+                            <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
+                              <Globe className="mr-0.5 h-2.5 w-2.5" />
+                              Online
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
             </div>
 
             {/* Sidebar */}
@@ -601,40 +638,44 @@ export default function UniversityPage({ university, onBack }: Props) {
               </div>
 
               {/* CTA Card */}
-              <div className="rounded-2xl bg-[#1E2D3B] p-6 text-white">
-                <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
-                <p className="mt-2 text-sm text-[#94A3B8]">
-                  UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
-                </p>
-                <Button className="mt-5 w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]">
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Chat on WhatsApp
-                </Button>
-                <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10">
-                  Get Free Consultation
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
+              <ScrollReveal delay={0.15}>
+                <div className="rounded-2xl bg-[#1E2D3B] p-6 text-white">
+                  <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
+                  <p className="mt-2 text-sm text-[#94A3B8]">
+                    UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
+                  </p>
+                  <Button className="mt-5 w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]">
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Chat on WhatsApp
+                  </Button>
+                  <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10">
+                    Get Free Consultation
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </div>
+              </ScrollReveal>
 
               {/* Process Card */}
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <h3 className="font-semibold text-[#1E2D3B]">How to Apply</h3>
-                <div className="mt-4 space-y-4">
-                  {[
-                    'Free consultation with advisor',
-                    'Document collection & review',
-                    'Application submission',
-                    'I-20 issuance & enrollment',
-                  ].map((step, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-xs font-bold text-white">
-                        {i + 1}
+              <ScrollReveal delay={0.2}>
+                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                  <h3 className="font-semibold text-[#1E2D3B]">How to Apply</h3>
+                  <div className="mt-4 space-y-4">
+                    {[
+                      'Free consultation with advisor',
+                      'Document collection & review',
+                      'Application submission',
+                      'I-20 issuance & enrollment',
+                    ].map((step, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-xs font-bold text-white">
+                          {i + 1}
+                        </div>
+                        <span className="text-sm text-[#6B7280]">{step}</span>
                       </div>
-                      <span className="text-sm text-[#6B7280]">{step}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             </div>
           </div>
         </div>

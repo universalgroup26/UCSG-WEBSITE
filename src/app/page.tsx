@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import ServicesSection from '@/components/ServicesSection';
@@ -15,6 +16,12 @@ type ViewType =
   | { type: 'home' }
   | { type: 'university'; university: UniversityData }
   | { type: 'resource'; resource: ResourceData };
+
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.25 } },
+};
 
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
@@ -41,7 +48,6 @@ export default function HomePage() {
     }
   }, []);
 
-  // Listen for custom events from Logo component
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -51,12 +57,9 @@ export default function HomePage() {
     return () => window.removeEventListener('ucsg-navigate', handler);
   }, [handleNavigate]);
 
-  // Intercept browser back button
   useEffect(() => {
     const handler = () => {
-      if (view.type !== 'home') {
-        setView({ type: 'home' });
-      }
+      if (view.type !== 'home') setView({ type: 'home' });
     };
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);
@@ -93,25 +96,29 @@ export default function HomePage() {
     }
   }, [pushState]);
 
-  const isDetailView = view.type !== 'home';
-
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header onNavigate={handleNavigate} />
       <main className="flex-1">
-        {view.type === 'home' && (
-          <>
-            <HeroSection />
-            <ServicesSection onResourceClick={handleResourceClick} />
-            <UniversitiesSection onUniversityClick={handleUniversityClick} />
-          </>
-        )}
-        {view.type === 'university' && (
-          <UniversityPage university={view.university} onBack={goHome} />
-        )}
-        {view.type === 'resource' && (
-          <ResourcePage resource={view.resource} onBack={goHome} />
-        )}
+        <AnimatePresence mode="wait">
+          {view.type === 'home' && (
+            <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <HeroSection />
+              <ServicesSection onResourceClick={handleResourceClick} />
+              <UniversitiesSection onUniversityClick={handleUniversityClick} />
+            </motion.div>
+          )}
+          {view.type === 'university' && (
+            <motion.div key={view.university.id} variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <UniversityPage university={view.university} onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'resource' && (
+            <motion.div key={view.resource.id} variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <ResourcePage resource={view.resource} onBack={goHome} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       <Footer onNavigate={handleNavigate} />
     </div>

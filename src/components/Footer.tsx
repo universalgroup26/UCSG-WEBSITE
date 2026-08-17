@@ -10,7 +10,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from './Logo';
-import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 const resourceLinks = [
   'Day 1 CPT',
@@ -27,6 +28,21 @@ const quickHelpLinks = [
   'Day 1 CPT options',
 ];
 
+function FooterReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-40px' });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 interface Props {
   onNavigate?: (view: string, id?: string) => void;
 }
@@ -37,27 +53,50 @@ export default function Footer({ onNavigate }: Props) {
       {/* CTA Section */}
       <div className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h3 className="text-2xl font-bold text-white sm:text-3xl">
-              Get Free Consultation
-            </h3>
-            <p className="mt-3 text-base text-[#94A3B8]">
-              Expert guidance from UCSG — Universal Consulting Service Group. Call or WhatsApp us 24/7.
-            </p>
-            <div className="mt-8">
-              <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#1E2D3B] shadow-lg hover:bg-gray-100">
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Chat on WhatsApp
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Button>
+          <FooterReveal>
+            <div className="mx-auto max-w-2xl text-center">
+              <motion.h3
+                className="text-2xl font-bold text-white sm:text-3xl"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                Get Free Consultation
+              </motion.h3>
+              <motion.p
+                className="mt-3 text-base text-[#94A3B8]"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+              >
+                Expert guidance from UCSG — Universal Consulting Service Group. Call or WhatsApp us 24/7.
+              </motion.p>
+              <motion.div
+                className="mt-8"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.25, duration: 0.5 }}
+              >
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                  <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#1E2D3B] shadow-lg hover:bg-gray-100">
+                    <MessageCircle className="mr-2 h-5 w-5" />
+                    Chat on WhatsApp
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
+          </FooterReveal>
         </div>
       </div>
 
       {/* 4-Column Grid */}
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <FooterReveal delay={0.1}>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Column 1: Logo & Description */}
           <div>
             <Logo variant="light" size="lg" />
@@ -147,7 +186,8 @@ export default function Footer({ onNavigate }: Props) {
             </ul>
           </div>
         </div>
-      </div>
+        </div>
+      </FooterReveal>
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">

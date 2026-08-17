@@ -1,6 +1,8 @@
 'use client';
 
+import { useRef } from 'react';
 import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
 import type { UniversityData } from '@/lib/data/universities';
 import { getUniversityById } from '@/lib/data/universities';
 
@@ -41,22 +43,35 @@ const universities: { name: string; shortName: string; initials: string; color: 
 ];
 
 export default function UniversitiesSection({ onUniversityClick }: Props) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
+
   return (
-    <section className="bg-white py-16 sm:py-20 lg:py-24">
+    <section ref={ref} className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
+        <motion.div
+          className="mx-auto max-w-2xl text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
           <h2 className="text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl lg:text-[2.25rem]">
             Our Partner Universities
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#6B7280]">
             UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 sm:mt-16 sm:gap-4">
-          {universities.map((uni) => (
-            <button
+          {universities.map((uni, i) => (
+            <motion.button
               key={uni.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.05 + i * 0.03, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => {
                 const data = getUniversityById(uni.id);
                 if (data) onUniversityClick?.(data);
@@ -64,19 +79,19 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
               className="group flex flex-col items-center justify-center gap-3 rounded-xl border border-[#D1E3E8] bg-white px-3 py-5 transition-all hover:border-[#006F8F]/40 hover:shadow-lg sm:px-4 sm:py-6"
             >
               {uni.logoPath ? (
-                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-transform group-hover:scale-105 sm:h-[68px] sm:w-[68px]">
+                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-[68px] sm:w-[68px]">
                   <Image
                     src={uni.logoPath}
                     alt={`${uni.name} logo`}
                     width={68}
                     height={68}
-                    className="h-full w-full object-contain p-1"
+                    className="h-full w-full object-contain p-1 transition-transform group-hover:scale-110"
                     unoptimized
                   />
                 </div>
               ) : (
                 <div
-                  className="flex h-16 w-16 items-center justify-center rounded-lg text-xs font-bold tracking-wide text-white shadow-sm transition-transform group-hover:scale-105 sm:h-[68px] sm:w-[68px]"
+                  className="flex h-16 w-16 items-center justify-center rounded-lg text-xs font-bold tracking-wide text-white shadow-sm sm:h-[68px] sm:w-[68px]"
                   style={{ backgroundColor: uni.color }}
                 >
                   {uni.initials}
@@ -85,13 +100,18 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
               <span className="text-center text-[11px] font-medium leading-tight text-[#1E2D3B] transition-colors group-hover:text-[#006F8F] sm:text-xs">
                 {uni.shortName}
               </span>
-            </button>
+            </motion.button>
           ))}
         </div>
 
-        <p className="mt-10 text-center text-sm text-[#6B7280]">
+        <motion.p
+          className="mt-10 text-center text-sm text-[#6B7280]"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 1, duration: 0.5 }}
+        >
           All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance.
-        </p>
+        </motion.p>
       </div>
     </section>
   );
