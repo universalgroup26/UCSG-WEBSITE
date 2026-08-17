@@ -1,0 +1,903 @@
+- main
+  - generic
+    - StaticText "\\n "
+    - StaticText "\\n "
+    - StaticText "\\n"
+    - generic
+    - paragraph
+    - heading "Your Future in the USA Starts with the Right University & Guidance" [level=1, ref=e61]
+    - paragraph
+    - generic [ref=e62] focusable [tabindex]
+    - generic [ref=e63] focusable [tabindex]
+    - StaticText "SEVP Certified"
+    - StaticText "5,000+ Students"
+    - StaticText "20+ Countries"
+    - StaticText "99% Success"
+    - image
+  - StaticText "YOUR JOURNEY"
+  - heading "From Consultation to Your First Paycheck" [level=2, ref=e11]
+  - paragraph
+    - StaticText "A proven 6-step pathway that has helped 5000+ international students"
+  - StaticText "1"
+  - heading "Free Consultation" [level=3, ref=e12]
+  - paragraph
+    - StaticText "Share your situation & goals with UCSG advisors"
+  - StaticText "2"
+  - heading "Eligibility Check" [level=3, ref=e13]
+  - paragraph
+    - StaticText "We assess your status, credits & best options"
+  - StaticText "3"
+  - heading "University Admission" [level=3, ref=e14]
+  - paragraph
+    - StaticText "Get admitted to an accredited Day 1 CPT university"
+  - StaticText "4"
+  - heading "I-20 & CPT Authorization" [level=3, ref=e15]
+  - paragraph
+    - StaticText "Receive your I-20 with work authorization from DSO"
+  - StaticText "5"
+  - heading "Start Working Legally" [level=3, ref=e16]
+  - paragraph
+    - StaticText "Begin your job in your field of study from Day 1"
+  - StaticText "6"
+  - heading "Path to H-1B" [level=3, ref=e17]
+  - paragraph
+    - StaticText "Build experience & transition to H-1B with employer"
+  - paragraph
+    - StaticText "5,000+"
+  - paragraph
+    - StaticText "Students Helped"
+  - paragraph
+    - StaticText "99%"
+  - paragraph
+    - StaticText "Success Rate"
+  - paragraph
+    - StaticText "29+"
+  - paragraph
+    - StaticText "Partner Universities"
+  - paragraph
+    - StaticText "24/7"
+  - paragraph
+    - StaticText "Support Available"
+  - heading "Comprehensive Student Services" [level=2, ref=e18]
+  - paragraph
+    - StaticText "UCSG provides fast, reliable support for every immigration and academic challenge international students face"
+  - heading "University Transfers" [level=3, ref=e19]
+  - paragraph
+    - StaticText "If your SEVIS is terminated or you need a university transfer, UCSG can connect you with SEVP-approved universities within 24–48 hours. Don't risk falling out of status – act now."
+  - button "Start University Transfer Today" [ref=e64]
+  - heading "Day 1 CPT Universities" [level=3, ref=e20]
+  - paragraph
+    - StaticText "Looking for universities that offer Day 1 CPT? UCSG works with reliable institutions across the USA that allow you to study and work legally from day one."
+  - button "Explore Day 1 CPT Options" [ref=e65]
+  - heading "Change of Status (to F1)" [level=3, ref=e21]
+  - paragraph
+    - StaticText "Whether you're on B1/B2, F2, H1, H4, J1/J2 or another status, UCSG guides you through the Change of Status (COS) to F1 process. From I-20 issuance to university placement, we handle it all."
+  - button "Apply for Change of Status" [ref=e66]
+  - heading "SEVIS Reinstatement" [level=3, ref=e22]
+  - paragraph
+    - StaticText "A terminated SEVIS record doesn't have to end your journey. UCSG helps prepare strong reinstatement requests with supporting documentation to improve your chances of approval."
+  - button "Request SEVIS Reinstatement Help" [ref=e67]
+  - heading "STEM OPT Denials" [level=3, ref=e23]
+  - paragraph
+    - StaticText "If your STEM OPT is denied, expiring, or you need a backup plan, UCSG provides emergency university admissions with Day 1 CPT so you can continue working legally in the USA."
+  - button "Get STEM OPT Backup Plan" [ref=e68]
+  - StaticText "SERVICE MAP"
+  - heading "How UCSG Covers Every Angle" [level=2, ref=e24]
+  - paragraph
+    - StaticText "One consultation, complete coverage — every immigration challenge solved"
+  - paragraph
+    - StaticText "UCSG"
+  - heading "University Transfers" [level=3, ref=e25]
+  - StaticText "SEVIS Transfer"
+  - StaticText "Emergency 24-48hr"
+  - StaticText "Credit Evaluation"
+  - heading "Day 1 CPT" [level=3, ref=e26]
+  - StaticText "Work from Day 1"
+  - StaticText "29+ Universities"
+  - StaticText "Full/Part-time"
+  - heading "Change of Status" [level=3, ref=e27]
+  - StaticText "B1/B2 → F1"
+  - StaticText "H4 → F1"
+  - StaticText "J1/J2 → F1"
+  - heading "SEVIS Reinstatement" [level=3, ref=e28]
+  - StaticText "I-539 Filing"
+  - StaticText "Evidence Prep"
+  - StaticText "5-Month Window"
+  - heading "STEM OPT Support" [level=3, ref=e29]
+  - StaticText "24-Month Extension"
+  - StaticText "RFE Response"
+  - StaticText "Backup CPT Plan"
+  - generic
+    - generic
+  - region "What Our Students Say" [ref=e3]
+    - StaticText "\\n"
+    - generic
+  - heading "Our Partner Universities" [level=2, ref=e30]
+  - paragraph
+    - StaticText "UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions."
+  - button "Rivier University logo Rivier" [ref=e31]
+    - image "Rivier University logo"
+    - StaticText "Rivier"
+  - button "Indiana Wesleyan University logo Indiana Wesleyan" [ref=e32]
+    - image "Indiana Wesleyan University logo"
+    - StaticText "Indiana Wesleyan"
+  - button "Avila University Kansas City logo Avila - KC" [ref=e33]
+    - image "Avila University Kansas City logo"
+    - StaticText "Avila - KC"
+  - button "Avila University Arizona logo Avila - AZ" [ref=e34]
+    - image "Avila University Arizona logo"
+    - StaticText "Avila - AZ"
+  - button "New England College logo New England" [ref=e35]
+    - image "New England College logo"
+    - StaticText "New England"
+  - button "Monroe University logo Monroe" [ref=e36]
+    - image "Monroe University logo"
+    - StaticText "Monroe"
+  - button "Anderson University logo Anderson" [ref=e37]
+    - image "Anderson University logo"
+    - StaticText "Anderson"
+  - button "Regis University logo Regis" [ref=e38]
+    - image "Regis University logo"
+    - StaticText "Regis"
+  - button "Curry College logo Curry" [ref=e39]
+    - image "Curry College logo"
+    - StaticText "Curry"
+  - button "National Louis University logo National Louis" [ref=e40]
+    - image "National Louis University logo"
+    - StaticText "National Louis"
+  - button "Harrisburg University logo Harrisburg" [ref=e41]
+    - image "Harrisburg University logo"
+    - StaticText "Harrisburg"
+  - button "TXW Texas Wesleyan" [ref=e42]
+    - StaticText "TXW"
+    - StaticText "Texas Wesleyan"
+  - button "Humphreys University logo Humphreys" [ref=e43]
+    - image "Humphreys University logo"
+    - StaticText "Humphreys"
+  - button "McDaniel College logo McDaniel" [ref=e44]
+    - image "McDaniel College logo"
+    - StaticText "McDaniel"
+  - button "Westcliff University logo Westcliff" [ref=e45]
+    - image "Westcliff University logo"
+    - StaticText "Westcliff"
+  - button "Sofia University logo Sofia" [ref=e46]
+    - image "Sofia University logo"
+    - StaticText "Sofia"
+  - button "Salem University logo Salem" [ref=e47]
+    - image "Salem University logo"
+    - StaticText "Salem"
+  - button "Wayland Baptist University logo Wayland Baptist" [ref=e48]
+    - image "Wayland Baptist University logo"
+    - StaticText "Wayland Baptist"
+  - button "FU Faulkner" [ref=e49]
+    - StaticText "FU"
+    - StaticText "Faulkner"
+  - button "University of the Potomac logo Potomac" [ref=e50]
+    - image "University of the Potomac logo"
+    - StaticText "Potomac"
+  - button "California Miramar University logo Cal Miramar" [ref=e51]
+    - image "California Miramar University logo"
+    - StaticText "Cal Miramar"
+  - button "Adelphi University logo Adelphi" [ref=e52]
+    - image "Adelphi University logo"
+    - StaticText "Adelphi"
+  - button "Cumberland University logo Cumberland" [ref=e53]
+    - image "Cumberland University logo"
+    - StaticText "Cumberland"
+  - button "BAU Bay Atlantic" [ref=e54]
+    - StaticText "BAU"
+    - StaticText "Bay Atlantic"
+  - button "GBC Goldey-Beacom" [ref=e55]
+    - StaticText "GBC"
+    - StaticText "Goldey-Beacom"
+  - button "Concordia University Texas logo Concordia - TX" [ref=e56]
+    - image "Concordia University Texas logo"
+    - StaticText "Concordia - TX"
+  - button "Ottawa University logo Ottawa" [ref=e57]
+    - image "Ottawa University logo"
+    - StaticText "Ottawa"
+  - button "Midwest University logo Midwest" [ref=e58]
+    - image "Midwest University logo"
+    - StaticText "Midwest"
+  - button "Webster University logo Webster" [ref=e59]
+    - image "Webster University logo"
+    - StaticText "Webster"
+  - generic
+    - image "American university campus with modern buildings"
+  - heading "Accredited American Universities" [level=3, ref=e75]
+  - paragraph
+    - StaticText "Our partner institutions offer state-of-the-art facilities, experienced faculty, and flexible programs designed for working professionals."
+  - StaticText "15+ States"
+  - StaticText "Diverse Programs"
+  - StaticText "Day 1 CPT Available"
+  - paragraph
+    - StaticText "All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance."
+- generic
+  - StaticText "\\n "
+  - StaticText "\\n "
+  - StaticText "\\n"
+  - generic
+    - StaticText "Available 24/7 · Jackson Heights, NY"
+  - paragraph
+    - StaticText "Proudly serving students from Queens & Jackson Heights"
+  - heading "Your Future in the USA Starts with the Right University & Guidance" [level=1, ref=e61]
+    - StaticText "Your Future in the USA Starts with the"
+    - StaticText "Right University & Guidance"
+  - paragraph
+    - StaticText "UCSG — Universal Consulting Service Group connects international students to"
+    - strong
+    - StaticText "offering hybrid programs,"
+    - strong
+    - StaticText ", and real-world experience. Your success is our mission."
+  - generic [ref=e62] focusable [tabindex]
+    - link "Call +1 (302) 893-5594" [ref=e87]
+  - generic [ref=e63] focusable [tabindex]
+    - button "WhatsApp 24/7" [ref=e88]
+  - StaticText "SEVP Certified"
+  - StaticText "5,000+ Students"
+  - StaticText "20+ Countries"
+  - StaticText "99% Success"
+  - image
+- StaticText "YOUR JOURNEY"
+- heading "From Consultation to Your First Paycheck" [level=2, ref=e11]
+- paragraph
+  - StaticText "A proven 6-step pathway that has helped 5000+ international students"
+- StaticText "1"
+- heading "Free Consultation" [level=3, ref=e12]
+- paragraph
+  - StaticText "Share your situation & goals with UCSG advisors"
+- StaticText "2"
+- heading "Eligibility Check" [level=3, ref=e13]
+- paragraph
+  - StaticText "We assess your status, credits & best options"
+- StaticText "3"
+- heading "University Admission" [level=3, ref=e14]
+- paragraph
+  - StaticText "Get admitted to an accredited Day 1 CPT university"
+- StaticText "4"
+- heading "I-20 & CPT Authorization" [level=3, ref=e15]
+- paragraph
+  - StaticText "Receive your I-20 with work authorization from DSO"
+- StaticText "5"
+- heading "Start Working Legally" [level=3, ref=e16]
+- paragraph
+  - StaticText "Begin your job in your field of study from Day 1"
+- StaticText "6"
+- heading "Path to H-1B" [level=3, ref=e17]
+- paragraph
+  - StaticText "Build experience & transition to H-1B with employer"
+- paragraph
+  - StaticText "5,000+"
+- paragraph
+  - StaticText "Students Helped"
+- paragraph
+  - StaticText "99%"
+- paragraph
+  - StaticText "Success Rate"
+- paragraph
+  - StaticText "29+"
+- paragraph
+  - StaticText "Partner Universities"
+- paragraph
+  - StaticText "24/7"
+- paragraph
+  - StaticText "Support Available"
+- heading "Comprehensive Student Services" [level=2, ref=e18]
+- paragraph
+  - StaticText "UCSG provides fast, reliable support for every immigration and academic challenge international students face"
+- heading "University Transfers" [level=3, ref=e19]
+- paragraph
+  - StaticText "If your SEVIS is terminated or you need a university transfer, UCSG can connect you with SEVP-approved universities within 24–48 hours. Don't risk falling out of status – act now."
+- button "Start University Transfer Today" [ref=e64]
+- heading "Day 1 CPT Universities" [level=3, ref=e20]
+- paragraph
+  - StaticText "Looking for universities that offer Day 1 CPT? UCSG works with reliable institutions across the USA that allow you to study and work legally from day one."
+- button "Explore Day 1 CPT Options" [ref=e65]
+- heading "Change of Status (to F1)" [level=3, ref=e21]
+- paragraph
+  - StaticText "Whether you're on B1/B2, F2, H1, H4, J1/J2 or another status, UCSG guides you through the Change of Status (COS) to F1 process. From I-20 issuance to university placement, we handle it all."
+- button "Apply for Change of Status" [ref=e66]
+- heading "SEVIS Reinstatement" [level=3, ref=e22]
+- paragraph
+  - StaticText "A terminated SEVIS record doesn't have to end your journey. UCSG helps prepare strong reinstatement requests with supporting documentation to improve your chances of approval."
+- button "Request SEVIS Reinstatement Help" [ref=e67]
+- heading "STEM OPT Denials" [level=3, ref=e23]
+- paragraph
+  - StaticText "If your STEM OPT is denied, expiring, or you need a backup plan, UCSG provides emergency university admissions with Day 1 CPT so you can continue working legally in the USA."
+- button "Get STEM OPT Backup Plan" [ref=e68]
+- StaticText "SERVICE MAP"
+- heading "How UCSG Covers Every Angle" [level=2, ref=e24]
+- paragraph
+  - StaticText "One consultation, complete coverage — every immigration challenge solved"
+- paragraph
+  - StaticText "UCSG"
+- heading "University Transfers" [level=3, ref=e25]
+- StaticText "SEVIS Transfer"
+- StaticText "Emergency 24-48hr"
+- StaticText "Credit Evaluation"
+- heading "Day 1 CPT" [level=3, ref=e26]
+- StaticText "Work from Day 1"
+- StaticText "29+ Universities"
+- StaticText "Full/Part-time"
+- heading "Change of Status" [level=3, ref=e27]
+- StaticText "B1/B2 → F1"
+- StaticText "H4 → F1"
+- StaticText "J1/J2 → F1"
+- heading "SEVIS Reinstatement" [level=3, ref=e28]
+- StaticText "I-539 Filing"
+- StaticText "Evidence Prep"
+- StaticText "5-Month Window"
+- heading "STEM OPT Support" [level=3, ref=e29]
+- StaticText "24-Month Extension"
+- StaticText "RFE Response"
+- StaticText "Backup CPT Plan"
+- generic
+  - generic
+    - paragraph
+    - paragraph
+    - paragraph
+    - heading "Global Reach" [level=3, ref=e69]
+    - paragraph
+    - generic
+    - generic
+    - generic
+    - generic
+    - generic
+    - heading "Why Students Trust Us" [level=3, ref=e70]
+    - generic
+    - generic
+    - generic
+    - heading "How It Works" [level=3, ref=e71]
+    - StaticText "1"
+    - paragraph
+    - generic
+    - StaticText "3"
+    - paragraph
+- region "What Our Students Say" [ref=e3]
+  - StaticText "\\n"
+  - generic
+    - heading "What Our Students Say" [level=2, ref=e72]
+    - paragraph
+    - blockquote
+    - image "Photo of Raj P."
+    - paragraph
+    - paragraph
+    - StaticText "India"
+    - blockquote
+    - image "Photo of Li Wei C."
+    - paragraph
+    - paragraph
+    - StaticText "China"
+    - blockquote
+    - image "Photo of Emmanuel O."
+    - paragraph
+    - paragraph
+    - StaticText "Nigeria"
+    - button "Previous testimonial" [ref=e73]
+    - tablist "Testimonial pages"
+    - button "Next testimonial" [ref=e74]
+- heading "Our Partner Universities" [level=2, ref=e30]
+- paragraph
+  - StaticText "UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions."
+- button "Rivier University logo Rivier" [ref=e31]
+  - image "Rivier University logo"
+  - StaticText "Rivier"
+- button "Indiana Wesleyan University logo Indiana Wesleyan" [ref=e32]
+  - image "Indiana Wesleyan University logo"
+  - StaticText "Indiana Wesleyan"
+- button "Avila University Kansas City logo Avila - KC" [ref=e33]
+  - image "Avila University Kansas City logo"
+  - StaticText "Avila - KC"
+- button "Avila University Arizona logo Avila - AZ" [ref=e34]
+  - image "Avila University Arizona logo"
+  - StaticText "Avila - AZ"
+- button "New England College logo New England" [ref=e35]
+  - image "New England College logo"
+  - StaticText "New England"
+- button "Monroe University logo Monroe" [ref=e36]
+  - image "Monroe University logo"
+  - StaticText "Monroe"
+- button "Anderson University logo Anderson" [ref=e37]
+  - image "Anderson University logo"
+  - StaticText "Anderson"
+- button "Regis University logo Regis" [ref=e38]
+  - image "Regis University logo"
+  - StaticText "Regis"
+- button "Curry College logo Curry" [ref=e39]
+  - image "Curry College logo"
+  - StaticText "Curry"
+- button "National Louis University logo National Louis" [ref=e40]
+  - image "National Louis University logo"
+  - StaticText "National Louis"
+- button "Harrisburg University logo Harrisburg" [ref=e41]
+  - image "Harrisburg University logo"
+  - StaticText "Harrisburg"
+- button "TXW Texas Wesleyan" [ref=e42]
+  - StaticText "TXW"
+  - StaticText "Texas Wesleyan"
+- button "Humphreys University logo Humphreys" [ref=e43]
+  - image "Humphreys University logo"
+  - StaticText "Humphreys"
+- button "McDaniel College logo McDaniel" [ref=e44]
+  - image "McDaniel College logo"
+  - StaticText "McDaniel"
+- button "Westcliff University logo Westcliff" [ref=e45]
+  - image "Westcliff University logo"
+  - StaticText "Westcliff"
+- button "Sofia University logo Sofia" [ref=e46]
+  - image "Sofia University logo"
+  - StaticText "Sofia"
+- button "Salem University logo Salem" [ref=e47]
+  - image "Salem University logo"
+  - StaticText "Salem"
+- button "Wayland Baptist University logo Wayland Baptist" [ref=e48]
+  - image "Wayland Baptist University logo"
+  - StaticText "Wayland Baptist"
+- button "FU Faulkner" [ref=e49]
+  - StaticText "FU"
+  - StaticText "Faulkner"
+- button "University of the Potomac logo Potomac" [ref=e50]
+  - image "University of the Potomac logo"
+  - StaticText "Potomac"
+- button "California Miramar University logo Cal Miramar" [ref=e51]
+  - image "California Miramar University logo"
+  - StaticText "Cal Miramar"
+- button "Adelphi University logo Adelphi" [ref=e52]
+  - image "Adelphi University logo"
+  - StaticText "Adelphi"
+- button "Cumberland University logo Cumberland" [ref=e53]
+  - image "Cumberland University logo"
+  - StaticText "Cumberland"
+- button "BAU Bay Atlantic" [ref=e54]
+  - StaticText "BAU"
+  - StaticText "Bay Atlantic"
+- button "GBC Goldey-Beacom" [ref=e55]
+  - StaticText "GBC"
+  - StaticText "Goldey-Beacom"
+- button "Concordia University Texas logo Concordia - TX" [ref=e56]
+  - image "Concordia University Texas logo"
+  - StaticText "Concordia - TX"
+- button "Ottawa University logo Ottawa" [ref=e57]
+  - image "Ottawa University logo"
+  - StaticText "Ottawa"
+- button "Midwest University logo Midwest" [ref=e58]
+  - image "Midwest University logo"
+  - StaticText "Midwest"
+- button "Webster University logo Webster" [ref=e59]
+  - image "Webster University logo"
+  - StaticText "Webster"
+- generic
+  - image "American university campus with modern buildings"
+- heading "Accredited American Universities" [level=3, ref=e75]
+- paragraph
+  - StaticText "Our partner institutions offer state-of-the-art facilities, experienced faculty, and flexible programs designed for working professionals."
+- StaticText "15+ States"
+- StaticText "Diverse Programs"
+- StaticText "Day 1 CPT Available"
+- paragraph
+  - StaticText "All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance."
+- StaticText "YOUR JOURNEY"
+- heading "From Consultation to Your First Paycheck" [level=2, ref=e11]
+- paragraph
+  - StaticText "A proven 6-step pathway that has helped 5000+ international students"
+- StaticText "1"
+- heading "Free Consultation" [level=3, ref=e12]
+- paragraph
+  - StaticText "Share your situation & goals with UCSG advisors"
+- StaticText "2"
+- heading "Eligibility Check" [level=3, ref=e13]
+- paragraph
+  - StaticText "We assess your status, credits & best options"
+- StaticText "3"
+- heading "University Admission" [level=3, ref=e14]
+- paragraph
+  - StaticText "Get admitted to an accredited Day 1 CPT university"
+- StaticText "4"
+- heading "I-20 & CPT Authorization" [level=3, ref=e15]
+- paragraph
+  - StaticText "Receive your I-20 with work authorization from DSO"
+- StaticText "5"
+- heading "Start Working Legally" [level=3, ref=e16]
+- paragraph
+  - StaticText "Begin your job in your field of study from Day 1"
+- StaticText "6"
+- heading "Path to H-1B" [level=3, ref=e17]
+- paragraph
+  - StaticText "Build experience & transition to H-1B with employer"
+- paragraph
+  - StaticText "5,000+"
+- paragraph
+  - StaticText "Students Helped"
+- paragraph
+  - StaticText "99%"
+- paragraph
+  - StaticText "Success Rate"
+- paragraph
+  - StaticText "29+"
+- paragraph
+  - StaticText "Partner Universities"
+- paragraph
+  - StaticText "24/7"
+- paragraph
+  - StaticText "Support Available"
+- heading "Comprehensive Student Services" [level=2, ref=e18]
+- paragraph
+  - StaticText "UCSG provides fast, reliable support for every immigration and academic challenge international students face"
+- heading "University Transfers" [level=3, ref=e19]
+- paragraph
+  - StaticText "If your SEVIS is terminated or you need a university transfer, UCSG can connect you with SEVP-approved universities within 24–48 hours. Don't risk falling out of status – act now."
+- button "Start University Transfer Today" [ref=e64]
+- heading "Day 1 CPT Universities" [level=3, ref=e20]
+- paragraph
+  - StaticText "Looking for universities that offer Day 1 CPT? UCSG works with reliable institutions across the USA that allow you to study and work legally from day one."
+- button "Explore Day 1 CPT Options" [ref=e65]
+- heading "Change of Status (to F1)" [level=3, ref=e21]
+- paragraph
+  - StaticText "Whether you're on B1/B2, F2, H1, H4, J1/J2 or another status, UCSG guides you through the Change of Status (COS) to F1 process. From I-20 issuance to university placement, we handle it all."
+- button "Apply for Change of Status" [ref=e66]
+- heading "SEVIS Reinstatement" [level=3, ref=e22]
+- paragraph
+  - StaticText "A terminated SEVIS record doesn't have to end your journey. UCSG helps prepare strong reinstatement requests with supporting documentation to improve your chances of approval."
+- button "Request SEVIS Reinstatement Help" [ref=e67]
+- heading "STEM OPT Denials" [level=3, ref=e23]
+- paragraph
+  - StaticText "If your STEM OPT is denied, expiring, or you need a backup plan, UCSG provides emergency university admissions with Day 1 CPT so you can continue working legally in the USA."
+- button "Get STEM OPT Backup Plan" [ref=e68]
+- StaticText "SERVICE MAP"
+- heading "How UCSG Covers Every Angle" [level=2, ref=e24]
+- paragraph
+  - StaticText "One consultation, complete coverage — every immigration challenge solved"
+- paragraph
+  - StaticText "UCSG"
+- heading "University Transfers" [level=3, ref=e25]
+- StaticText "SEVIS Transfer"
+- StaticText "Emergency 24-48hr"
+- StaticText "Credit Evaluation"
+- heading "Day 1 CPT" [level=3, ref=e26]
+- StaticText "Work from Day 1"
+- StaticText "29+ Universities"
+- StaticText "Full/Part-time"
+- heading "Change of Status" [level=3, ref=e27]
+- StaticText "B1/B2 → F1"
+- StaticText "H4 → F1"
+- StaticText "J1/J2 → F1"
+- heading "SEVIS Reinstatement" [level=3, ref=e28]
+- StaticText "I-539 Filing"
+- StaticText "Evidence Prep"
+- StaticText "5-Month Window"
+- heading "STEM OPT Support" [level=3, ref=e29]
+- StaticText "24-Month Extension"
+- StaticText "RFE Response"
+- StaticText "Backup CPT Plan"
+- heading "Our Partner Universities" [level=2, ref=e30]
+- paragraph
+  - StaticText "UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions."
+- button "Rivier University logo Rivier" [ref=e31]
+  - image "Rivier University logo"
+  - StaticText "Rivier"
+- button "Indiana Wesleyan University logo Indiana Wesleyan" [ref=e32]
+  - image "Indiana Wesleyan University logo"
+  - StaticText "Indiana Wesleyan"
+- button "Avila University Kansas City logo Avila - KC" [ref=e33]
+  - image "Avila University Kansas City logo"
+  - StaticText "Avila - KC"
+- button "Avila University Arizona logo Avila - AZ" [ref=e34]
+  - image "Avila University Arizona logo"
+  - StaticText "Avila - AZ"
+- button "New England College logo New England" [ref=e35]
+  - image "New England College logo"
+  - StaticText "New England"
+- button "Monroe University logo Monroe" [ref=e36]
+  - image "Monroe University logo"
+  - StaticText "Monroe"
+- button "Anderson University logo Anderson" [ref=e37]
+  - image "Anderson University logo"
+  - StaticText "Anderson"
+- button "Regis University logo Regis" [ref=e38]
+  - image "Regis University logo"
+  - StaticText "Regis"
+- button "Curry College logo Curry" [ref=e39]
+  - image "Curry College logo"
+  - StaticText "Curry"
+- button "National Louis University logo National Louis" [ref=e40]
+  - image "National Louis University logo"
+  - StaticText "National Louis"
+- button "Harrisburg University logo Harrisburg" [ref=e41]
+  - image "Harrisburg University logo"
+  - StaticText "Harrisburg"
+- button "TXW Texas Wesleyan" [ref=e42]
+  - StaticText "TXW"
+  - StaticText "Texas Wesleyan"
+- button "Humphreys University logo Humphreys" [ref=e43]
+  - image "Humphreys University logo"
+  - StaticText "Humphreys"
+- button "McDaniel College logo McDaniel" [ref=e44]
+  - image "McDaniel College logo"
+  - StaticText "McDaniel"
+- button "Westcliff University logo Westcliff" [ref=e45]
+  - image "Westcliff University logo"
+  - StaticText "Westcliff"
+- button "Sofia University logo Sofia" [ref=e46]
+  - image "Sofia University logo"
+  - StaticText "Sofia"
+- button "Salem University logo Salem" [ref=e47]
+  - image "Salem University logo"
+  - StaticText "Salem"
+- button "Wayland Baptist University logo Wayland Baptist" [ref=e48]
+  - image "Wayland Baptist University logo"
+  - StaticText "Wayland Baptist"
+- button "FU Faulkner" [ref=e49]
+  - StaticText "FU"
+  - StaticText "Faulkner"
+- button "University of the Potomac logo Potomac" [ref=e50]
+  - image "University of the Potomac logo"
+  - StaticText "Potomac"
+- button "California Miramar University logo Cal Miramar" [ref=e51]
+  - image "California Miramar University logo"
+  - StaticText "Cal Miramar"
+- button "Adelphi University logo Adelphi" [ref=e52]
+  - image "Adelphi University logo"
+  - StaticText "Adelphi"
+- button "Cumberland University logo Cumberland" [ref=e53]
+  - image "Cumberland University logo"
+  - StaticText "Cumberland"
+- button "BAU Bay Atlantic" [ref=e54]
+  - StaticText "BAU"
+  - StaticText "Bay Atlantic"
+- button "GBC Goldey-Beacom" [ref=e55]
+  - StaticText "GBC"
+  - StaticText "Goldey-Beacom"
+- button "Concordia University Texas logo Concordia - TX" [ref=e56]
+  - image "Concordia University Texas logo"
+  - StaticText "Concordia - TX"
+- button "Ottawa University logo Ottawa" [ref=e57]
+  - image "Ottawa University logo"
+  - StaticText "Ottawa"
+- button "Midwest University logo Midwest" [ref=e58]
+  - image "Midwest University logo"
+  - StaticText "Midwest"
+- button "Webster University logo Webster" [ref=e59]
+  - image "Webster University logo"
+  - StaticText "Webster"
+- generic
+  - image "American university campus with modern buildings"
+- heading "Accredited American Universities" [level=3, ref=e75]
+- paragraph
+  - StaticText "Our partner institutions offer state-of-the-art facilities, experienced faculty, and flexible programs designed for working professionals."
+- StaticText "15+ States"
+- StaticText "Diverse Programs"
+- StaticText "Day 1 CPT Available"
+- paragraph
+  - StaticText "All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance."
+- generic
+  - StaticText "Available 24/7 · Jackson Heights, NY"
+- paragraph
+  - StaticText "Proudly serving students from Queens & Jackson Heights"
+- heading "Your Future in the USA Starts with the Right University & Guidance" [level=1, ref=e61]
+  - StaticText "Your Future in the USA Starts with the"
+  - StaticText "Right University & Guidance"
+- paragraph
+  - StaticText "UCSG — Universal Consulting Service Group connects international students to"
+  - strong
+    - StaticText "affordable, accredited universities"
+  - StaticText "offering hybrid programs,"
+  - strong
+    - StaticText "Day 1 CPT/OPT"
+  - StaticText ", and real-world experience. Your success is our mission."
+- generic [ref=e62] focusable [tabindex]
+  - link "Call +1 (302) 893-5594" [ref=e87]
+- generic [ref=e63] focusable [tabindex]
+  - button "WhatsApp 24/7" [ref=e88]
+- StaticText "SEVP Certified"
+- StaticText "5,000+ Students"
+- StaticText "20+ Countries"
+- StaticText "99% Success"
+- StaticText "1"
+- StaticText "2"
+- StaticText "3"
+- StaticText "4"
+- StaticText "5"
+- StaticText "6"
+- paragraph
+  - StaticText "29+"
+- paragraph
+  - StaticText "Partner Universities"
+- paragraph
+  - StaticText "SEVP-Certified Institutions"
+- heading "Global Reach" [level=3, ref=e69]
+- paragraph
+  - StaticText "Students from20+ countriestrust UCSG"
+- generic
+  - image "India"
+    - StaticText "🇮🇳"
+  - StaticText "India"
+- generic
+  - image "China"
+    - StaticText "🇨🇳"
+  - StaticText "China"
+- generic
+  - image "Nigeria"
+    - StaticText "🇳🇬"
+  - StaticText "Nigeria"
+- generic
+  - image "Bangladesh"
+    - StaticText "🇧🇩"
+  - StaticText "Bangladesh"
+- generic
+  - image "World map showing UCSG global reach"
+- heading "Why Students Trust Us" [level=3, ref=e70]
+- generic
+  - heading "SEVP Certified" [level=4, ref=e89]
+  - paragraph
+    - StaticText "All partner universities are SEVP-certified by the US Department of Homeland Security"
+- generic
+  - heading "24/7 Support" [level=4, ref=e90]
+  - paragraph
+    - StaticText "Round-the-clock assistance via phone, WhatsApp, and email"
+- generic
+  - heading "99% Success Rate" [level=4, ref=e91]
+  - paragraph
+    - StaticText "Nearly all of our students achieve their immigration goals"
+- heading "How It Works" [level=3, ref=e71]
+- StaticText "1"
+- paragraph
+  - StaticText "Contact Us"
+- generic
+  - image "Consultation with UCSG advisor"
+  - paragraph
+    - StaticText "Free Consultation"
+- StaticText "3"
+- paragraph
+  - StaticText "Start Working"
+- heading "What Our Students Say" [level=2, ref=e72]
+- paragraph
+  - StaticText "Real stories from graduates who transformed their careers through our programs."
+- blockquote
+  - StaticText "“This platform completely transformed how I prepared for technical interviews. The structured curriculum and real-world projects gave me the confidence and skills to land my dream role at Google. I cannot recommend it enough.”"
+- image "Photo of Raj P."
+- paragraph
+  - StaticText "Raj P."
+- paragraph
+  - StaticText "Software Engineer at Google"
+- StaticText "India"
+- blockquote
+  - StaticText "“The data analytics track was incredibly thorough. From SQL to advanced visualization techniques, every module built on the last. The mentorship and community support were the differentiators that helped me succeed.”"
+- image "Photo of Li Wei C."
+- paragraph
+  - StaticText "Li Wei C."
+- paragraph
+  - StaticText "Data Analyst at Amazon"
+- StaticText "China"
+- blockquote
+  - StaticText "“Coming from a non-traditional background, I was worried about breaking into tech. This program met me where I was and guided me step by step. Now I am building enterprise solutions at one of the world's top financial institutions.”"
+- image "Photo of Emmanuel O."
+- paragraph
+  - StaticText "Emmanuel O."
+- paragraph
+  - StaticText "IT Specialist at JPMorgan"
+- StaticText "Nigeria"
+- button "Previous testimonial" [ref=e73]
+- tablist "Testimonial pages"
+  - tab "Go to testimonial 1" [ref=e92]
+  - tab "Go to testimonial 2" [selected, ref=e93]
+  - tab "Go to testimonial 3" [ref=e94]
+- button "Next testimonial" [ref=e74]
+- image "Rivier University logo"
+- StaticText "Rivier"
+- image "Indiana Wesleyan University logo"
+- StaticText "Indiana Wesleyan"
+- image "Avila University Kansas City logo"
+- StaticText "Avila - KC"
+- image "Avila University Arizona logo"
+- StaticText "Avila - AZ"
+- image "New England College logo"
+- StaticText "New England"
+- image "Monroe University logo"
+- StaticText "Monroe"
+- image "Anderson University logo"
+- StaticText "Anderson"
+- image "Regis University logo"
+- StaticText "Regis"
+- image "Curry College logo"
+- StaticText "Curry"
+- image "National Louis University logo"
+- StaticText "National Louis"
+- image "Harrisburg University logo"
+- StaticText "Harrisburg"
+- StaticText "TXW"
+- StaticText "Texas Wesleyan"
+- image "Humphreys University logo"
+- StaticText "Humphreys"
+- image "McDaniel College logo"
+- StaticText "McDaniel"
+- image "Westcliff University logo"
+- StaticText "Westcliff"
+- image "Sofia University logo"
+- StaticText "Sofia"
+- image "Salem University logo"
+- StaticText "Salem"
+- image "Wayland Baptist University logo"
+- StaticText "Wayland Baptist"
+- StaticText "FU"
+- StaticText "Faulkner"
+- image "University of the Potomac logo"
+- StaticText "Potomac"
+- image "California Miramar University logo"
+- StaticText "Cal Miramar"
+- image "Adelphi University logo"
+- StaticText "Adelphi"
+- image "Cumberland University logo"
+- StaticText "Cumberland"
+- StaticText "BAU"
+- StaticText "Bay Atlantic"
+- StaticText "GBC"
+- StaticText "Goldey-Beacom"
+- image "Concordia University Texas logo"
+- StaticText "Concordia - TX"
+- image "Ottawa University logo"
+- StaticText "Ottawa"
+- image "Midwest University logo"
+- StaticText "Midwest"
+- image "Webster University logo"
+- StaticText "Webster"
+- generic
+  - image "American university campus with modern buildings"
+- heading "Accredited American Universities" [level=3, ref=e75]
+- paragraph
+  - StaticText "Our partner institutions offer state-of-the-art facilities, experienced faculty, and flexible programs designed for working professionals."
+- StaticText "15+ States"
+- StaticText "Diverse Programs"
+- StaticText "Day 1 CPT Available"
+- StaticText "Right University & Guidance"
+- StaticText "India"
+- StaticText "China"
+- StaticText "Nigeria"
+- StaticText "Bangladesh"
+- blockquote
+  - StaticText "“This platform completely transformed how I prepared for technical interviews. The structured curriculum and real-world projects gave me the confidence and skills to land my dream role at Google. I cannot recommend it enough.”"
+- image "Photo of Raj P."
+- paragraph
+  - StaticText "Raj P."
+- paragraph
+  - StaticText "Software Engineer at Google"
+- StaticText "India"
+- blockquote
+  - StaticText "“The data analytics track was incredibly thorough. From SQL to advanced visualization techniques, every module built on the last. The mentorship and community support were the differentiators that helped me succeed.”"
+- image "Photo of Li Wei C."
+- paragraph
+  - StaticText "Li Wei C."
+- paragraph
+  - StaticText "Data Analyst at Amazon"
+- StaticText "China"
+- blockquote
+  - StaticText "“Coming from a non-traditional background, I was worried about breaking into tech. This program met me where I was and guided me step by step. Now I am building enterprise solutions at one of the world's top financial institutions.”"
+- image "Photo of Emmanuel O."
+- paragraph
+  - StaticText "Emmanuel O."
+- paragraph
+  - StaticText "IT Specialist at JPMorgan"
+- StaticText "Nigeria"
+- blockquote
+  - StaticText "“This platform completely transformed how I prepared for technical interviews. The structured curriculum and real-world projects gave me the confidence and skills to land my dream role at Google. I cannot recommend it enough.”"
+- image "Photo of Raj P."
+- paragraph
+  - StaticText "Raj P."
+- paragraph
+  - StaticText "Software Engineer at Google"
+- StaticText "India"
+- blockquote
+  - StaticText "“The data analytics track was incredibly thorough. From SQL to advanced visualization techniques, every module built on the last. The mentorship and community support were the differentiators that helped me succeed.”"
+- image "Photo of Li Wei C."
+- paragraph
+  - StaticText "Li Wei C."
+- paragraph
+  - StaticText "Data Analyst at Amazon"
+- StaticText "China"
+- blockquote
+  - StaticText "“Coming from a non-traditional background, I was worried about breaking into tech. This program met me where I was and guided me step by step. Now I am building enterprise solutions at one of the world's top financial institutions.”"
+- image "Photo of Emmanuel O."
+- paragraph
+  - StaticText "Emmanuel O."
+- paragraph
+  - StaticText "IT Specialist at JPMorgan"
+- StaticText "Nigeria"
