@@ -17,6 +17,7 @@ const resourceLinks = [
   'University Transfers',
   'Change of Status',
   'SEVIS Reinstatement',
+  'STEM OPT Support',
 ];
 
 const quickHelpLinks = [
@@ -32,7 +33,7 @@ interface Props {
 
 export default function Footer({ onNavigate }: Props) {
   return (
-    <footer className="bg-[#0B1120] text-white">
+    <footer className="bg-[#1E2D3B] text-white">
       {/* CTA Section */}
       <div className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
@@ -41,10 +42,10 @@ export default function Footer({ onNavigate }: Props) {
               Get Free Consultation
             </h3>
             <p className="mt-3 text-base text-[#94A3B8]">
-              Expert guidance from UCSG — Universal Consulting Service Group. Available 24/7.
+              Expert guidance from UCSG — Universal Consulting Service Group. Call or WhatsApp us 24/7.
             </p>
             <div className="mt-8">
-              <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#0B1120] shadow-lg hover:bg-gray-100">
+              <Button className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#1E2D3B] shadow-lg hover:bg-gray-100">
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Chat on WhatsApp
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -62,7 +63,7 @@ export default function Footer({ onNavigate }: Props) {
             <Logo variant="light" size="lg" />
             <p className="mt-4 text-sm leading-relaxed text-[#94A3B8]">
               UCSG — Universal Consulting Service Group. Founded by Joy Chowdhury in
-              New York City, we offer transparent and seamless guidance for international
+              Queens, New York City, we offer transparent and seamless guidance for international
               students seeking college admission, CPT/OPT opportunities, and visa solutions.
               Driven by students&apos; happiness.
             </p>
@@ -78,10 +79,10 @@ export default function Footer({ onNavigate }: Props) {
                 <li key={link}>
                   <button
                     onClick={() => {
-                      const id = link === 'Day 1 CPT' ? 'day1-cpt' : link === 'University Transfers' ? 'university-transfers' : link === 'Change of Status' ? 'change-of-status' : 'sevis-reinstatement';
+                      const id = link === 'Day 1 CPT' ? 'day1-cpt' : link === 'University Transfers' ? 'university-transfers' : link === 'Change of Status' ? 'change-of-status' : link === 'SEVIS Reinstatement' ? 'sevis-reinstatement' : 'stem-opt';
                       onNavigate?.('resource', id);
                     }}
-                    className="text-sm text-[#94A3B8] transition-colors hover:text-white"
+                    className="text-sm text-[#94A3B8] transition-colors hover:text-[#00C6FF]"
                   >
                     {link}
                   </button>
@@ -100,7 +101,7 @@ export default function Footer({ onNavigate }: Props) {
                 <li key={link}>
                   <a
                     href="#"
-                    className="text-sm text-[#94A3B8] transition-colors hover:text-white"
+                    className="text-sm text-[#94A3B8] transition-colors hover:text-[#00C6FF]"
                   >
                     {link}
                   </a>
@@ -118,9 +119,9 @@ export default function Footer({ onNavigate }: Props) {
               <li>
                 <a
                   href="tel:+13028935594"
-                  className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
+                  className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#00C6FF]"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#002A38]">
                     <Phone className="h-4 w-4 text-[#94A3B8]" />
                   </div>
                   +1 (302) 893-5594
@@ -129,16 +130,16 @@ export default function Footer({ onNavigate }: Props) {
               <li>
                 <a
                   href="mailto:Info@universalconsultingservices.com"
-                  className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-white"
+                  className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#00C6FF]"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#002A38]">
                     <Mail className="h-4 w-4 text-[#94A3B8]" />
                   </div>
                   Info@universalconsultingservices.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-[#94A3B8]">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E293B]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#002A38]">
                   <Clock className="h-4 w-4 text-[#94A3B8]" />
                 </div>
                 Support 24/7
@@ -164,7 +165,7 @@ export default function Footer({ onNavigate }: Props) {
               </span>
             </div>
             <div className="flex items-center gap-3 text-xs text-[#94A3B8]">
-              <a href="#" className="transition-colors hover:text-white">
+              <a href="#" className="transition-colors hover:text-[#00C6FF]">
                 Privacy Policy
               </a>
               <span className="text-white/20">|</span>

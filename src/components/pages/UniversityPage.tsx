@@ -129,7 +129,7 @@ export default function UniversityPage({ university, onBack }: Props) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#64748B] transition-colors hover:text-[#0070F3]"
+            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Universities
@@ -169,7 +169,7 @@ export default function UniversityPage({ university, onBack }: Props) {
               <h1 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
                 {university.name}
               </h1>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-blue-100">
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-teal-100">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
                   {university.location}
@@ -213,8 +213,8 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs text-[#64748B]">{fact.label}</p>
-                    <p className="text-sm font-semibold text-[#111827]">{fact.value}</p>
+                    <p className="text-xs text-[#6B7280]">{fact.label}</p>
+                    <p className="text-sm font-semibold text-[#1E2D3B]">{fact.value}</p>
                   </div>
                 </div>
               );
@@ -229,25 +229,25 @@ export default function UniversityPage({ university, onBack }: Props) {
           <div className="grid gap-10 lg:grid-cols-3">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">About {university.shortName}</h2>
-              <p className="mt-4 leading-relaxed text-[#64748B]">{university.description}</p>
+              <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">About {university.shortName}</h2>
+              <p className="mt-4 leading-relaxed text-[#6B7280]">{university.description}</p>
 
               {/* CPT Info Box */}
-              <div className="mt-8 rounded-2xl border-2 border-[#0070F3]/20 bg-[#F8FAFC] p-6">
+              <div className="mt-8 rounded-2xl border-2 border-[#006F8F]/20 bg-[#F7F7F7] p-6">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0070F3]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#006F8F]">
                     <CheckCircle className="h-4 w-4 text-white" />
                   </div>
-                  <h3 className="font-semibold text-[#111827]">Day 1 CPT Authorization</h3>
+                  <h3 className="font-semibold text-[#1E2D3B]">Day 1 CPT Authorization</h3>
                 </div>
-                <p className="mt-3 leading-relaxed text-[#64748B]">{university.cptInfo}</p>
+                <p className="mt-3 leading-relaxed text-[#6B7280]">{university.cptInfo}</p>
               </div>
 
               {/* Why Choose This University - 2x2 Grid */}
               <div className="mt-10">
                 <div className="mb-6 flex items-center gap-2">
-                  <Sparkles className="h-6 w-6 text-[#0070F3]" />
-                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Why Choose This University?</h2>
+                  <Sparkles className="h-6 w-6 text-[#006F8F]" />
+                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose This University?</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {/* Rankings Card */}
@@ -256,10 +256,10 @@ export default function UniversityPage({ university, onBack }: Props) {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
                         <BarChart3 className="h-5 w-5 text-amber-600" />
                       </div>
-                      <h4 className="font-semibold text-[#111827]">Rankings &amp; Reputation</h4>
+                      <h4 className="font-semibold text-[#1E2D3B]">Rankings &amp; Reputation</h4>
                     </div>
                     <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
-                    <p className="mt-1.5 text-xs text-[#64748B]">
+                    <p className="mt-1.5 text-xs text-[#6B7280]">
                       {university.ranking !== 'Unranked'
                         ? 'Recognized for academic excellence and student outcomes.'
                         : 'A growing institution focused on practical, career-oriented education.'}
@@ -272,10 +272,10 @@ export default function UniversityPage({ university, onBack }: Props) {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
                         <MapPin className="h-5 w-5 text-emerald-600" />
                       </div>
-                      <h4 className="font-semibold text-[#111827]">Campus &amp; Location</h4>
+                      <h4 className="font-semibold text-[#1E2D3B]">Campus &amp; Location</h4>
                     </div>
                     <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
-                    <p className="mt-1.5 text-xs text-[#64748B]">
+                    <p className="mt-1.5 text-xs text-[#6B7280]">
                       Located in {university.location} · {university.studentFacultyRatio} student-to-faculty ratio
                     </p>
                   </div>
@@ -286,7 +286,7 @@ export default function UniversityPage({ university, onBack }: Props) {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
                         <Wifi className="h-5 w-5 text-blue-600" />
                       </div>
-                      <h4 className="font-semibold text-[#111827]">Flexibility</h4>
+                      <h4 className="font-semibold text-[#1E2D3B]">Flexibility</h4>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
@@ -298,7 +298,7 @@ export default function UniversityPage({ university, onBack }: Props) {
                         Hybrid Option
                       </Badge>
                     </div>
-                    <p className="mt-2 text-xs text-[#64748B]">
+                    <p className="mt-2 text-xs text-[#6B7280]">
                       {university.onlinePrograms && university.hybridOption
                         ? 'Full online and hybrid learning available for maximum flexibility.'
                         : university.onlinePrograms
@@ -313,7 +313,7 @@ export default function UniversityPage({ university, onBack }: Props) {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
                         <DollarSign className="h-5 w-5 text-purple-600" />
                       </div>
-                      <h4 className="font-semibold text-[#111827]">Affordability</h4>
+                      <h4 className="font-semibold text-[#1E2D3B]">Affordability</h4>
                     </div>
                     <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
                     <div className="mt-2 flex items-center gap-1.5">
@@ -323,7 +323,7 @@ export default function UniversityPage({ university, onBack }: Props) {
                           <span className="text-xs font-medium text-purple-700">Scholarships Available</span>
                         </>
                       ) : (
-                        <span className="text-xs text-[#64748B]">Contact admissions for financial aid options</span>
+                        <span className="text-xs text-[#6B7280]">Contact admissions for financial aid options</span>
                       )}
                     </div>
                   </div>
@@ -332,27 +332,27 @@ export default function UniversityPage({ university, onBack }: Props) {
 
               {/* Programs */}
               <div className="mt-10">
-                <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">
+                <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">
                   Available Programs
                 </h2>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   {university.programs.map((program) => (
                     <div
                       key={program.name}
-                      className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#0070F3]/30 hover:shadow-md"
+                      className="group rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F1F5F9]">
-                          <GraduationCap className="h-5 w-5 text-[#64748B]" />
+                          <GraduationCap className="h-5 w-5 text-[#6B7280]" />
                         </div>
                         <div className="flex gap-2">
                           {program.stem && (
                             <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">STEM</Badge>
                           )}
-                          <Badge className="border-gray-200 bg-gray-50 text-[#64748B]">{program.level}</Badge>
+                          <Badge className="border-gray-200 bg-gray-50 text-[#6B7280]">{program.level}</Badge>
                         </div>
                       </div>
-                      <h4 className="mt-3 font-semibold text-[#111827]">{program.name}</h4>
+                      <h4 className="mt-3 font-semibold text-[#1E2D3B]">{program.name}</h4>
                       <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3.5 w-3.5" />
@@ -371,8 +371,8 @@ export default function UniversityPage({ university, onBack }: Props) {
               {/* Admissions Requirements */}
               <div className="mt-10">
                 <div className="mb-6 flex items-center gap-2">
-                  <Shield className="h-6 w-6 text-[#0070F3]" />
-                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Admissions Requirements</h2>
+                  <Shield className="h-6 w-6 text-[#006F8F]" />
+                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Admissions Requirements</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {/* GPA */}
@@ -380,8 +380,8 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F0FDF4]">
                       <TrendingUp className="h-6 w-6 text-emerald-600" />
                     </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Average GPA</p>
-                    <p className="mt-1 text-2xl font-bold text-[#111827]">{university.averageGPA}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Average GPA</p>
+                    <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.averageGPA}</p>
                   </div>
 
                   {/* English Requirements */}
@@ -389,8 +389,8 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#EFF6FF]">
                       <Globe className="h-6 w-6 text-blue-600" />
                     </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">English Requirements</p>
-                    <p className="mt-1 text-sm font-bold text-[#111827]">{university.englishRequirements}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">English Requirements</p>
+                    <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.englishRequirements}</p>
                   </div>
 
                   {/* Application Fee */}
@@ -398,8 +398,8 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF7ED]">
                       <DollarSign className="h-6 w-6 text-orange-600" />
                     </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Application Fee</p>
-                    <p className="mt-1 text-2xl font-bold text-[#111827]">{university.applicationFee}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Application Fee</p>
+                    <p className="mt-1 text-2xl font-bold text-[#1E2D3B]">{university.applicationFee}</p>
                   </div>
 
                   {/* Semester Starts */}
@@ -407,8 +407,8 @@ export default function UniversityPage({ university, onBack }: Props) {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FDF4FF]">
                       <Calendar className="h-6 w-6 text-purple-600" />
                     </div>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#64748B]">Semester Starts</p>
-                    <p className="mt-1 text-sm font-bold text-[#111827]">{university.semesterStarts}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-[#6B7280]">Semester Starts</p>
+                    <p className="mt-1 text-sm font-bold text-[#1E2D3B]">{university.semesterStarts}</p>
                   </div>
                 </div>
               </div>
@@ -416,15 +416,15 @@ export default function UniversityPage({ university, onBack }: Props) {
               {/* Campus Highlights */}
               <div className="mt-10">
                 <div className="mb-6 flex items-center gap-2">
-                  <Star className="h-6 w-6 text-[#0070F3]" />
-                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Campus Highlights</h2>
+                  <Star className="h-6 w-6 text-[#006F8F]" />
+                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Campus Highlights</h2>
                 </div>
 
                 <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                   {/* Notable Alumni */}
                   {university.notableAlumni.length > 0 && (
                     <div>
-                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#111827]">
+                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
                         <Award className="h-4 w-4 text-amber-500" />
                         Notable Alumni
                       </h4>
@@ -443,8 +443,8 @@ export default function UniversityPage({ university, onBack }: Props) {
 
                   {/* Campus Amenities */}
                   <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
-                    <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#111827]">
-                      <Building className="h-4 w-4 text-[#0070F3]" />
+                    <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#1E2D3B]">
+                      <Building className="h-4 w-4 text-[#006F8F]" />
                       Campus Amenities
                     </h4>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -453,10 +453,10 @@ export default function UniversityPage({ university, onBack }: Props) {
                         return (
                           <div
                             key={amenity}
-                            className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F8FAFC] p-3"
+                            className="flex items-center gap-2.5 rounded-lg border border-gray-50 bg-[#F7F7F7] p-3"
                           >
-                            <Icon className="h-4 w-4 shrink-0 text-[#0070F3]" />
-                            <span className="text-sm text-[#334155]">{amenity}</span>
+                            <Icon className="h-4 w-4 shrink-0 text-[#006F8F]" />
+                            <span className="text-sm text-[#1E2D3B]">{amenity}</span>
                           </div>
                         );
                       })}
@@ -468,14 +468,14 @@ export default function UniversityPage({ university, onBack }: Props) {
               {/* Compare This University */}
               <div className="mt-10">
                 <div className="mb-6 flex items-center gap-2">
-                  <BarChart3 className="h-6 w-6 text-[#0070F3]" />
-                  <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Compare This University</h2>
+                  <BarChart3 className="h-6 w-6 text-[#006F8F]" />
+                  <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Compare This University</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   {compareSuggestions.map((suggestion) => (
                     <div
                       key={suggestion.id}
-                      className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#0070F3]/30 hover:shadow-md"
+                      className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-5 transition-all hover:border-[#006F8F]/30 hover:shadow-md"
                     >
                       {suggestion.logoPath ? (
                         <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
@@ -497,17 +497,17 @@ export default function UniversityPage({ university, onBack }: Props) {
                         </div>
                       )}
                       <div className="text-center">
-                        <p className="text-sm font-semibold text-[#111827]">{suggestion.shortName}</p>
-                        <p className="mt-1 text-xs text-[#64748B]">{suggestion.location}</p>
-                        <p className="mt-1 text-xs font-medium text-[#0070F3]">{suggestion.tuitionRange}</p>
+                        <p className="text-sm font-semibold text-[#1E2D3B]">{suggestion.shortName}</p>
+                        <p className="mt-1 text-xs text-[#6B7280]">{suggestion.location}</p>
+                        <p className="mt-1 text-xs font-medium text-[#006F8F]">{suggestion.tuitionRange}</p>
                       </div>
                       <div className="flex flex-wrap justify-center gap-1.5">
-                        <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#64748B]">
+                        <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
                           <CheckCircle className="mr-0.5 h-2.5 w-2.5" />
                           Day 1 CPT
                         </Badge>
                         {suggestion.onlinePrograms && (
-                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#64748B]">
+                          <Badge className="border-gray-200 bg-gray-50 text-[10px] text-[#6B7280]">
                             <Globe className="mr-0.5 h-2.5 w-2.5" />
                             Online
                           </Badge>
@@ -523,90 +523,90 @@ export default function UniversityPage({ university, onBack }: Props) {
             <div className="space-y-6">
               {/* Quick Info Card */}
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <h3 className="font-semibold text-[#111827]">Quick Information</h3>
+                <h3 className="font-semibold text-[#1E2D3B]">Quick Information</h3>
                 <div className="mt-4 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Accreditation</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.accreditation}</span>
+                    <span className="text-sm text-[#6B7280]">Accreditation</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.accreditation}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Ranking</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.ranking}</span>
+                    <span className="text-sm text-[#6B7280]">Ranking</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.ranking}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Campus Size</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.campusSize}</span>
+                    <span className="text-sm text-[#6B7280]">Campus Size</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.campusSize}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Tuition Range</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.tuitionRange}</span>
+                    <span className="text-sm text-[#6B7280]">Tuition Range</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.tuitionRange}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Acceptance Rate</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.acceptanceRate}</span>
+                    <span className="text-sm text-[#6B7280]">Acceptance Rate</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.acceptanceRate}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Online Programs</span>
+                    <span className="text-sm text-[#6B7280]">Online Programs</span>
                     <span className={`text-sm font-medium ${university.onlinePrograms ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
                       {university.onlinePrograms ? 'Yes' : 'No'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Hybrid Option</span>
+                    <span className="text-sm text-[#6B7280]">Hybrid Option</span>
                     <span className={`text-sm font-medium ${university.hybridOption ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
                       {university.hybridOption ? 'Yes' : 'No'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Scholarships</span>
+                    <span className="text-sm text-[#6B7280]">Scholarships</span>
                     <span className={`text-sm font-medium ${university.scholarshipsAvailable ? 'text-emerald-600' : 'text-[#94A3B8]'}`}>
                       {university.scholarshipsAvailable ? 'Available' : 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">GPA Requirement</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.averageGPA}</span>
+                    <span className="text-sm text-[#6B7280]">GPA Requirement</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.averageGPA}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">English Reqs</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.englishRequirements}</span>
+                    <span className="text-sm text-[#6B7280]">English Reqs</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.englishRequirements}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-gray-50 pb-3">
-                    <span className="text-sm text-[#64748B]">Total Enrollment</span>
-                    <span className="text-sm font-medium text-[#111827]">{university.enrollment}</span>
+                    <span className="text-sm text-[#6B7280]">Total Enrollment</span>
+                    <span className="text-sm font-medium text-[#1E2D3B]">{university.enrollment}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#64748B]">Website</span>
-                    <span className="text-sm font-medium text-[#0070F3]">{university.website}</span>
+                    <span className="text-sm text-[#6B7280]">Website</span>
+                    <span className="text-sm font-medium text-[#006F8F]">{university.website}</span>
                   </div>
                 </div>
               </div>
 
               {/* Contact Card */}
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <h3 className="font-semibold text-[#111827]">Contact Admissions</h3>
+                <h3 className="font-semibold text-[#1E2D3B]">Contact Admissions</h3>
                 <div className="mt-4 space-y-3">
                   <a
                     href={`mailto:${university.contactEmail}`}
-                    className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#334155] transition-colors hover:bg-[#F1F5F9]"
+                    className="flex items-center gap-3 rounded-lg bg-[#F7F7F7] p-3 text-sm text-[#1E2D3B] transition-colors hover:bg-[#F1F5F9]"
                   >
-                    <Mail className="h-4 w-4 text-[#0070F3]" />
+                    <Mail className="h-4 w-4 text-[#006F8F]" />
                     {university.contactEmail}
                   </a>
-                  <div className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#334155]">
-                    <Phone className="h-4 w-4 text-[#0070F3]" />
-                    +1 (978) 606-5493
+                  <div className="flex items-center gap-3 rounded-lg bg-[#F7F7F7] p-3 text-sm text-[#1E2D3B]">
+                    <Phone className="h-4 w-4 text-[#006F8F]" />
+                    +1 (302) 893-5594
                   </div>
                 </div>
               </div>
 
               {/* CTA Card */}
-              <div className="rounded-2xl bg-[#0B1120] p-6 text-white">
+              <div className="rounded-2xl bg-[#1E2D3B] p-6 text-white">
                 <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
                 <p className="mt-2 text-sm text-[#94A3B8]">
-                  Get a free consultation to learn about admission requirements, CPT authorization, and enrollment timelines.
+                  UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
                 </p>
-                <Button className="mt-5 w-full rounded-full bg-[#0070F3] text-white hover:bg-[#0060D3]">
+                <Button className="mt-5 w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]">
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chat on WhatsApp
                 </Button>
@@ -618,7 +618,7 @@ export default function UniversityPage({ university, onBack }: Props) {
 
               {/* Process Card */}
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <h3 className="font-semibold text-[#111827]">How to Apply</h3>
+                <h3 className="font-semibold text-[#1E2D3B]">How to Apply</h3>
                 <div className="mt-4 space-y-4">
                   {[
                     'Free consultation with advisor',
@@ -627,10 +627,10 @@ export default function UniversityPage({ university, onBack }: Props) {
                     'I-20 issuance & enrollment',
                   ].map((step, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0070F3] text-xs font-bold text-white">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-xs font-bold text-white">
                         {i + 1}
                       </div>
-                      <span className="text-sm text-[#64748B]">{step}</span>
+                      <span className="text-sm text-[#6B7280]">{step}</span>
                     </div>
                   ))}
                 </div>

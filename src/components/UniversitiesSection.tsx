@@ -45,12 +45,11 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
     <section className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-[#111827] sm:text-3xl lg:text-[2.25rem]">
-            SEVP-Certified Universities
+          <h2 className="text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl lg:text-[2.25rem]">
+            Our Partner Universities
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-[#64748B]">
-            Click on any university logo to learn more about their programs and
-            offerings
+          <p className="mt-4 text-base leading-relaxed text-[#6B7280]">
+            UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions.
           </p>
         </div>
 
@@ -62,7 +61,7 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
                 const data = getUniversityById(uni.id);
                 if (data) onUniversityClick?.(data);
               }}
-              className="group flex flex-col items-center justify-center gap-3 rounded-xl border border-[#E2E8F0] bg-white px-3 py-5 transition-all hover:border-[#0070F3]/40 hover:shadow-lg sm:px-4 sm:py-6"
+              className="group flex flex-col items-center justify-center gap-3 rounded-xl border border-[#D1E3E8] bg-white px-3 py-5 transition-all hover:border-[#006F8F]/40 hover:shadow-lg sm:px-4 sm:py-6"
             >
               {uni.logoPath ? (
                 <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-transform group-hover:scale-105 sm:h-[68px] sm:w-[68px]">
@@ -83,15 +82,15 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
                   {uni.initials}
                 </div>
               )}
-              <span className="text-center text-[11px] font-medium leading-tight text-[#334155] transition-colors group-hover:text-[#0070F3] sm:text-xs">
+              <span className="text-center text-[11px] font-medium leading-tight text-[#1E2D3B] transition-colors group-hover:text-[#006F8F] sm:text-xs">
                 {uni.shortName}
               </span>
             </button>
           ))}
         </div>
 
-        <p className="mt-10 text-center text-sm text-[#64748B]">
-          All universities are SEVP-certified and offer Day 1 CPT programs
+        <p className="mt-10 text-center text-sm text-[#6B7280]">
+          All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance.
         </p>
       </div>
     </section>

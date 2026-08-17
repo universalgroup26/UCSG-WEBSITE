@@ -39,7 +39,7 @@ export const resources: ResourceData[] = [
     description:
       'Curricular Practical Training (CPT) is work authorization that allows F-1 students to gain practical experience in their field of study. Day 1 CPT means you can start working immediately upon enrollment — no need to wait for one academic year.',
     icon: 'briefcase',
-    heroGradient: 'from-[#0070F3] to-[#0050C8]',
+    heroGradient: 'from-[#006F8F] to-[#005A73]',
     overview:
       'Day 1 CPT is an employment authorization option for F-1 international students enrolled in qualifying graduate programs. Unlike regular CPT which requires completion of one academic year, Day 1 CPT allows you to begin paid or unpaid work related to your major from the very first day of your program. This authorization is granted through the university\'s DSO (Designated School Official) and must be directly related to your field of study.',
     steps: [
@@ -69,7 +69,7 @@ export const resources: ResourceData[] = [
       },
     ],
     keyFacts: [
-      { label: 'Average Processing Time', value: '2-4 Weeks', color: '#0070F3' },
+      { label: 'Average Processing Time', value: '2-4 Weeks', color: '#006F8F' },
       { label: 'Work Authorization Type', value: 'CPT (Curricular)', color: '#059669' },
       { label: 'Min. Enrollment Required', value: 'Part-time OK', color: '#D97706' },
       { label: 'Eligible Programs', value: 'Graduate Level', color: '#7C3AED' },
@@ -144,7 +144,7 @@ export const resources: ResourceData[] = [
     ],
     keyFacts: [
       { label: 'Transfer Timeline', value: '24-48 Hours', color: '#059669' },
-      { label: 'Success Rate', value: '99%+', color: '#0070F3' },
+      { label: 'Success Rate', value: '99%+', color: '#006F8F' },
       { label: 'Partner Universities', value: '29+', color: '#D97706' },
       { label: 'SEVIS Termination Support', value: '24/7', color: '#DC2626' },
     ],
@@ -214,7 +214,7 @@ export const resources: ResourceData[] = [
     ],
     keyFacts: [
       { label: 'Eligible From', value: 'B1/B2, F2, H4, J1/J2', color: '#7C3AED' },
-      { label: 'Processing Time', value: '3-6 Months', color: '#0070F3' },
+      { label: 'Processing Time', value: '3-6 Months', color: '#006F8F' },
       { label: 'Form Required', value: 'I-539', color: '#059669' },
       { label: 'Success Rate', value: '95%+', color: '#D97706' },
     ],
@@ -284,7 +284,7 @@ export const resources: ResourceData[] = [
     ],
     keyFacts: [
       { label: 'Filing Deadline', value: '5 Months Max', color: '#DC2626' },
-      { label: 'Form Required', value: 'I-539', color: '#0070F3' },
+      { label: 'Form Required', value: 'I-539', color: '#006F8F' },
       { label: 'Processing Time', value: '3-6 Months', color: '#D97706' },
       { label: 'Approval Depends On', value: 'Evidence Quality', color: '#059669' },
     ],
@@ -354,7 +354,7 @@ export const resources: ResourceData[] = [
     ],
     keyFacts: [
       { label: 'STEM Extension Duration', value: '24 Months', color: '#D97706' },
-      { label: 'Eligible Degrees', value: 'STEM Fields Only', color: '#0070F3' },
+      { label: 'Eligible Degrees', value: 'STEM Fields Only', color: '#006F8F' },
       { label: 'Backup Admission Time', value: '1-3 Days', color: '#059669' },
       { label: 'Work Authorization', value: 'Day 1 CPT', color: '#7C3AED' },
     ],

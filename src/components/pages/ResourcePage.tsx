@@ -40,7 +40,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#64748B] transition-colors hover:text-[#0070F3]"
+            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
@@ -61,7 +61,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
             </h1>
             <p className="mt-4 text-lg text-white/80">{resource.subtitle}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#0070F3' }}>
+              <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#006F8F' }}>
                 {resource.ctaText}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -89,7 +89,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                 <p className="text-2xl font-bold sm:text-3xl" style={{ color: fact.color }}>
                   {fact.value}
                 </p>
-                <p className="mt-1 text-xs text-[#64748B] sm:text-sm">{fact.label}</p>
+                <p className="mt-1 text-xs text-[#6B7280] sm:text-sm">{fact.label}</p>
               </div>
             ))}
           </div>
@@ -100,18 +100,18 @@ export default function ResourcePage({ resource, onBack }: Props) {
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Overview</h2>
-            <p className="mt-4 leading-relaxed text-[#64748B]">{resource.overview}</p>
+            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Overview</h2>
+            <p className="mt-4 leading-relaxed text-[#6B7280]">{resource.overview}</p>
           </div>
         </div>
       </section>
 
       {/* Process Timeline */}
-      <section className="bg-[#F8FAFC] py-12 sm:py-16">
+      <section className="bg-[#F7F7F7] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">How It Works</h2>
-            <p className="mt-2 text-[#64748B]">Our step-by-step process to get you started</p>
+            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">How It Works</h2>
+            <p className="mt-2 text-[#6B7280]">Our step-by-step process to get you started</p>
           </div>
           <div className="relative mx-auto max-w-3xl">
             {/* Vertical line */}
@@ -120,19 +120,19 @@ export default function ResourcePage({ resource, onBack }: Props) {
               {resource.steps.map((step) => (
                 <div key={step.step} className="relative flex gap-5 sm:gap-8">
                   {/* Step Number Circle */}
-                  <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0070F3] text-lg font-bold text-white shadow-md">
+                  <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-lg font-bold text-white shadow-md">
                     {step.step}
                   </div>
                   {/* Content */}
                   <div className="flex-1 rounded-xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                      <h3 className="text-lg font-semibold text-[#111827]">{step.title}</h3>
-                      <Badge className="w-fit border-[#0070F3]/20 bg-[#DBEAFE] text-[#0070F3]">
+                      <h3 className="text-lg font-semibold text-[#1E2D3B]">{step.title}</h3>
+                      <Badge className="w-fit border-[#006F8F]/20 bg-[#E0F4F8] text-[#006F8F]">
                         <Clock className="mr-1 h-3 w-3" />
                         {step.timeline}
                       </Badge>
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-[#64748B]">{step.description}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">{step.description}</p>
                   </div>
                 </div>
               ))}
@@ -145,14 +145,14 @@ export default function ResourcePage({ resource, onBack }: Props) {
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Why Choose UCSG</h2>
-            <p className="mt-2 text-[#64748B]">Benefits of working with our team</p>
+            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose UCSG</h2>
+            <p className="mt-2 text-[#6B7280]">Benefits of working with our team</p>
           </div>
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {resource.benefits.map((benefit, i) => (
               <div key={i} className="flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#059669]" />
-                <span className="text-sm text-[#64748B]">{benefit}</span>
+                <span className="text-sm text-[#6B7280]">{benefit}</span>
               </div>
             ))}
           </div>
@@ -160,10 +160,10 @@ export default function ResourcePage({ resource, onBack }: Props) {
       </section>
 
       {/* FAQ */}
-      <section className="bg-[#F8FAFC] py-12 sm:py-16">
+      <section className="bg-[#F7F7F7] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#111827] sm:text-2xl">Frequently Asked Questions</h2>
+            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Frequently Asked Questions</h2>
           </div>
           <div className="mx-auto max-w-3xl space-y-3">
             {resource.faqs.map((faq, i) => (
@@ -175,14 +175,14 @@ export default function ResourcePage({ resource, onBack }: Props) {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="flex w-full items-center justify-between px-6 py-4 text-left"
                 >
-                  <span className="pr-4 font-medium text-[#111827]">{faq.question}</span>
+                  <span className="pr-4 font-medium text-[#1E2D3B]">{faq.question}</span>
                   <ChevronDown
-                    className={`h-5 w-5 shrink-0 text-[#64748B] transition-transform ${openFaq === i ? 'rotate-180' : ''}`}
+                    className={`h-5 w-5 shrink-0 text-[#6B7280] transition-transform ${openFaq === i ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openFaq === i && (
                   <div className="border-t border-gray-50 px-6 pb-5 pt-3">
-                    <p className="text-sm leading-relaxed text-[#64748B]">{faq.answer}</p>
+                    <p className="text-sm leading-relaxed text-[#6B7280]">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -192,7 +192,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#0B1120] py-14 sm:py-16">
+      <section className="bg-[#1E2D3B] py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h3 className="text-2xl font-bold text-white sm:text-3xl">Ready to Get Started?</h3>
@@ -200,7 +200,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               Expert guidance from UCSG — Available 24/7
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button className="h-12 rounded-full bg-white px-8 font-semibold text-[#0B1120] shadow-lg hover:bg-gray-100">
+              <Button className="h-12 rounded-full bg-white px-8 font-semibold text-[#1E2D3B] shadow-lg hover:bg-gray-100">
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Chat on WhatsApp
               </Button>

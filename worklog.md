@@ -147,3 +147,29 @@ Stage Summary:
 - 29 university pages + 5 resource pages (Day 1 CPT, University Transfers, Change of Status, SEVIS Reinstatement, STEM OPT Support) all working
 - Navigation fully functional: header dropdowns, footer links, mobile sheet menu
 - Mobile responsive verified at 390x844
+---
+Task ID: 2
+Agent: Main Agent
+Task: UI/UX brand color rebrand to UCSG teal + content optimization
+
+Work Log:
+- Analyzed UCSG actual website (universalconsultingservices.com) with browser to extract brand colors
+- Discovered UCSG brand is teal (#006F8F), NOT blue (#0070F3) — major color mismatch
+- Extracted complete color palette from live site: primary #006F8F, dark #005A73, accent #00C6FF, dark bg #1E2D3B, light bg #F7F7F7
+- Updated globals.css with complete UCSG brand palette (CSS variables, scrollbar, etc.)
+- Regenerated UCSG logo in teal color scheme
+- Updated HeroSection: teal gradient, UCSG-specific content, subtle dot pattern texture, teal wave
+- Updated Header: all pill/hover/button colors to teal, mobile menu colors
+- Updated ServicesSection: card borders, icon backgrounds, CTA buttons, UCSG-referenced descriptions
+- Updated UniversitiesSection: borders, hover states, UCSG-referenced headings and notes
+- Updated Footer: dark bg to #1E2D3B, icon circles to #002A38, hover accents to #00C6FF, added STEM OPT link
+- Updated UniversityPage: all 45+ color references via batch sed, phone number to UCSG number, CTA mentions UCSG
+- Updated ResourcePage: all color references, hero gradients
+- Updated resources.ts: hero gradients and keyFact accent colors
+- Final audit: zero instances of old colors (#0070F3, #0B1120, #111827, #F8FAFC, etc.)
+
+Stage Summary:
+- Complete brand color migration: Blue (#0070F3) → Teal (#006F8F) across 10+ files
+- All content now references UCSG specifically
+- Browser verified: hero gradient rgb(0,111,143), footer rgb(30,45,59), mobile responsive, all pages
+- ESLint clean, zero old color references remaining

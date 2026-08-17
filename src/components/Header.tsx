@@ -61,13 +61,13 @@ export default function Header({ onNavigate }: Props) {
         <nav className="hidden items-center gap-1 md:flex">
           <button
             onClick={() => handleNav('home')}
-            className="rounded-full bg-[#DBEAFE] px-4 py-1.5 text-sm font-medium text-[#0070F3] transition-colors hover:bg-[#BFDBFE]"
+            className="rounded-full bg-[#E0F4F8] px-4 py-1.5 text-sm font-medium text-[#006F8F] transition-colors hover:bg-[#B3E5EC]"
           >
             Home
           </button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100 outline-none">
+            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9] outline-none">
               Universities
               <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
@@ -85,7 +85,7 @@ export default function Header({ onNavigate }: Props) {
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100 outline-none">
+            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9] outline-none">
               Resources
               <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
@@ -104,13 +104,13 @@ export default function Header({ onNavigate }: Props) {
 
           <a
             href="#webinars"
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
           >
             Webinars
           </a>
           <button
             onClick={() => handleNav('home')}
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#111827] transition-colors hover:bg-gray-100"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
           >
             Get Started
           </button>
@@ -118,7 +118,7 @@ export default function Header({ onNavigate }: Props) {
 
         {/* Desktop CTA */}
         <Button
-          className="hidden rounded-full bg-[#0070F3] px-5 text-sm font-medium text-white hover:bg-[#0060D3] md:inline-flex"
+          className="hidden rounded-full bg-[#006F8F] px-5 text-sm font-medium text-white hover:bg-[#005A73] md:inline-flex"
           size="default"
           asChild
         >
@@ -145,32 +145,32 @@ export default function Header({ onNavigate }: Props) {
             <nav className="mt-6 flex flex-col gap-1">
               <button
                 onClick={() => handleNav('home')}
-                className="rounded-lg bg-[#DBEAFE] px-4 py-2.5 text-left text-sm font-medium text-[#0070F3]"
+                className="rounded-lg bg-[#E0F4F8] px-4 py-2.5 text-left text-sm font-medium text-[#006F8F]"
               >
                 Home
               </button>
 
-              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
+              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
                 Universities
               </div>
               {universitiesLinks.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNav('university', item.id)}
-                  className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
+                  className="rounded-lg px-4 py-2 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
                 >
                   {item.name}
                 </button>
               ))}
 
-              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
+              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
                 Resources
               </div>
               {resourcesLinks.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNav('resource', item.id)}
-                  className="rounded-lg px-4 py-2 text-left text-sm text-[#111827] hover:bg-gray-50"
+                  className="rounded-lg px-4 py-2 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
                 >
                   {item.name}
                 </button>
@@ -179,13 +179,13 @@ export default function Header({ onNavigate }: Props) {
               <a
                 href="#webinars"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-4 py-2.5 text-sm font-medium text-[#111827] hover:bg-gray-50"
+                className="rounded-lg px-4 py-2.5 text-sm font-medium text-[#1E2D3B] hover:bg-[#F0F7F9]"
               >
                 Webinars
               </a>
 
               <div className="mt-4 px-4">
-                <Button className="w-full rounded-full bg-[#0070F3] text-white hover:bg-[#0060D3]" asChild>
+                <Button className="w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]" asChild>
                   <a href="tel:+13028935594">
                     <MessageCircle className="mr-1.5 h-4 w-4" />
                     Call +1 (302) 893-5594
