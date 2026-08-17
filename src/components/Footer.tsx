@@ -63,7 +63,12 @@ export default function Footer({ onNavigate }: Props) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                Get Free Consultation
+                <button
+                  onClick={() => onNavigate?.('contact')}
+                  className="text-2xl font-bold text-white sm:text-3xl underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-all"
+                >
+                  Get Free Consultation
+                </button>
               </motion.h3>
               <motion.p
                 className="mt-3 text-base text-[#94A3B8]"
@@ -153,7 +158,13 @@ export default function Footer({ onNavigate }: Props) {
 
             {/* Column 4: Contact */}
             <div>
-              <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+              <h4
+                className="text-sm font-semibold uppercase tracking-wider text-white cursor-pointer hover:text-[#00C6FF] transition-colors"
+                onClick={() => onNavigate?.('contact')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigate?.('contact'); }}
+              >
                 Contact
               </h4>
               <ul className="mt-4 space-y-4">

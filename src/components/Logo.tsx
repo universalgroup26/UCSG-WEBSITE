@@ -11,9 +11,9 @@ interface LogoProps {
 export default function Logo({ variant = 'dark', size = 'md', showText = false }: LogoProps) {
   const sizes = {
     sm: { img: 36, text: 'text-sm' },
-    md: { img: 42, text: 'text-base' },
-    lg: { img: 52, text: 'text-lg' },
-    xl: { img: 64, text: 'text-xl' },
+    md: { img: 44, text: 'text-base' },
+    lg: { img: 56, text: 'text-lg' },
+    xl: { img: 68, text: 'text-xl' },
   };
 
   const textColor = variant === 'light' ? 'text-white' : 'text-[#1E2D3B]';

@@ -281,3 +281,42 @@ Stage Summary:
 - All WhatsApp CTAs now properly link to wa.me/13028935594
 - All Quick Help/Resource links navigate to actual resource pages
 - Clean lint and no console errors
+---
+Task ID: 1
+Agent: Main
+Task: Update logo, create Contact Us page, add page-related background images to all pages
+
+Work Log:
+- Downloaded new UCSG logo from https://i.ibb.co.com/RGrPKGpg/USCG.png (640x640 PNG) to public/ucsg-logo.png
+- Updated Logo.tsx to display square logo properly (adjusted sizes)
+- Generated 7 page-specific background images using AI image generation:
+  - bg-contact.png: Professional consulting office
+  - bg-day1-cpt.png: Student working at desk
+  - bg-transfers.png: Campus transfer scene
+  - bg-change-status.png: Visa documents
+  - bg-sevis.png: Student reviewing documents
+  - bg-stem-opt.png: Tech lab students
+  - bg-university.png: University campus aerial
+- Added heroBgImage field to ResourceData interface and all 5 resource entries
+- Updated ResourcePage hero section to display background image with gradient overlay
+- Updated UniversityPage hero section to display campus background image with university color overlay
+- Created ContactPage component (src/components/pages/ContactPage.tsx) with:
+  - Hero banner with background image
+  - 4 contact method cards (Phone, WhatsApp, Email, Office)
+  - Contact form with name, email, phone, service select, and message fields
+  - Office hours sidebar
+  - Services list sidebar
+  - Quick Contact CTA section
+  - Office location with Google Maps embed
+- Updated page.tsx to add 'contact' view type and ContactPage rendering
+- Updated Header.tsx: Contact button now navigates to contact page (was going to home)
+- Added Contact Us link to mobile menu
+- Updated Footer.tsx: CTA header and Contact column heading navigate to contact page
+- Fixed UI/UX: Changed footer Contact heading from button to h4 with keyboard accessibility
+
+Stage Summary:
+- All pages now have page-related background images in their hero sections
+- Separate Contact Us page is fully functional with form, contact info, office hours, and map
+- New logo installed site-wide
+- All navigation (desktop + mobile) properly links to Contact page
+- Zero lint errors, zero runtime errors in browser verification

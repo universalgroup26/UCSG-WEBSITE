@@ -158,12 +158,21 @@ export default function UniversityPage({ university, onBack }: Props) {
         </div>
       </div>
 
-      {/* Hero */}
-      <section
-        className="relative overflow-hidden"
-        style={{ backgroundColor: university.color }}
-      >
-        <div className="absolute inset-0 bg-black/20" />
+      {/* Hero with Background Image */}
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/bg-university.png"
+            alt={`${university.name} campus`}
+            fill
+            className="object-cover"
+            unoptimized
+            priority
+          />
+          <div className="absolute inset-0" style={{ backgroundColor: university.color, opacity: 0.75 }} />
+        </div>
+
         <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8">
             {/* Logo / Shield */}

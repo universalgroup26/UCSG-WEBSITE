@@ -76,9 +76,21 @@ export default function ResourcePage({ resource, onBack }: Props) {
         </div>
       </motion.div>
 
-      {/* Hero */}
-      <section className={`relative overflow-hidden bg-gradient-to-br ${resource.heroGradient}`}>
-        <div className="absolute inset-0 bg-black/10" />
+      {/* Hero with Background Image */}
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src={resource.heroBgImage}
+            alt={`${resource.title} background`}
+            fill
+            className="object-cover"
+            unoptimized
+            priority
+          />
+          <div className={`absolute inset-0 bg-gradient-to-br ${resource.heroGradient} opacity-80`} />
+        </div>
+
         <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <motion.div

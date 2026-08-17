@@ -5,6 +5,7 @@ export interface ResourceData {
   description: string;
   icon: string;
   heroGradient: string;
+  heroBgImage: string;
   overview: string;
   steps: ProcessStep[];
   keyFacts: KeyFact[];
@@ -40,6 +41,7 @@ export const resources: ResourceData[] = [
       'Curricular Practical Training (CPT) is work authorization that allows F-1 students to gain practical experience in their field of study. Day 1 CPT means you can start working immediately upon enrollment — no need to wait for one academic year.',
     icon: 'briefcase',
     heroGradient: 'from-[#006F8F] to-[#005A73]',
+    heroBgImage: '/images/bg-day1-cpt.png',
     overview:
       'Day 1 CPT is an employment authorization option for F-1 international students enrolled in qualifying graduate programs. Unlike regular CPT which requires completion of one academic year, Day 1 CPT allows you to begin paid or unpaid work related to your major from the very first day of your program. This authorization is granted through the university\'s DSO (Designated School Official) and must be directly related to your field of study.',
     steps: [
@@ -114,6 +116,7 @@ export const resources: ResourceData[] = [
       'Whether your SEVIS has been terminated or you simply need a better university fit, we can connect you with SEVP-approved universities within 24-48 hours. Our fast-track transfer process ensures minimal disruption to your academic journey.',
     icon: 'graduation-cap',
     heroGradient: 'from-[#059669] to-[#047857]',
+    heroBgImage: '/images/bg-transfers.png',
     overview:
       'University transfers for international students require careful handling of SEVIS records, credit transfers, and immigration status. Our team specializes in emergency transfers for students facing SEVIS termination, as well as strategic transfers for students seeking Day 1 CPT opportunities. We work directly with university admissions teams to expedite the process.',
     steps: [
@@ -184,6 +187,7 @@ export const resources: ResourceData[] = [
       'Whether you\'re currently on B1/B2, F2, H1B, H4, J1/J2, or another visa status, we guide you through the entire Change of Status (COS) process to F-1. From I-20 issuance to university placement, we handle every detail.',
     icon: 'shield-check',
     heroGradient: 'from-[#7C3AED] to-[#6D28D9]',
+    heroBgImage: '/images/bg-change-status.png',
     overview:
       'A Change of Status (COS) allows you to transition from your current non-immigrant visa status to F-1 student status without leaving the United States. This process involves filing Form I-539 with USCIS, obtaining a new I-20 from an SEVP-certified university, and meeting specific requirements. Our team handles the entire process end-to-end.',
     steps: [
@@ -254,6 +258,7 @@ export const resources: ResourceData[] = [
     subtitle: 'Restore Your F-1 Status After SEVIS Termination',
     icon: 'refresh-cw',
     heroGradient: 'from-[#DC2626] to-[#B91C1C]',
+    heroBgImage: '/images/bg-sevis.png',
     overview:
       'If your SEVIS record has been terminated due to unauthorized employment, failure to maintain full-time enrollment, or other violations, you may be eligible for reinstatement. The reinstatement process involves filing Form I-539 with USCIS and demonstrating that the violation was beyond your control or that reinstatement is warranted. We prepare comprehensive applications with strong supporting evidence.',
     steps: [
@@ -324,6 +329,7 @@ export const resources: ResourceData[] = [
       'If your STEM OPT is denied, expiring, or you need guidance on the extension process, UCSG provides backup university admissions and expert support so you can continue studying and working in the USA.',
     icon: 'refresh-cw',
     heroGradient: 'from-[#D97706] to-[#B45309]',
+    heroBgImage: '/images/bg-stem-opt.png',
     overview:
       'The STEM OPT Extension allows F-1 students who earned degrees in STEM (Science, Technology, Engineering, Mathematics) fields to extend their post-completion OPT by 24 months. However, denials, RFEs (Requests for Evidence), and timing issues can jeopardize your status. UCSG helps students navigate these challenges by providing backup university admissions with Day 1 CPT, ensuring you never fall out of status while resolving OPT issues.',
     steps: [

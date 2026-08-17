@@ -13,13 +13,15 @@ import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
+import ContactPage from '@/components/pages/ContactPage';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
 
 type ViewType =
   | { type: 'home' }
   | { type: 'university'; university: UniversityData }
-  | { type: 'resource'; resource: ResourceData };
+  | { type: 'resource'; resource: ResourceData }
+  | { type: 'contact' };
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -33,6 +35,11 @@ export default function HomePage() {
   const handleNavigate = useCallback((_view: string, id?: string) => {
     if (_view === 'home') {
       setView({ type: 'home' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (_view === 'contact') {
+      setView({ type: 'contact' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -74,6 +81,8 @@ export default function HomePage() {
       history.pushState({ universityId: v.university.id }, '', `#/university/${v.university.id}`);
     } else if (v.type === 'resource') {
       history.pushState({ resourceId: v.resource.id }, '', `#/resource/${v.resource.id}`);
+    } else if (v.type === 'contact') {
+      history.pushState({}, '', '#/contact');
     } else {
       history.pushState({}, '', '/');
     }
@@ -114,6 +123,11 @@ export default function HomePage() {
               <TrustSection />
               <TestimonialsSection />
               <UniversitiesSection onUniversityClick={handleUniversityClick} />
+            </motion.div>
+          )}
+          {view.type === 'contact' && (
+            <motion.div key="contact" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <ContactPage onBack={goHome} />
             </motion.div>
           )}
           {view.type === 'university' && (
