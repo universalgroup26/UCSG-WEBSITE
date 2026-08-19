@@ -3,47 +3,41 @@
 import { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
+import { Send } from 'lucide-react';
 import type { UniversityData } from '@/lib/data/universities';
 import { getUniversityById } from '@/lib/data/universities';
 import CampusVisual from '@/components/CampusVisual';
 
 interface Props {
   onUniversityClick?: (university: UniversityData) => void;
+  onApplyClick?: (universityId?: string) => void;
 }
 
-const universities: { name: string; shortName: string; initials: string; color: string; id: string; logoPath: string }[] = [
-  { id: 'rivier', name: 'Rivier University', shortName: 'Rivier', initials: 'RU', color: '#1E3A5F', logoPath: '/universities/rivier.png' },
-  { id: 'indiana-wesleyan', name: 'Indiana Wesleyan University', shortName: 'Indiana Wesleyan', initials: 'IWU', color: '#8B1A1A', logoPath: '/universities/indiana-wesleyan.png' },
-  { id: 'avila-kc', name: 'Avila University Kansas City', shortName: 'Avila - KC', initials: 'AU', color: '#C41E3A', logoPath: '/universities/avila-kc.png' },
-  { id: 'avila-az', name: 'Avila University Arizona', shortName: 'Avila - AZ', initials: 'AU', color: '#7B2D26', logoPath: '/universities/avila-az.png' },
-  { id: 'new-england', name: 'New England College', shortName: 'New England', initials: 'NEC', color: '#004B87', logoPath: '/universities/new-england.png' },
-  { id: 'monroe', name: 'Monroe University', shortName: 'Monroe', initials: 'MU', color: '#1B3A4B', logoPath: '/universities/monroe.png' },
-  { id: 'anderson', name: 'Anderson University', shortName: 'Anderson', initials: 'AU', color: '#E87722', logoPath: '/universities/anderson.png' },
-  { id: 'regis', name: 'Regis University', shortName: 'Regis', initials: 'RU', color: '#6B0F1A', logoPath: '/universities/regis.png' },
-  { id: 'curry', name: 'Curry College', shortName: 'Curry', initials: 'CC', color: '#003B5C', logoPath: '/universities/curry.png' },
-  { id: 'national-louis', name: 'National Louis University', shortName: 'National Louis', initials: 'NLU', color: '#003366', logoPath: '/universities/national-louis.png' },
-  { id: 'harrisburg', name: 'Harrisburg University', shortName: 'Harrisburg', initials: 'HU', color: '#003B6F', logoPath: '/universities/harrisburg.png' },
-  { id: 'texas-wesleyan', name: 'Texas Wesleyan University', shortName: 'Texas Wesleyan', initials: 'TXW', color: '#6B0015', logoPath: '' },
-  { id: 'humphreys', name: 'Humphreys University', shortName: 'Humphreys', initials: 'HU', color: '#1A3C5E', logoPath: '/universities/humphreys.png' },
-  { id: 'mcdaniel', name: 'McDaniel College', shortName: 'McDaniel', initials: 'MC', color: '#004B87', logoPath: '/universities/mcdaniel.png' },
-  { id: 'westcliff', name: 'Westcliff University', shortName: 'Westcliff', initials: 'WU', color: '#1A3A5C', logoPath: '/universities/westcliff.png' },
-  { id: 'sofia', name: 'Sofia University', shortName: 'Sofia', initials: 'SU', color: '#7B2D8B', logoPath: '/universities/sofia.png' },
-  { id: 'salem', name: 'Salem University', shortName: 'Salem', initials: 'SU', color: '#003057', logoPath: '/universities/salem.png' },
-  { id: 'wayland', name: 'Wayland Baptist University', shortName: 'Wayland Baptist', initials: 'WBU', color: '#1B3A4B', logoPath: '/universities/wayland.png' },
-  { id: 'faulkner', name: 'Faulkner University', shortName: 'Faulkner', initials: 'FU', color: '#6B2D5B', logoPath: '' },
-  { id: 'potomac', name: 'University of the Potomac', shortName: 'Potomac', initials: 'UOTP', color: '#1A3C5E', logoPath: '/universities/potomac.png' },
-  { id: 'cal-miramar', name: 'California Miramar University', shortName: 'Cal Miramar', initials: 'CMU', color: '#003366', logoPath: '/universities/cal-miramar.png' },
-  { id: 'adelphi', name: 'Adelphi University', shortName: 'Adelphi', initials: 'AU', color: '#6B0015', logoPath: '/universities/adelphi.png' },
-  { id: 'cumberland', name: 'Cumberland University', shortName: 'Cumberland', initials: 'CU', color: '#2C1810', logoPath: '/universities/cumberland.png' },
-  { id: 'bay-atlantic', name: 'Bay Atlantic University', shortName: 'Bay Atlantic', initials: 'BAU', color: '#003B6F', logoPath: '' },
-  { id: 'goldey-beacom', name: 'Goldey-Beacom College', shortName: 'Goldey-Beacom', initials: 'GBC', color: '#B8860B', logoPath: '' },
-  { id: 'concordia-tx', name: 'Concordia University Texas', shortName: 'Concordia - TX', initials: 'CTX', color: '#1A237E', logoPath: '/universities/concordia-tx.png' },
-  { id: 'ottawa', name: 'Ottawa University', shortName: 'Ottawa', initials: 'OU', color: '#003B5C', logoPath: '/universities/ottawa.png' },
-  { id: 'midwest', name: 'Midwest University', shortName: 'Midwest', initials: 'MU', color: '#1A3A5C', logoPath: '/universities/midwest.png' },
-  { id: 'webster', name: 'Webster University', shortName: 'Webster', initials: 'WU', color: '#003057', logoPath: '/universities/webster.png' },
+const universities = [
+  { id: 'trine', name: 'Trine University', shortName: 'Trine University', initials: 'TU', color: '#003366', logoPath: '/universities/trine.png' },
+  { id: 'monroe', name: 'Monroe University', shortName: 'Monroe University', initials: 'MU', color: '#1B3A4B', logoPath: '/universities/monroe.png' },
+  { id: 'saint-francis', name: 'Saint Francis University', shortName: 'Saint Francis University', initials: 'SFU', color: '#8B0000', logoPath: '/universities/saint-francis.png' },
+  { id: 'tacoma-community', name: 'Tacoma Community College', shortName: 'Tacoma Community', initials: 'TCC', color: '#1A3C5E', logoPath: '/universities/tacoma-community.png' },
+  { id: 'computer-system-institutes', name: 'Computer System Institutes', shortName: 'Computer System Institutes', initials: 'CSI', color: '#003366', logoPath: '/universities/csi.png' },
+  { id: 'curry', name: 'Curry College', shortName: 'Curry College', initials: 'CC', color: '#003B5C', logoPath: '/universities/curry.png' },
+  { id: 'dream-it', name: 'Dream IT', shortName: 'Dream IT', initials: 'DIT', color: '#2E86AB', logoPath: '/universities/dream-it.png' },
+  { id: 'ny-language-center', name: 'NEW YORK Language Center', shortName: 'NY Language Center', initials: 'NYLC', color: '#B31942', logoPath: '/universities/nylc.png' },
+  { id: 'international-american-university', name: 'International American University', shortName: 'Intl American Univ', initials: 'IAU', color: '#1A3A5C', logoPath: '/universities/iau.png' },
+  { id: 'ny-general-consulting', name: 'NEW YORK General Consulting', shortName: 'NY General Consulting', initials: 'NYGC', color: '#002868', logoPath: '/universities/nygc.png' },
+  { id: 'westcliff', name: 'Westcliff University', shortName: 'Westcliff University', initials: 'WU', color: '#1A3A5C', logoPath: '/universities/westcliff.png' },
 ];
 
-export default function UniversitiesSection({ onUniversityClick }: Props) {
+const otherUniversities = [
+  { id: 'computer-system-institutes', name: 'Computer System Institutes', shortName: 'Computer System Institutes', initials: 'CSI', color: '#003366', logoPath: '/universities/csi.png' },
+  { id: 'curry', name: 'Curry College', shortName: 'Curry College', initials: 'CC', color: '#003B5C', logoPath: '/universities/curry.png' },
+  { id: 'dream-it', name: 'Dream IT', shortName: 'Dream IT', initials: 'DIT', color: '#2E86AB', logoPath: '/universities/dream-it.png' },
+  { id: 'ny-language-center', name: 'NEW YORK Language Center', shortName: 'NY Language Center', initials: 'NYLC', color: '#B31942', logoPath: '/universities/nylc.png' },
+  { id: 'international-american-university', name: 'International American University', shortName: 'Intl American Univ', initials: 'IAU', color: '#1A3A5C', logoPath: '/universities/iau.png' },
+  { id: 'ny-general-consulting', name: 'NEW YORK General Consulting', shortName: 'NY General Consulting', initials: 'NYGC', color: '#002868', logoPath: '/universities/nygc.png' },
+  { id: 'westcliff', name: 'Westcliff University', shortName: 'Westcliff University', initials: 'WU', color: '#1A3A5C', logoPath: '/universities/westcliff.png' },
+];
+
+export default function UniversitiesSection({ onUniversityClick, onApplyClick }: Props) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -56,54 +50,109 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl lg:text-[2.25rem]">
+          <h2 className="text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl lg:text-[2.25rem]">
             Our Partner Universities
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#6B7280]">
-            UCSG partners with SEVP-certified universities offering Day 1 CPT programs. Click any logo to explore programs, tuition, and admissions.
+            UCSG partners with SEVP-certified universities and training institutes offering CPT or Day 1 CPT programs. Click any logo to explore.
           </p>
         </motion.div>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 sm:mt-16 sm:gap-4">
-          {universities.map((uni, i) => (
-            <motion.button
-              key={uni.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.05 + i * 0.03, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -4, scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => {
-                const data = getUniversityById(uni.id);
-                if (data) onUniversityClick?.(data);
-              }}
-              className="group flex flex-col items-center justify-center gap-3 rounded-xl border border-[#D1E3E8] bg-white px-3 py-5 transition-all hover:border-[#006F8F]/40 hover:shadow-lg sm:px-4 sm:py-6"
-            >
-              {uni.logoPath ? (
-                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-[68px] sm:w-[68px]">
+        {/* Featured Universities */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#B31942]">Featured Universities</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+            {universities.slice(0, 4).map((uni, i) => (
+              <motion.button
+                key={uni.id}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ delay: 0.15 + i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4, scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  const data = getUniversityById(uni.id);
+                  if (data) onUniversityClick?.(data);
+                }}
+                className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-[#BFDBFE] bg-white p-5 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:p-6"
+              >
+                <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-24 sm:w-24">
                   <Image
                     src={uni.logoPath}
                     alt={`${uni.name} logo`}
-                    width={68}
-                    height={68}
-                    className="h-full w-full object-contain p-1 transition-transform group-hover:scale-110"
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-contain p-1.5 transition-transform group-hover:scale-110"
                     unoptimized
                   />
                 </div>
-              ) : (
-                <div
-                  className="flex h-16 w-16 items-center justify-center rounded-lg text-xs font-bold tracking-wide text-white shadow-sm sm:h-[68px] sm:w-[68px]"
-                  style={{ backgroundColor: uni.color }}
+                <span className="text-center text-xs font-semibold leading-tight text-[#0F172A] transition-colors group-hover:text-[#002868] sm:text-sm">
+                  {uni.shortName}
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onApplyClick?.(uni.id); }}
+                  className="w-full rounded-lg bg-gradient-to-r from-[#B31942] to-[#002868] px-3 py-2 text-xs font-bold text-white shadow-sm transition-all hover:shadow-md"
                 >
-                  {uni.initials}
+                  <Send className="mr-1 inline h-3 w-3" />
+                  Apply Now
+                </button>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Partner Institutions */}
+        <motion.div
+          className="mb-10"
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#002868]">Partner Institutions</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 sm:gap-4">
+            {otherUniversities.map((uni, i) => (
+              <motion.button
+                key={uni.id}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ delay: 0.4 + i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4, scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  const data = getUniversityById(uni.id);
+                  if (data) onUniversityClick?.(data);
+                }}
+                className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-[#BFDBFE] bg-white px-2 py-4 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:px-3 sm:py-5"
+              >
+                <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-14 sm:w-14">
+                  <Image
+                    src={uni.logoPath}
+                    alt={`${uni.name} logo`}
+                    width={56}
+                    height={56}
+                    className="h-full w-full object-contain p-1 transition-transform group-hover:scale-110"
+                    unoptimized
+                  />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onApplyClick?.(uni.id); }}
+                    className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#B31942] text-white shadow-md transition-transform hover:scale-110"
+                    aria-label={`Apply to ${uni.name}`}
+                  >
+                    <Send className="h-2.5 w-2.5" />
+                  </button>
                 </div>
-              )}
-              <span className="text-center text-[11px] font-medium leading-tight text-[#1E2D3B] transition-colors group-hover:text-[#006F8F] sm:text-xs">
-                {uni.shortName}
-              </span>
-            </motion.button>
-          ))}
-        </div>
+                <span className="text-center text-[10px] font-medium leading-tight text-[#0F172A] transition-colors group-hover:text-[#002868] sm:text-[11px]">
+                  {uni.shortName}
+                </span>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
 
         <motion.div
           className="mx-auto mb-10 max-w-5xl lg:mb-14"
@@ -120,7 +169,7 @@ export default function UniversitiesSection({ onUniversityClick }: Props) {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          All universities are SEVP-certified and offer Day 1 CPT programs. Contact UCSG for personalized guidance.
+          All institutions are SEVP-certified and offer CPT or Day 1 CPT programs. Contact UCSG for personalized guidance.
         </motion.p>
       </div>
     </section>

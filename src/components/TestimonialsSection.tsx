@@ -56,7 +56,7 @@ const TESTIMONIALS: Testimonial[] = [
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const BRAND_TEAL = '#006F8F';
+const BRAND_BLUE = '#002868';
 const AUTO_PLAY_INTERVAL_MS = 5000;
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
@@ -97,7 +97,7 @@ function TestimonialCard({
         <div className="mb-4 flex items-center justify-between">
           <Quote
             className="h-8 w-8 shrink-0 opacity-20"
-            style={{ color: BRAND_TEAL }}
+            style={{ color: BRAND_BLUE }}
             aria-hidden="true"
           />
           <StarRating rating={testimonial.rating} />
@@ -108,7 +108,7 @@ function TestimonialCard({
         </blockquote>
 
         <div className="flex items-center gap-4 border-t border-gray-100 pt-5">
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-[#006F8F]">
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-[#002868]">
             <Image
               src={testimonial.avatar}
               alt={`Photo of ${testimonial.name}`}
@@ -127,9 +127,9 @@ function TestimonialCard({
             <Badge
               className="mt-1 text-[10px] font-medium"
               style={{
-                backgroundColor: `${BRAND_TEAL}18`,
-                color: BRAND_TEAL,
-                borderColor: `${BRAND_TEAL}30`,
+                backgroundColor: `${BRAND_BLUE}18`,
+                color: BRAND_BLUE,
+                borderColor: `${BRAND_BLUE}30`,
               }}
               variant="outline"
             >
@@ -192,12 +192,12 @@ export default function TestimonialsSection() {
     >
       <div
         className="pointer-events-none absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full opacity-[0.07] blur-3xl"
-        style={{ backgroundColor: BRAND_TEAL }}
+        style={{ backgroundColor: BRAND_BLUE }}
         aria-hidden="true"
       />
       <div
         className="pointer-events-none absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full opacity-[0.05] blur-3xl"
-        style={{ backgroundColor: BRAND_TEAL }}
+        style={{ backgroundColor: BRAND_BLUE }}
         aria-hidden="true"
       />
 
@@ -210,13 +210,13 @@ export default function TestimonialsSection() {
         >
           <div
             className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"
-            style={{ backgroundColor: `${BRAND_TEAL}15` }}
+            style={{ backgroundColor: `${BRAND_BLUE}15` }}
           >
-            <Quote className="h-6 w-6" style={{ color: BRAND_TEAL }} aria-hidden="true" />
+            <Quote className="h-6 w-6" style={{ color: BRAND_BLUE }} aria-hidden="true" />
           </div>
           <h2
             id="testimonials-heading"
-            className="text-3xl font-bold tracking-tight text-[#1E2D3B] sm:text-4xl"
+            className="text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl"
           >
             What Our Students Say
           </h2>
@@ -290,7 +290,7 @@ export default function TestimonialsSection() {
                   )}
                   style={
                     i === currentPage
-                      ? { backgroundColor: BRAND_TEAL }
+                      ? { backgroundColor: BRAND_BLUE }
                       : undefined
                   }
                 />

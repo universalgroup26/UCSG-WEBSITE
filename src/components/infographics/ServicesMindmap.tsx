@@ -33,9 +33,9 @@ const serviceBranches: ServiceBranch[] = [
   {
     icon: Building2,
     title: 'Day 1 CPT',
-    color: '#006F8F',
-    bg: '#E0F4F8',
-    border: '#B3E5EC',
+    color: '#002868',
+    bg: '#EFF6FF',
+    border: '#BFDBFE',
     subItems: ['Work from Day 1', '29+ Universities', 'Full/Part-time'],
   },
   {
@@ -77,10 +77,10 @@ export default function ServicesMindmap() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="inline-block rounded-full bg-[#E0F4F8] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#006F8F]">
+          <span className="inline-block rounded-full bg-[#EFF6FF] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#002868]">
             Service Map
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl">
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
             How UCSG Covers Every Angle
           </h2>
           <p className="mt-3 text-[#6B7280]">
@@ -96,9 +96,9 @@ export default function ServicesMindmap() {
               animate={isInView ? { scale: 1, opacity: 1 } : {}}
               transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
             >
-              <div className="flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-[#006F8F] to-[#005A73] text-center shadow-2xl">
+              <div className="flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] text-center shadow-2xl">
                 <div>
-                  <p className="text-xs font-semibold tracking-widest text-teal-200">UNIVERSAL</p>
+                  <p className="text-xs font-semibold tracking-widest text-blue-200">UNIVERSAL</p>
                   <p className="text-xl font-extrabold text-white">UCSG</p>
                 </div>
               </div>
@@ -118,7 +118,7 @@ export default function ServicesMindmap() {
 
         <div className="space-y-4 lg:hidden">
           <motion.div
-            className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#006F8F] to-[#005A73] shadow-xl"
+            className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] shadow-xl"
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
@@ -126,7 +126,7 @@ export default function ServicesMindmap() {
             <p className="text-lg font-extrabold text-white">UCSG</p>
           </motion.div>
 
-          <div className="mx-auto h-4 w-0.5 bg-[#B3E5EC]" />
+          <div className="mx-auto h-4 w-0.5 bg-[#BFDBFE]" />
 
           <div className="space-y-3">
             {serviceBranches.map((branch, i) => {
@@ -150,12 +150,12 @@ export default function ServicesMindmap() {
                         <Icon className="h-5 w-5 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-sm font-bold text-[#1E2D3B] sm:text-base">{branch.title}</h3>
+                        <h3 className="text-sm font-bold text-[#0F172A] sm:text-base">{branch.title}</h3>
                         <div className="mt-1.5 flex flex-wrap gap-1.5">
                           {branch.subItems.map((item) => (
                             <span
                               key={item}
-                              className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-medium text-[#1E2D3B] sm:text-xs"
+                              className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-medium text-[#0F172A] sm:text-xs"
                             >
                               <CheckCircle2 className="h-3 w-3" style={{ color: branch.color }} />
                               {item}
@@ -207,7 +207,7 @@ function MindmapBranch({
             <Icon className="h-6 w-6 text-white" />
           </motion.div>
           <div>
-            <h3 className="text-base font-bold text-[#1E2D3B] sm:text-lg">{branch.title}</h3>
+            <h3 className="text-base font-bold text-[#0F172A] sm:text-lg">{branch.title}</h3>
           </div>
         </div>
         <div className="mt-4 space-y-2">
@@ -220,7 +220,7 @@ function MindmapBranch({
               transition={{ delay: 0.5 + index * 0.12 + j * 0.08, duration: 0.3 }}
             >
               <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: branch.color }} />
-              <span className="text-sm font-medium text-[#1E2D3B]">{item}</span>
+              <span className="text-sm font-medium text-[#0F172A]">{item}</span>
               <ArrowRight className="ml-auto h-3 w-3 text-[#6B7280] opacity-50" />
             </motion.div>
           ))}

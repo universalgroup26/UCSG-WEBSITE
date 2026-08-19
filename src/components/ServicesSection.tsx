@@ -37,7 +37,7 @@ export default function ServicesSection({ onResourceClick }: Props) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl lg:text-[2.25rem]">
+          <h2 className="text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl lg:text-[2.25rem]">
             Comprehensive Student Services
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#6B7280] sm:text-lg">
@@ -52,20 +52,20 @@ export default function ServicesSection({ onResourceClick }: Props) {
             return (
               <motion.div
                 key={service.title}
-                className="group flex flex-col rounded-2xl border border-[#B3E5EC] bg-[#F7F7F7] p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
+                className="group flex flex-col rounded-2xl border border-[#BFDBFE] bg-[#F8FAFC] p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.1 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -4 }}
               >
                 <motion.div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#E0F4F8]"
+                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#EFF6FF]"
                   whileHover={{ rotate: [0, -8, 8, -4, 0] }}
                   transition={{ duration: 0.4 }}
                 >
-                  <Icon className="h-6 w-6 text-[#006F8F]" />
+                  <Icon className="h-6 w-6 text-[#002868]" />
                 </motion.div>
-                <h3 className="mt-5 text-lg font-semibold text-[#1E2D3B]">
+                <h3 className="mt-5 text-lg font-semibold text-[#0F172A]">
                   {service.title}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-[#6B7280]">
@@ -75,7 +75,7 @@ export default function ServicesSection({ onResourceClick }: Props) {
                   <Button
                     variant="default"
                     onClick={() => onResourceClick?.(service.resourceId)}
-                    className="w-full justify-start rounded-lg bg-[#006F8F] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#005A73]"
+                    className="w-full justify-start rounded-lg bg-[#002868] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#001B4D]"
                   >
                     {service.cta}
                     <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -68,7 +68,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
+            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#002868]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
@@ -124,7 +124,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               transition={{ delay: 0.45, duration: 0.5 }}
             >
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#006F8F' }}>
+                <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#002868' }}>
                   {resource.ctaText}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -171,7 +171,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3">
-              <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Overview</h2>
+              <h2 className="text-xl font-bold text-[#0F172A] sm:text-2xl">Overview</h2>
               <p className="mt-4 leading-relaxed text-[#6B7280]">{resource.overview}</p>
             </div>
             <div className="relative hidden h-64 overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2 lg:block">
@@ -197,10 +197,10 @@ export default function ResourcePage({ resource, onBack }: Props) {
       {resource.id === 'sevis-reinstatement' && <SEVISRecoveryFlowchart />}
 
       {/* Process Timeline */}
-      <section className="bg-[#F7F7F7] py-12 sm:py-16">
+      <section className="bg-[#F8FAFC] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">How It Works</h2>
+            <h2 className="text-xl font-bold text-[#0F172A] sm:text-2xl">How It Works</h2>
             <p className="mt-2 text-[#6B7280]">Our step-by-step process to get you started</p>
           </ScrollReveal>
           <div className="relative mx-auto max-w-3xl">
@@ -210,7 +210,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                 <ScrollReveal key={step.step} delay={i * 0.1}>
                   <div className="relative flex gap-5 sm:gap-8">
                     <motion.div
-                      className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#006F8F] text-lg font-bold text-white shadow-md"
+                      className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#002868] text-lg font-bold text-white shadow-md"
                       initial={{ scale: 0 }}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true, margin: '-40px' }}
@@ -220,8 +220,8 @@ export default function ResourcePage({ resource, onBack }: Props) {
                     </motion.div>
                     <div className="flex-1 rounded-xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                        <h3 className="text-lg font-semibold text-[#1E2D3B]">{step.title}</h3>
-                        <Badge className="w-fit border-[#006F8F]/20 bg-[#E0F4F8] text-[#006F8F]">
+                        <h3 className="text-lg font-semibold text-[#0F172A]">{step.title}</h3>
+                        <Badge className="w-fit border-[#002868]/20 bg-[#EFF6FF] text-[#002868]">
                           <Clock className="mr-1 h-3 w-3" />
                           {step.timeline}
                         </Badge>
@@ -240,7 +240,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Why Choose UCSG</h2>
+            <h2 className="text-xl font-bold text-[#0F172A] sm:text-2xl">Why Choose UCSG</h2>
             <p className="mt-2 text-[#6B7280]">Benefits of working with our team</p>
           </ScrollReveal>
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -264,10 +264,10 @@ export default function ResourcePage({ resource, onBack }: Props) {
       </section>
 
       {/* FAQ */}
-      <section className="bg-[#F7F7F7] py-12 sm:py-16">
+      <section className="bg-[#F8FAFC] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-xl font-bold text-[#1E2D3B] sm:text-2xl">Frequently Asked Questions</h2>
+            <h2 className="text-xl font-bold text-[#0F172A] sm:text-2xl">Frequently Asked Questions</h2>
           </ScrollReveal>
           <div className="mx-auto max-w-3xl space-y-3">
             {resource.faqs.map((faq, i) => (
@@ -277,7 +277,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="flex w-full items-center justify-between px-6 py-4 text-left"
                   >
-                    <span className="pr-4 font-medium text-[#1E2D3B]">{faq.question}</span>
+                    <span className="pr-4 font-medium text-[#0F172A]">{faq.question}</span>
                     <motion.span
                       className="shrink-0"
                       animate={{ rotate: openFaq === i ? 180 : 0 }}
@@ -310,7 +310,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
 
       {/* CTA */}
       <ScrollReveal>
-        <section className="bg-[#1E2D3B] py-14 sm:py-16">
+        <section className="bg-[#0F172A] py-14 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h3 className="text-2xl font-bold text-white sm:text-3xl">Ready to Get Started?</h3>

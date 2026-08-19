@@ -8,7 +8,7 @@ interface Props {
   color?: string;
 }
 
-export default function VisualSectionDivider({ variant = 'dots', color = '#006F8F' }: Props) {
+export default function VisualSectionDivider({ variant = 'dots', color = '#002868' }: Props) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 

@@ -45,7 +45,7 @@ export default function UniversityMindmap({
   const displayPrograms = programs.slice(0, 4);
 
   return (
-    <section ref={ref} className="bg-[#F7F7F7] py-12 sm:py-16">
+    <section ref={ref} className="bg-[#F8FAFC] py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
@@ -56,7 +56,7 @@ export default function UniversityMindmap({
           <span className="inline-block rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-wider text-white" style={{ backgroundColor: color }}>
             University Profile
           </span>
-          <h2 className="mt-4 text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+          <h2 className="mt-4 text-xl font-bold text-[#0F172A] sm:text-2xl">
             {universityName} — At a Glance
           </h2>
           <p className="mt-2 text-sm text-[#6B7280] sm:text-base">
@@ -88,16 +88,16 @@ export default function UniversityMindmap({
               <MindmapCard
                 title="Location & Flexibility"
                 icon={MapPin}
-                color="#006F8F"
-                bg="#E0F4F8"
-                border="#B3E5EC"
+                color="#002868"
+                bg="#EFF6FF"
+                border="#BFDBFE"
                 isInView={isInView}
                 index={0}
               >
-                <MindmapItem icon={MapPin} color="#006F8F" label={location} />
-                <MindmapItem icon={Building} color="#006F8F" label="Accredited Campus" />
-                {onlineAvailable && <MindmapItem icon={Globe} color="#006F8F" label="Online Programs" highlight />}
-                {hybridAvailable && <MindmapItem icon={Wifi} color="#006F8F" label="Hybrid Format" highlight />}
+                <MindmapItem icon={MapPin} color="#002868" label={location} />
+                <MindmapItem icon={Building} color="#002868" label="Accredited Campus" />
+                {onlineAvailable && <MindmapItem icon={Globe} color="#002868" label="Online Programs" highlight />}
+                {hybridAvailable && <MindmapItem icon={Wifi} color="#002868" label="Hybrid Format" highlight />}
               </MindmapCard>
 
               {/* Programs */}
@@ -183,9 +183,9 @@ export default function UniversityMindmap({
             {
               title: 'Location & Flexibility',
               icon: MapPin,
-              color: '#006F8F',
-              bg: '#E0F4F8',
-              border: '#B3E5EC',
+              color: '#002868',
+              bg: '#EFF6FF',
+              border: '#BFDBFE',
               items: [
                 { icon: MapPin, label: location },
                 { icon: Building, label: 'Accredited Campus' },
@@ -244,7 +244,7 @@ export default function UniversityMindmap({
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: section.color }}>
                     <SectionIcon className="h-3.5 w-3.5 text-white" />
                   </div>
-                  <h3 className="text-sm font-bold text-[#1E2D3B]">{section.title}</h3>
+                  <h3 className="text-sm font-bold text-[#0F172A]">{section.title}</h3>
                 </div>
                 <div className="space-y-1">
                   {section.items.map((item) => {
@@ -302,7 +302,7 @@ function MindmapCard({
           >
             <Icon className="h-5 w-5 text-white" />
           </motion.div>
-          <h3 className="text-base font-bold text-[#1E2D3B] sm:text-lg">{title}</h3>
+          <h3 className="text-base font-bold text-[#0F172A] sm:text-lg">{title}</h3>
         </div>
         <div className="space-y-2">{children}</div>
       </div>
@@ -327,7 +327,7 @@ function MindmapItem({
       whileHover={{ x: 3 }}
     >
       <Icon className={`h-4 w-4 shrink-0 ${highlight ? '' : 'opacity-60'}`} style={{ color }} />
-      <span className={`text-sm ${highlight ? 'font-semibold text-[#1E2D3B]' : 'text-[#4B5563]'}`}>
+      <span className={`text-sm ${highlight ? 'font-semibold text-[#0F172A]' : 'text-[#4B5563]'}`}>
         {label}
       </span>
     </motion.div>

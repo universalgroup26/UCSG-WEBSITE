@@ -17,8 +17,8 @@ import {
 const pathways = [
   {
     from: 'B1/B2 Visitor',
-    color: '#006F8F',
-    bg: '#E0F4F8',
+    color: '#002868',
+    bg: '#EFF6FF',
     icon: Globe,
     steps: ['File I-539 with USCIS', 'Get I-20 from University', 'Show Non-Immigrant Intent', 'Wait 3-6 Months for Approval', 'Begin F-1 Studies + CPT'],
     timeline: '3-6 Months',
@@ -69,7 +69,7 @@ export default function VisaPathwayFlowchart() {
           <span className="inline-block rounded-full bg-[#EDE9FE] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#7C3AED]">
             Pathway Map
           </span>
-          <h2 className="mt-4 text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+          <h2 className="mt-4 text-xl font-bold text-[#0F172A] sm:text-2xl">
             Your Visa to F-1 Conversion Paths
           </h2>
           <p className="mt-2 text-sm text-[#6B7280] sm:text-base">
@@ -103,7 +103,7 @@ export default function VisaPathwayFlowchart() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold text-[#1E2D3B] sm:text-lg">{path.from}</span>
+                        <span className="text-sm font-bold text-[#0F172A] sm:text-lg">{path.from}</span>
                         <span className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-semibold sm:text-xs" style={{ color: path.color }}>
                           {path.difficulty}
                         </span>
@@ -124,7 +124,7 @@ export default function VisaPathwayFlowchart() {
                         <motion.div
                           key={step}
                           className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs sm:text-sm"
-                          style={{ borderColor: path.bg, color: '#1E2D3B' }}
+                          style={{ borderColor: path.bg, color: '#0F172A' }}
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={isInView ? { opacity: 1, scale: 1 } : {}}
                           transition={{ delay: 0.3 + i * 0.1 + j * 0.08, duration: 0.3 }}
@@ -136,7 +136,7 @@ export default function VisaPathwayFlowchart() {
                           {step}
                         </motion.div>
                         {j < path.steps.length - 1 && (
-                          <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#B3E5EC]" />
+                          <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#BFDBFE]" />
                         )}
                       </React.Fragment>
                     ))}
@@ -155,16 +155,16 @@ export default function VisaPathwayFlowchart() {
           transition={{ delay: 0.8, duration: 0.5 }}
         >
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#B3E5EC]">
-              <GraduationCap className="h-6 w-6 text-[#006F8F]" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#BFDBFE]">
+              <GraduationCap className="h-6 w-6 text-[#002868]" />
             </div>
-            <ArrowRight className="h-5 w-5 -rotate-90 text-[#B3E5EC]" />
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#006F8F] to-[#005A73] shadow-lg">
+            <ArrowRight className="h-5 w-5 -rotate-90 text-[#BFDBFE]" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] shadow-lg">
               <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/30">
                 <CheckCircle2 className="h-5 w-5 text-white" />
               </div>
             </div>
-            <p className="mt-1 text-sm font-bold text-[#1E2D3B]">F-1 Status + CPT Work Authorization</p>
+            <p className="mt-1 text-sm font-bold text-[#0F172A]">F-1 Status + CPT Work Authorization</p>
             <p className="text-xs text-[#6B7280]">Begin your career in the USA with legal work permission</p>
           </div>
         </motion.div>

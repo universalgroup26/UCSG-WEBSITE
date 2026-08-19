@@ -56,7 +56,7 @@ const scholarshipPlatforms = [
     minRequirements: 'Enrolled or admitted to a U.S. institution, proof of academic merit or financial need',
     extraLabel: 'Pro Tip',
     extraValue: 'Add a strong personal essay \u2014 Fastweb loves strong applicant profiles.',
-    color: '#006F8F',
+    color: '#002868',
   },
   {
     name: 'Scholarships.com',
@@ -149,7 +149,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#006F8F]"
+            className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#002868]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
@@ -168,7 +168,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
             unoptimized
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#006F8F]/80 to-[#005A73]/80" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#002868]/80 to-[#001B4D]/80" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
@@ -229,7 +229,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                 transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -2, boxShadow: '0 8px 25px -5px rgba(0,0,0,0.1)' }}
               >
-                <p className="text-2xl font-bold text-[#006F8F] sm:text-3xl">{stat.value}</p>
+                <p className="text-2xl font-bold text-[#002868] sm:text-3xl">{stat.value}</p>
                 <p className="mt-1 text-xs font-medium text-[#6B7280] sm:text-sm">{stat.label}</p>
               </motion.div>
             ))}
@@ -241,7 +241,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <ScrollReveal>
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-[#1E2D3B] sm:text-3xl">
+            <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">
               Top Scholarship Search Platforms
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-[#6B7280] sm:text-base">
@@ -269,7 +269,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                         {platform.name.charAt(0)}
                       </div>
                       <div>
-                        <h3 className="flex items-center gap-2 text-lg font-semibold text-[#1E2D3B]">
+                        <h3 className="flex items-center gap-2 text-lg font-semibold text-[#0F172A]">
                           {platform.name}
                           <ExternalLink className="h-4 w-4 text-[#6B7280]" />
                         </h3>
@@ -277,7 +277,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                           href={platform.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-[#006F8F] hover:underline"
+                          className="text-xs text-[#002868] hover:underline"
                         >
                           {platform.website}
                         </a>
@@ -292,14 +292,14 @@ export default function ScholarshipsPage({ onBack }: Props) {
                     {/* Key Details */}
                     <div className="mt-5 space-y-3">
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#006F8F]/10">
-                          <GraduationCap className="h-3.5 w-3.5 text-[#006F8F]" />
+                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#002868]/10">
+                          <GraduationCap className="h-3.5 w-3.5 text-[#002868]" />
                         </div>
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
                             Min Requirements
                           </p>
-                          <p className="mt-0.5 text-sm text-[#1E2D3B]">{platform.minRequirements}</p>
+                          <p className="mt-0.5 text-sm text-[#0F172A]">{platform.minRequirements}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -316,7 +316,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                           <p className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
                             {platform.extraLabel}
                           </p>
-                          <p className="mt-0.5 text-sm text-[#1E2D3B]">{platform.extraValue}</p>
+                          <p className="mt-0.5 text-sm text-[#0F172A]">{platform.extraValue}</p>
                         </div>
                       </div>
                     </div>
@@ -327,7 +327,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                       <Button
                         asChild
-                        className="w-full rounded-xl bg-[#006F8F] text-white hover:bg-[#005A73] sm:w-auto"
+                        className="w-full rounded-xl bg-[#002868] text-white hover:bg-[#001B4D] sm:w-auto"
                       >
                         <a
                           href={platform.website}
@@ -352,7 +352,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <ScrollReveal>
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#1E2D3B] sm:text-3xl">
+              <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">
                 Your Scholarship Application Checklist
               </h2>
             </div>
@@ -365,7 +365,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                   className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm border border-gray-100"
                   whileHover={{ x: 4, boxShadow: '0 4px 15px -3px rgba(0,0,0,0.07)' }}
                 >
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#006F8F]" />
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#002868]" />
                   <p className="text-sm text-[#374151] leading-relaxed">{item}</p>
                 </motion.div>
               </ScrollReveal>
@@ -379,7 +379,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <ScrollReveal>
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#1E2D3B] sm:text-3xl">
+              <h2 className="text-2xl font-bold text-[#0F172A] sm:text-3xl">
                 F1 Scholarship Tips
               </h2>
             </div>
@@ -394,10 +394,10 @@ export default function ScholarshipsPage({ onBack }: Props) {
                     className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
                     whileHover={{ y: -4, boxShadow: '0 12px 30px -5px rgba(0,0,0,0.08)' }}
                   >
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#006F8F]/10">
-                      <Icon className="h-6 w-6 text-[#006F8F]" />
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#002868]/10">
+                      <Icon className="h-6 w-6 text-[#002868]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#1E2D3B]">{tip.title}</h3>
+                    <h3 className="text-lg font-semibold text-[#0F172A]">{tip.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">
                       {tip.description}
                     </p>
@@ -410,18 +410,18 @@ export default function ScholarshipsPage({ onBack }: Props) {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-[#1E2D3B]">
+      <section className="bg-[#0F172A]">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
               <motion.div
-                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#006F8F]/20"
+                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#002868]/20"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               >
-                <Heart className="h-7 w-7 text-[#00C6FF]" />
+                <Heart className="h-7 w-7 text-[#60A5FA]" />
               </motion.div>
               <h2 className="text-2xl font-bold text-white sm:text-3xl">
                 Need Help Finding Scholarships?

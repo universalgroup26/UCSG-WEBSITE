@@ -71,9 +71,9 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
       {
         label: 'Process',
         icon: Clock,
-        color: '#006F8F',
-        bg: '#E0F4F8',
-        border: '#B3E5EC',
+        color: '#002868',
+        bg: '#EFF6FF',
+        border: '#BFDBFE',
         nodes: [
           { label: 'Choose University (1-2 days)', icon: Target },
           { label: 'Get Admitted & I-20 (1-3 wks)', icon: FileText },
@@ -130,9 +130,9 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
       {
         label: 'UCSG Process',
         icon: Clock,
-        color: '#006F8F',
-        bg: '#E0F4F8',
-        border: '#B3E5EC',
+        color: '#002868',
+        bg: '#EFF6FF',
+        border: '#BFDBFE',
         nodes: [
           { label: 'Free Consultation (Same day)', icon: Phone },
           { label: 'Application Prep (1-3 days)', icon: FileText },
@@ -176,9 +176,9 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
       {
         label: 'From B1/B2',
         icon: Globe,
-        color: '#006F8F',
-        bg: '#E0F4F8',
-        border: '#B3E5EC',
+        color: '#002868',
+        bg: '#EFF6FF',
+        border: '#BFDBFE',
         nodes: [
           { label: 'File I-539', icon: FileText },
           { label: 'Get I-20 from University', icon: GraduationCap },
@@ -248,9 +248,9 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
       {
         label: 'Reinstatement Path',
         icon: ArrowRight,
-        color: '#006F8F',
-        bg: '#E0F4F8',
-        border: '#B3E5EC',
+        color: '#002868',
+        bg: '#EFF6FF',
+        border: '#BFDBFE',
         nodes: [
           { label: 'File Within 5 Months', icon: Clock, highlight: true },
           { label: 'Gather Evidence', icon: FileText },
@@ -294,9 +294,9 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
       {
         label: 'STEM OPT Facts',
         icon: BookOpen,
-        color: '#006F8F',
-        bg: '#E0F4F8',
-        border: '#B3E5EC',
+        color: '#002868',
+        bg: '#EFF6FF',
+        border: '#BFDBFE',
         nodes: [
           { label: '24-Month Extension', icon: Clock },
           { label: '36 Months Total Work Auth', icon: Briefcase },
@@ -359,7 +359,7 @@ export default function ResourceMindmap({ resourceId }: Props) {
   if (!config) return null;
 
   return (
-    <section ref={ref} className="bg-[#F7F7F7] py-12 sm:py-16">
+    <section ref={ref} className="bg-[#F8FAFC] py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
@@ -367,10 +367,10 @@ export default function ResourceMindmap({ resourceId }: Props) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="inline-block rounded-full bg-[#E0F4F8] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#006F8F]">
+          <span className="inline-block rounded-full bg-[#EFF6FF] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#002868]">
             Mindmap
           </span>
-          <h2 className="mt-4 text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+          <h2 className="mt-4 text-xl font-bold text-[#0F172A] sm:text-2xl">
             {config.centerLabel} — At a Glance
           </h2>
           <p className="mt-2 text-sm text-[#6B7280] sm:text-base">
@@ -388,8 +388,8 @@ export default function ResourceMindmap({ resourceId }: Props) {
               animate={isInView ? { scale: 1 } : {}}
               transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
             >
-              <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-gradient-to-br from-[#006F8F] to-[#005A73] text-center shadow-xl">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-teal-200">{config.centerSublabel}</p>
+              <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] text-center shadow-xl">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-200">{config.centerSublabel}</p>
                 <p className="text-lg font-extrabold leading-tight text-white">{config.centerLabel}</p>
               </div>
             </motion.div>
@@ -407,7 +407,7 @@ export default function ResourceMindmap({ resourceId }: Props) {
         <div className="space-y-4 lg:hidden">
           {/* Mobile center hub */}
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-gradient-to-br from-[#006F8F] to-[#005A73] text-center shadow-xl"
+            className="mx-auto mb-4 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] text-center shadow-xl"
             initial={{ scale: 0 }}
             animate={isInView ? { scale: 1 } : {}}
             transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
@@ -435,7 +435,7 @@ export default function ResourceMindmap({ resourceId }: Props) {
                     >
                       <BranchIcon className="h-4 w-4 text-white" />
                     </div>
-                    <h3 className="text-sm font-bold text-[#1E2D3B]">{branch.label}</h3>
+                    <h3 className="text-sm font-bold text-[#0F172A]">{branch.label}</h3>
                   </div>
                   <div className="space-y-1.5">
                     {branch.nodes.map((node) => {
@@ -449,7 +449,7 @@ export default function ResourceMindmap({ resourceId }: Props) {
                             className={`h-3.5 w-3.5 shrink-0 ${node.highlight ? '' : 'opacity-70'}`}
                             style={{ color: node.highlight ? branch.color : '#6B7280' }}
                           />
-                          <span className={node.highlight ? 'text-[#1E2D3B]' : 'text-[#4B5563]'}>
+                          <span className={node.highlight ? 'text-[#0F172A]' : 'text-[#4B5563]'}>
                             {node.label}
                           </span>
                         </div>
@@ -496,7 +496,7 @@ function MindmapBranch({
           >
             <BranchIcon className="h-5 w-5 text-white" />
           </motion.div>
-          <h3 className="text-base font-bold text-[#1E2D3B] sm:text-lg">{branch.label}</h3>
+          <h3 className="text-base font-bold text-[#0F172A] sm:text-lg">{branch.label}</h3>
         </div>
         <div className="space-y-2">
           {branch.nodes.map((node, j) => {
@@ -513,7 +513,7 @@ function MindmapBranch({
                   className={`h-4 w-4 shrink-0 ${node.highlight ? '' : 'opacity-60'}`}
                   style={{ color: node.highlight ? branch.color : '#6B7280' }}
                 />
-                <span className={`text-sm ${node.highlight ? 'font-semibold text-[#1E2D3B]' : 'text-[#4B5563]'}`}>
+                <span className={`text-sm ${node.highlight ? 'font-semibold text-[#0F172A]' : 'text-[#4B5563]'}`}>
                   {node.label}
                 </span>
               </motion.div>

@@ -32,7 +32,7 @@ export default function SEVISRecoveryFlowchart() {
           <span className="inline-block rounded-full bg-[#FEE2E2] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#DC2626]">
             Decision Tree
           </span>
-          <h2 className="mt-4 text-xl font-bold text-[#1E2D3B] sm:text-2xl">
+          <h2 className="mt-4 text-xl font-bold text-[#0F172A] sm:text-2xl">
             SEVIS Termination — Your Recovery Options
           </h2>
           <p className="mt-2 text-sm text-[#6B7280] sm:text-base">
@@ -51,7 +51,7 @@ export default function SEVISRecoveryFlowchart() {
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#DC2626] shadow-lg">
               <AlertTriangle className="h-8 w-8 text-white" />
             </div>
-            <p className="mt-2 text-center text-sm font-bold text-[#1E2D3B] sm:text-base">SEVIS Terminated</p>
+            <p className="mt-2 text-center text-sm font-bold text-[#0F172A] sm:text-base">SEVIS Terminated</p>
           </motion.div>
 
           {/* Decision: Within 5 months? */}
@@ -62,7 +62,7 @@ export default function SEVISRecoveryFlowchart() {
             transition={{ delay: 0.2, duration: 0.4 }}
           >
             <Scale className="h-5 w-5 text-[#D97706]" />
-            <span className="text-sm font-semibold text-[#1E2D3B]">Within 5 months of termination?</span>
+            <span className="text-sm font-semibold text-[#0F172A]">Within 5 months of termination?</span>
           </motion.div>
 
           {/* Two paths */}
@@ -98,7 +98,7 @@ export default function SEVISRecoveryFlowchart() {
                     >
                       <StepIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#059669]" />
                       <div>
-                        <p className="text-sm font-semibold text-[#1E2D3B]">{step.label}</p>
+                        <p className="text-sm font-semibold text-[#0F172A]">{step.label}</p>
                         <p className="text-xs text-[#6B7280]">{step.desc}</p>
                       </div>
                     </motion.div>
@@ -124,14 +124,14 @@ export default function SEVISRecoveryFlowchart() {
 
             {/* NO/ALTERNATIVE Path - Transfer or Travel */}
             <motion.div
-              className="rounded-2xl border-2 border-[#006F8F] bg-[#E0F4F8]/30 p-5 sm:p-6"
+              className="rounded-2xl border-2 border-[#002868] bg-[#EFF6FF]/30 p-5 sm:p-6"
               initial={{ opacity: 0, x: 20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               <div className="mb-4 flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#006F8F] text-xs font-bold text-white">NO</span>
-                <h3 className="text-base font-bold text-[#006F8F] sm:text-lg">Transfer or Travel & Re-entry</h3>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#002868] text-xs font-bold text-white">NO</span>
+                <h3 className="text-base font-bold text-[#002868] sm:text-lg">Transfer or Travel & Re-entry</h3>
               </div>
 
               <div className="space-y-3">
@@ -151,9 +151,9 @@ export default function SEVISRecoveryFlowchart() {
                       animate={isInView ? { opacity: 1, y: 0 } : {}}
                       transition={{ delay: 0.4 + j * 0.08, duration: 0.3 }}
                     >
-                      <StepIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#006F8F]" />
+                      <StepIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#002868]" />
                       <div>
-                        <p className="text-sm font-semibold text-[#1E2D3B]">{step.label}</p>
+                        <p className="text-sm font-semibold text-[#0F172A]">{step.label}</p>
                         <p className="text-xs text-[#6B7280]">{step.desc}</p>
                       </div>
                     </motion.div>
@@ -162,8 +162,8 @@ export default function SEVISRecoveryFlowchart() {
               </div>
 
               {/* UCSG recommendation */}
-              <div className="mt-4 rounded-xl border border-[#B3E5EC] bg-[#E0F4F8] p-3">
-                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-[#006F8F]">
+              <div className="mt-4 rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] p-3">
+                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-[#002868]">
                   <Shield className="h-3.5 w-3.5" />
                   UCSG Recommendation:
                 </p>
@@ -176,13 +176,13 @@ export default function SEVISRecoveryFlowchart() {
 
           {/* Bottom: UCSG handles both */}
           <motion.div
-            className="mt-8 flex flex-col items-center rounded-2xl bg-gradient-to-r from-[#006F8F] to-[#005A73] p-6 text-center shadow-lg sm:mt-10"
+            className="mt-8 flex flex-col items-center rounded-2xl bg-gradient-to-r from-[#002868] to-[#001B4D] p-6 text-center shadow-lg sm:mt-10"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.9, duration: 0.5 }}
           >
             <p className="text-sm font-bold text-white sm:text-base">Don&apos;t panic — UCSG handles both paths 24/7</p>
-            <p className="mt-1 text-xs text-teal-200 sm:text-sm">Free consultation · Same-day assessment · No obligation</p>
+            <p className="mt-1 text-xs text-blue-200 sm:text-sm">Free consultation · Same-day assessment · No obligation</p>
           </motion.div>
         </div>
       </div>

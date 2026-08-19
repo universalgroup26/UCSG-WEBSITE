@@ -413,3 +413,172 @@ Stage Summary:
 - All 5 page types (home, university, resource, contact, scholarships) verified clean via browser testing
 - Mobile and desktop responsive verified
 - Zero lint errors, zero runtime errors
+
+---
+Task ID: fix-herosection
+Agent: Main Agent
+Task: Fix onContactClick prop bug and apply USA Flag color theme to HeroSection.tsx
+
+Work Log:
+- Added `interface Props { onContactClick?: () => void; }` and updated component signature to accept the prop
+- Added third CTA button "Get Free Consultation" styled with USA Red (#B31942) that calls `onContactClick?.()`
+- Replaced all teal colors with USA Flag colors:
+  - `#006F8F` → `#002868` (USA Blue) in gradient bg, button text, floating stat circle, SVG wave stops
+  - `#005A73` → `#001B4D` (Dark Blue) in gradient bg, hero image overlay
+  - `teal-100/80` → `blue-100/80` in trust text
+  - `teal-100` → `blue-100` in heading gradient span
+  - `teal-200/80` → `blue-200/80` in trust badge labels
+  - `teal-200/60` → `blue-200/60` in trust badge icons
+  - Button hover `#E0F4F8` → `#EFF6FF`
+  - SVG wave gradient renamed `tealFade` → `usaFade`, now transitions from USA Blue (#002868) to USA Red (#B31942)
+- Kept green ping dot for availability indicator (unchanged)
+- Kept overall structure, animations, and layout identical
+
+Stage Summary:
+- HeroSection now correctly accepts and uses the `onContactClick` prop from parent page.tsx
+- New "Get Free Consultation" button added with USA Red styling, wired to contact modal
+- All teal colors replaced with USA Flag blue/red color scheme
+- ESLint passes cleanly, dev server compiles without errors
+
+---
+Task ID: fix-services-testimonials
+Agent: Main Agent
+Task: Update ServicesSection.tsx and TestimonialsSection.tsx with USA Flag colors
+
+Work Log:
+- ServicesSection.tsx color replacements:
+  - `#006F8F` → `#002868` (icon color, button bg)
+  - `#005A73` → `#001B4D` (button hover bg)
+  - `#B3E5EC` → `#BFDBFE` (card border)
+  - `#E0F4F8` → `#EFF6FF` (icon bg)
+  - `#F7F7F7` → `#F8FAFC` (card bg)
+  - `#1E2D3B` → `#0F172A` (heading color)
+- TestimonialsSection.tsx color replacements:
+  - Renamed `BRAND_TEAL = '#006F8F'` → `BRAND_BLUE = '#002868'`
+  - All `BRAND_TEAL` references → `BRAND_BLUE` (Quote icon color, badge styles, decorative blobs, dot indicator, heading icon)
+  - `ring-[#006F8F]` → `ring-[#002868]` (avatar ring)
+  - `text-[#1E2D3B]` → `text-[#0F172A]` (heading color)
+- Structure, animations, logic, and layout remain identical
+- ESLint passes cleanly, dev server compiles without errors
+
+Stage Summary:
+- Both ServicesSection and TestimonialsSection now use USA Flag blue color scheme (#002868 / #001B4D)
+- All teal references eliminated from these two components
+- Consistent with the USA Flag theme applied to HeroSection in previous task
+
+---
+Task ID: fix-trust-about-footer
+Agent: Main Agent
+Task: Update TrustSection, AboutUCSGSection, and Footer with USA Flag color palette
+
+Work Log:
+- Updated TrustSection.tsx color constants: TEAL → #002868 (USA Blue), TEAL_LIGHT → #3B82F6 (brighter blue), DARK_BG → #0F172A, DARK_CARD → #1A2332
+- Updated AboutUCSGSection.tsx color constants: TEAL → #002868, TEAL_DARK → #0F172A, TEAL_CARD → #1A2332
+- Updated Footer.tsx: bg-[#1E2D3B] → bg-[#0F172A], hover:bg-[#006F8F] → hover:bg-[#002868], hover:text-[#00C6FF] → hover:text-[#60A5FA] (all 7 instances), bg-[#002A38] → bg-[#0C1A2E] (all 4 instances)
+- Added onContactClick prop to Footer Props interface
+- Fixed Footer CTA button to call both onContactClick?.() and onNavigate?.('contact')
+- ESLint passes cleanly, dev server compiles without errors
+
+Stage Summary:
+- Three files updated with consistent USA Flag color palette (Old Glory Blue #002868, lighter highlight #3B82F6, dark backgrounds #0F172A/#1A2332)
+- Footer prop bug fixed: onContactClick now triggers alongside navigation
+
+---
+Task ID: fix-page-components
+Agent: Main Agent
+Task: Update four page component files with USA Flag colors
+
+Work Log:
+- Read worklog.md and all four target files (ContactPage, ResourcePage, UniversityPage, ScholarshipsPage)
+- Applied all 10 color replacement rules via sed across all four files in a single pass
+- Verified zero remaining old color values in all four files
+- Verified new color values are present in correct quantities
+- ESLint passes cleanly with no errors
+
+Color replacements applied:
+- #006F8F → #002868 (primary blue) — 53 instances across 4 files
+- #005A73 → #001B4D (dark blue) — 4 instances across 4 files
+- #1E2D3B → #0F172A (dark text/bg) — 71 instances across 4 files
+- #0B1120 → #0A0F1A (very dark bg) — 1 instance in ContactPage
+- #E0F4F8 → #EFF6FF (light blue bg) — 1 instance in ResourcePage
+- #F7F7F7 → #F8FAFC (card bg) — 6 instances in ResourcePage + UniversityPage
+- #00C6FF → #60A5FA (hover accent) — 1 instance in ScholarshipsPage
+
+Files updated:
+- ContactPage.tsx: 20 primary, 1 dark blue, 21 dark text, 1 very dark bg replacements
+- ResourcePage.tsx: 4 primary, 7 dark text, 2 card bg replacements
+- UniversityPage.tsx: 17 primary, 1 dark blue, 35 dark text, 4 card bg replacements
+- ScholarshipsPage.tsx: 12 primary, 2 dark blue, 8 dark text replacements
+
+Stage Summary:
+- All four page components now use the USA Flag color palette consistently
+- No structural, animation, or logic changes — only color values replaced
+- Lint passes cleanly
+---
+Task ID: fix-infographics
+Agent: Main Agent
+Task: Update all 7 infographic component files with USA Flag colors
+
+Work Log:
+- Read worklog.md and all 7 infographic component files
+- Applied systematic color replacements via sed across all files in src/components/infographics/
+- Replacements applied:
+  - #006F8F → #002868 (primary blue)
+  - #005A73 → #001B4D (dark blue)
+  - #1E2D3B → #0F172A (dark text/bg)
+  - #0B1120 → #0A0F1A (very dark bg)
+  - #253545 → #1A2332 (dark card)
+  - #0097B8 → #3B82F6 (bright accent)
+  - #00C6FF → #60A5FA (hover/light accent)
+  - #B3E5EC → #BFDBFE (light border)
+  - #E0F4F8 → #EFF6FF (light bg)
+  - #F7F7F7 → #F8FAFC (card bg)
+  - text-teal-200 → text-blue-200 (Tailwind class)
+- Verified no old teal/color values remain in any of the 7 files
+- Verified new #002868 values present in all 7 files
+- Verified text-blue-200 replacements in ServicesMindmap, SEVISRecoveryFlowchart, ResourceMindmap
+- ESLint passes cleanly with zero errors
+
+Files updated:
+  1. StudentJourneyInfographic.tsx
+  2. ServicesMindmap.tsx
+  3. UniversityMindmap.tsx
+  4. SEVISRecoveryFlowchart.tsx
+  5. VisaPathwayFlowchart.tsx
+  6. ResourceMindmap.tsx
+  7. CPTvsOPTInfographic.tsx
+
+Stage Summary:
+- All 7 infographic components now use the USA Flag color palette
+- No structural, animation, or logic changes — only color values replaced
+- Lint passes cleanly
+
+---
+Task ID: full-website-recheck
+Agent: Main Agent
+Task: Full website recheck — fix bugs, apply USA flag colors site-wide, verify all components
+
+Work Log:
+- Read all 18+ component files and performed comprehensive audit
+- Found bugs: HeroSection missing onContactClick prop, Footer missing onContactClick prop
+- Found old teal colors (#006F8F, #005A73, #1E2D3B, etc.) across ALL components
+- Found UniversitiesSection reverted to old 29-university list
+- Found Header.tsx reverted to old simple version
+- Found Logo.tsx reverted (lost showBadge prop, veteran badge)
+- Launched 4 parallel agents to fix colors in: HeroSection, ServicesSection, TestimonialsSection, TrustSection, AboutUCSGSection, Footer, ContactPage, ResourcePage, UniversityPage, ScholarshipsPage, 7 infographics
+- Manually re-wrote Header.tsx with impressive design + USA flag colors (agents had reverted it)
+- Manually re-wrote Logo.tsx with showBadge prop + veteran badge
+- Manually re-wrote UniversitiesSection.tsx with correct 11 universities + Featured/Partner layout
+- Fixed remaining old colors in: CampusVisual.tsx, VisualSectionDivider.tsx, globals.css, resources.ts, HeroSection floating cards
+- Color mapping applied: #006F8F→#002868, #005A73→#001B4D, #1E2D3B→#0F172A, #0097B8→#3B82F6, #B3E5EC→#BFDBFE, #E0F4F8→#EFF6FF, #F7F7F7→#F8FAFC, #00C6FF→#60A5FA, #253545→#1A2332, #002A38→#0C1A2E, #B31942 (red accent)
+- Verified with rg: ZERO old teal/navy colors remain in src/
+- Browser verified: correct 11 universities, blue color scheme, no old universities
+
+Stage Summary:
+- ALL old teal/navy colors replaced with USA flag colors site-wide
+- Header re-written with impressive top bar + scroll effects + categorized dropdowns
+- Logo restored with veteran badge
+- UniversitiesSection restored with 11 correct institutions
+- HeroSection onContactClick bug fixed
+- Footer onContactClick prop added
+- Lint passes clean, compiles without errors

@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import { GraduationCap, Shield, Clock, CheckCircle, ArrowRight, ChevronDown } from 'lucide-react';
 
-const TEAL = '#006F8F';
-const TEAL_LIGHT = '#0097B8';
-const DARK_BG = '#1E2D3B';
-const DARK_CARD = '#253545';
+const TEAL = '#002868';
+const TEAL_LIGHT = '#3B82F6';
+const DARK_BG = '#0F172A';
+const DARK_CARD = '#1A2332';
 const LIGHT_TEXT = '#F7F7F7';
 const MUTED_TEXT = '#94A3B8';
 

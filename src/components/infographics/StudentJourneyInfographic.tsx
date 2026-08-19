@@ -16,8 +16,8 @@ const journeySteps = [
     icon: MessageCircle,
     title: 'Free Consultation',
     description: 'Share your situation & goals with UCSG advisors',
-    color: '#006F8F',
-    bg: '#E0F4F8',
+    color: '#002868',
+    bg: '#EFF6FF',
   },
   {
     icon: FileSearch,
@@ -51,8 +51,8 @@ const journeySteps = [
     icon: BadgeCheck,
     title: 'Path to H-1B',
     description: 'Build experience & transition to H-1B with employer',
-    color: '#006F8F',
-    bg: '#E0F4F8',
+    color: '#002868',
+    bg: '#EFF6FF',
   },
 ];
 
@@ -61,7 +61,7 @@ export default function StudentJourneyInfographic() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={ref} className="bg-[#F7F7F7] py-14 sm:py-20">
+    <section ref={ref} className="bg-[#F8FAFC] py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mx-auto mb-12 max-w-2xl text-center sm:mb-16"
@@ -69,10 +69,10 @@ export default function StudentJourneyInfographic() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="inline-block rounded-full bg-[#E0F4F8] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#006F8F]">
+          <span className="inline-block rounded-full bg-[#EFF6FF] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#002868]">
             Your Journey
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#1E2D3B] sm:text-3xl">
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
             From Consultation to Your First Paycheck
           </h2>
           <p className="mt-3 text-[#6B7280]">
@@ -91,7 +91,7 @@ export default function StudentJourneyInfographic() {
             >
               <motion.line
                 x1="0" y1="1" x2="100%" y2="1"
-                stroke="#B3E5EC"
+                stroke="#BFDBFE"
                 strokeWidth="2"
                 strokeDasharray="8 4"
                 initial={{ pathLength: 0 }}
@@ -127,7 +127,7 @@ export default function StudentJourneyInfographic() {
                         {i + 1}
                       </span>
                     </motion.div>
-                    <h3 className="text-sm font-bold text-[#1E2D3B]">{step.title}</h3>
+                    <h3 className="text-sm font-bold text-[#0F172A]">{step.title}</h3>
                     <p className="mt-1 max-w-[150px] text-xs leading-relaxed text-[#6B7280]">{step.description}</p>
                   </motion.div>
                 );
@@ -165,13 +165,13 @@ export default function StudentJourneyInfographic() {
                     </div>
                     {/* Text content */}
                     <div className={`flex-1 ${isEven ? '' : 'sm:text-left'}`}>
-                      <h3 className="text-sm font-bold text-[#1E2D3B] sm:text-base">{step.title}</h3>
+                      <h3 className="text-sm font-bold text-[#0F172A] sm:text-base">{step.title}</h3>
                       <p className="mt-0.5 text-xs leading-relaxed text-[#6B7280] sm:text-sm">{step.description}</p>
                     </div>
                   </div>
                   {/* Connector line */}
                   {i < journeySteps.length - 1 && (
-                    <div className="ml-7 h-3 w-0.5 bg-[#B3E5EC] sm:ml-8" />
+                    <div className="ml-7 h-3 w-0.5 bg-[#BFDBFE] sm:ml-8" />
                   )}
                 </motion.div>
               );
@@ -187,14 +187,14 @@ export default function StudentJourneyInfographic() {
           transition={{ delay: 0.9, duration: 0.6 }}
         >
           {[
-            { value: '5,000+', label: 'Students Helped', color: '#006F8F' },
+            { value: '5,000+', label: 'Students Helped', color: '#002868' },
             { value: '99%', label: 'Success Rate', color: '#059669' },
             { value: '29+', label: 'Partner Universities', color: '#D97706' },
             { value: '24/7', label: 'Support Available', color: '#7C3AED' },
           ].map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-[#B3E5EC] bg-white p-4 text-center shadow-sm sm:p-5"
+              className="rounded-xl border border-[#BFDBFE] bg-white p-4 text-center shadow-sm sm:p-5"
             >
               <p className="text-xl font-bold sm:text-2xl lg:text-3xl" style={{ color: stat.color }}>
                 {stat.value}

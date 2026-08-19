@@ -14,9 +14,9 @@ import {
   HeartHandshake,
 } from 'lucide-react';
 
-const TEAL = '#006F8F';
-const TEAL_DARK = '#1E2D3B';
-const TEAL_CARD = '#253545';
+const TEAL = '#002868';
+const TEAL_DARK = '#0F172A';
+const TEAL_CARD = '#1A2332';
 const MUTED_TEXT = '#94A3B8';
 
 /* ------------------------------------------------------------------ */

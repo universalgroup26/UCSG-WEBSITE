@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, ChevronDown, Phone, X } from 'lucide-react';
+import { Menu, ChevronDown, Phone, Mail, ShieldCheck, MapPin, X, GraduationCap, BookOpen, DollarSign, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -14,198 +14,453 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import Logo from './Logo';
 
 const universitiesLinks = [
-  { name: 'Rivier University', id: 'rivier' },
-  { name: 'Indiana Wesleyan University', id: 'indiana-wesleyan' },
-  { name: 'Avila University (AZ)', id: 'avila-az' },
-  { name: 'Avila University (KC)', id: 'avila-kc' },
-  { name: 'New England College', id: 'new-england' },
-  { name: 'Monroe University', id: 'monroe' },
-  { name: 'Anderson University', id: 'anderson' },
-  { name: 'Regis University', id: 'regis' },
+  { name: 'Trine University', id: 'trine', category: 'Featured' },
+  { name: 'Monroe University', id: 'monroe', category: 'Featured' },
+  { name: 'Saint Francis University', id: 'saint-francis', category: 'Featured' },
+  { name: 'Tacoma Community College', id: 'tacoma-community', category: 'Featured' },
+  { name: 'Computer System Institutes', id: 'computer-system-institutes', category: 'Partners' },
+  { name: 'Curry College', id: 'curry', category: 'Partners' },
+  { name: 'Dream IT', id: 'dream-it', category: 'Partners' },
+  { name: 'NEW YORK Language Center', id: 'ny-language-center', category: 'Partners' },
+  { name: 'International American University', id: 'international-american-university', category: 'Partners' },
+  { name: 'NEW YORK General Consulting', id: 'ny-general-consulting', category: 'Partners' },
+  { name: 'Westcliff University', id: 'westcliff', category: 'Partners' },
 ];
 
 const resourcesLinks = [
-  { name: 'Day 1 CPT Guide', id: 'day1-cpt' },
-  { name: 'University Transfers', id: 'university-transfers' },
-  { name: 'Change of Status', id: 'change-of-status' },
-  { name: 'SEVIS Reinstatement', id: 'sevis-reinstatement' },
-  { name: 'STEM OPT Support', id: 'stem-opt' },
+  { name: 'Day 1 CPT Guide', id: 'day1-cpt', icon: BookOpen },
+  { name: 'University Transfers', id: 'university-transfers', icon: GraduationCap },
+  { name: 'Change of Status', id: 'change-of-status', icon: ArrowRight },
+  { name: 'SEVIS Reinstatement', id: 'sevis-reinstatement', icon: ShieldCheck },
+  { name: 'STEM OPT Support', id: 'stem-opt', icon: DollarSign },
 ];
 
 interface Props {
   onNavigate?: (view: string, id?: string) => void;
 }
 
+const navItemVariants = {
+  hidden: { opacity: 0, y: -8 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.1 + i * 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
+const featuredUnis = universitiesLinks.filter((u) => u.category === 'Featured');
+const partnerUnis = universitiesLinks.filter((u) => u.category === 'Partners');
+
 export default function Header({ onNavigate }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeNav, setActiveNav] = useState('home');
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setScrolled(latest > 10);
+  });
 
   const handleNav = (view: string, id?: string) => {
+    setActiveNav(view);
     setMobileOpen(false);
     onNavigate?.(view, id);
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Logo size="md" showText />
+    <header className="sticky top-0 z-50">
+      {/* ===== TOP ANNOUNCEMENT BAR ===== */}
+      <TopBar />
 
-        {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 lg:flex">
-          <button
-            onClick={() => handleNav('home')}
-            className="rounded-full bg-[#E0F4F8] px-4 py-1.5 text-sm font-medium text-[#006F8F] transition-colors hover:bg-[#B3E5EC]"
-          >
-            Home
-          </button>
+      {/* ===== MAIN HEADER ===== */}
+      <div
+        className={
+          `relative border-b transition-all duration-300 ${
+            scrolled
+              ? 'border-gray-200/80 bg-white/90 shadow-lg shadow-black/[0.04] backdrop-blur-xl'
+              : 'border-gray-100 bg-white'
+          }`
+        }
+      >
+        <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <Logo size="lg" showText showBadge={false} />
 
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9] outline-none">
-              Universities
-              <ChevronDown className="h-3.5 w-3.5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="w-56">
-              {universitiesLinks.map((item) => (
-                <DropdownMenuItem
-                  key={item.id}
-                  className="cursor-pointer"
-                  onClick={() => handleNav('university', item.id)}
-                >
-                  {item.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-0.5 xl:flex">
+            <motion.button
+              custom={0}
+              variants={navItemVariants}
+              initial="hidden"
+              animate="visible"
+              onClick={() => handleNav('home')}
+              className={
+                `relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeNav === 'home'
+                    ? 'bg-[#002868] text-white'
+                    : 'text-[#0F172A] hover:bg-[#002868]/5 hover:text-[#002868]'
+                }`
+              }
+            >
+              Home
+            </motion.button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9] outline-none">
-              Resources
-              <ChevronDown className="h-3.5 w-3.5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="w-48">
-              {resourcesLinks.map((item) => (
-                <DropdownMenuItem
-                  key={item.id}
-                  className="cursor-pointer"
-                  onClick={() => handleNav('resource', item.id)}
-                >
-                  {item.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <UniversityDropdown handleNav={handleNav} />
 
-          <button
-            onClick={() => handleNav('resource', 'day1-cpt')}
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
-          >
-            Day 1 CPT
-          </button>
-          <button
-            onClick={() => handleNav('scholarships')}
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
-          >
-            Scholarships
-          </button>
-          <button
-            onClick={() => handleNav('contact')}
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1E2D3B] transition-colors hover:bg-[#F0F7F9]"
-          >
-            Contact
-          </button>
-        </nav>
+            <ResourceDropdown handleNav={handleNav} />
 
-        {/* Desktop CTA */}
-        <Button
-          className="hidden rounded-full bg-[#006F8F] px-5 text-sm font-medium text-white hover:bg-[#005A73] lg:inline-flex"
-          size="default"
-          asChild
-        >
-          <a href="tel:+13028935594">
-            <Phone className="mr-1.5 h-4 w-4" />
-            Call Now
-          </a>
-        </Button>
+            <motion.button
+              custom={3}
+              variants={navItemVariants}
+              initial="hidden"
+              animate="visible"
+              onClick={() => handleNav('resource', 'day1-cpt')}
+              className={
+                `relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeNav === 'day1-cpt'
+                    ? 'bg-[#002868] text-white'
+                    : 'text-[#0F172A] hover:bg-[#002868]/5 hover:text-[#002868]'
+                }`
+              }
+            >
+              Day 1 CPT
+            </motion.button>
 
-        {/* Mobile Menu */}
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild className="lg:hidden">
-            <Button variant="ghost" size="icon">
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-80 overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle className="flex items-center gap-2 text-left">
-                <Logo size="sm" showText />
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="mt-6 flex flex-col gap-1">
-              <button
-                onClick={() => handleNav('home')}
-                className="rounded-lg bg-[#E0F4F8] px-4 py-2.5 text-left text-sm font-medium text-[#006F8F]"
+            <motion.button
+              custom={4}
+              variants={navItemVariants}
+              initial="hidden"
+              animate="visible"
+              onClick={() => handleNav('scholarships')}
+              className={
+                `relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeNav === 'scholarships'
+                    ? 'bg-[#002868] text-white'
+                    : 'text-[#0F172A] hover:bg-[#002868]/5 hover:text-[#002868]'
+                }`
+              }
+            >
+              Scholarships
+            </motion.button>
+
+            <motion.button
+              custom={5}
+              variants={navItemVariants}
+              initial="hidden"
+              animate="visible"
+              onClick={() => handleNav('contact')}
+              className={
+                `relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeNav === 'contact'
+                    ? 'bg-[#B31942] text-white'
+                    : 'text-[#0F172A] hover:bg-[#B31942]/5 hover:text-[#B31942]'
+                }`
+              }
+            >
+              Contact
+            </motion.button>
+          </nav>
+
+          {/* Desktop CTA */}
+          <div className="hidden items-center gap-3 xl:flex">
+            <motion.div
+              custom={6}
+              variants={navItemVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex items-center gap-2"
+            >
+              <a
+                href="tel:+13028935594"
+                className="hidden items-center gap-1.5 text-sm font-medium text-[#64748B] transition-colors hover:text-[#002868] lg:inline-flex"
               >
-                Home
-              </button>
+                <Phone className="h-3.5 w-3.5" />
+                <span className="hidden xl:inline">(302) 893-5594</span>
+              </a>
+              <Button
+                className="relative overflow-hidden rounded-full bg-gradient-to-r from-[#B31942] to-[#002868] px-6 text-sm font-bold text-white shadow-lg shadow-[#B31942]/20 transition-all hover:shadow-xl hover:shadow-[#B31942]/30 hover:brightness-110"
+                size="default"
+                asChild
+              >
+                <a href="tel:+13028935594">
+                  <Phone className="mr-2 h-4 w-4" />
+                  Get Free Consultation
+                </a>
+              </Button>
+            </motion.div>
+          </div>
 
-              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
-                Universities
+          {/* Mobile Menu Trigger */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild className="xl:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={
+                  `relative h-10 w-10 rounded-xl transition-colors ${
+                    mobileOpen ? 'bg-[#002868] text-white' : 'text-[#0F172A] hover:bg-[#002868]/5'
+                  }`
+                }
+              >
+                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[340px] overflow-y-auto p-0">
+              {/* Mobile header with blue gradient */}
+              <div className="bg-gradient-to-br from-[#002868] to-[#001B4D] px-6 pb-6 pt-8">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-3 text-left">
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-extrabold tracking-tight text-white">UCSG</span>
+                      <span className="text-xs font-medium tracking-wide text-white/70">
+                        Universal Consulting Service Group
+                      </span>
+                    </div>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white">
+                  <ShieldCheck className="h-3 w-3" />
+                  U.S. Army Veteran-owned Business
+                </div>
               </div>
-              {universitiesLinks.map((item) => (
+
+              <nav className="flex flex-col gap-0.5 p-4">
                 <button
-                  key={item.id}
-                  onClick={() => handleNav('university', item.id)}
-                  className="rounded-lg px-4 py-2 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
+                  onClick={() => handleNav('home')}
+                  className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#0F172A] transition-colors hover:bg-[#002868]/5"
                 >
-                  {item.name}
+                  Home
                 </button>
-              ))}
 
-              <div className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
-                Resources
-              </div>
-              {resourcesLinks.map((item) => (
+                {/* Universities section */}
+                <div className="mt-2 px-4 pb-1.5 text-[11px] font-bold uppercase tracking-widest text-[#B31942]">
+                  Featured Universities
+                </div>
+                {featuredUnis.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNav('university', item.id)}
+                    className="rounded-lg px-4 py-2.5 text-left text-sm text-[#334155] transition-colors hover:bg-[#002868]/5 hover:text-[#002868]"
+                  >
+                    {item.name}
+                  </button>
+                ))}
+
+                <div className="mt-2 px-4 pb-1.5 text-[11px] font-bold uppercase tracking-widest text-[#002868]">
+                  Partner Institutions
+                </div>
+                {partnerUnis.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNav('university', item.id)}
+                    className="rounded-lg px-4 py-2.5 text-left text-sm text-[#334155] transition-colors hover:bg-[#002868]/5 hover:text-[#002868]"
+                  >
+                    {item.name}
+                  </button>
+                ))}
+
+                {/* Resources section */}
+                <div className="mt-3 px-4 pb-1.5 text-[11px] font-bold uppercase tracking-widest text-[#B31942]">
+                  Resources
+                </div>
+                {resourcesLinks.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNav('resource', item.id)}
+                    className="flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-left text-sm text-[#334155] transition-colors hover:bg-[#002868]/5 hover:text-[#002868]"
+                  >
+                    <item.icon className="h-4 w-4 text-[#94A3B8]" />
+                    {item.name}
+                  </button>
+                ))}
+
+                <div className="my-3 border-t border-gray-100" />
+
                 <button
-                  key={item.id}
-                  onClick={() => handleNav('resource', item.id)}
-                  className="rounded-lg px-4 py-2 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
+                  onClick={() => handleNav('scholarships')}
+                  className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#0F172A] transition-colors hover:bg-[#002868]/5"
                 >
-                  {item.name}
+                  Scholarships
                 </button>
-              ))}
+                <button
+                  onClick={() => handleNav('contact')}
+                  className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#B31942] transition-colors hover:bg-[#B31942]/5"
+                >
+                  Contact Us
+                </button>
 
-              <button
-                onClick={() => handleNav('scholarships')}
-                className="rounded-lg px-4 py-2.5 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
-              >
-                Scholarships
-              </button>
-
-              <button
-                onClick={() => handleNav('contact')}
-                className="rounded-lg px-4 py-2.5 text-left text-sm text-[#1E2D3B] hover:bg-[#F0F7F9]"
-              >
-                Contact Us
-              </button>
-
-              <div className="mt-4 px-4">
-                <Button className="w-full rounded-full bg-[#006F8F] text-white hover:bg-[#005A73]" asChild>
-                  <a href="tel:+13028935594">
-                    <Phone className="mr-1.5 h-4 w-4" />
+                {/* Mobile CTA */}
+                <div className="mt-4 space-y-2 px-2">
+                  <a
+                    href="tel:+13028935594"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#B31942] to-[#002868] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#B31942]/20"
+                  >
+                    <Phone className="h-4 w-4" />
                     Call +1 (302) 893-5594
                   </a>
-                </Button>
-              </div>
-            </nav>
-          </SheetContent>
-        </Sheet>
+                  <a
+                    href="mailto:Info@universalconsultingservices.com"
+                    className="flex items-center justify-center gap-2 rounded-xl border-2 border-[#002868]/10 px-5 py-3 text-sm font-semibold text-[#002868] transition-colors hover:bg-[#002868]/5"
+                  >
+                    <Mail className="h-4 w-4" />
+                    Email Us
+                  </a>
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
+  );
+}
+
+/* ===== TOP ANNOUNCEMENT BAR ===== */
+function TopBar() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (!isVisible) return null;
+
+  return (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden bg-gradient-to-r from-[#002868] via-[#001B4D] to-[#002868]"
+        >
+          {/* Decorative elements */}
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/[0.03]" />
+            <div className="absolute -bottom-6 right-20 h-24 w-24 rounded-full bg-white/[0.03]" />
+            <div className="absolute bottom-0 left-1/2 h-px w-1/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          </div>
+
+          <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <a
+                href="tel:+13028935594"
+                className="hidden items-center gap-1.5 text-xs font-medium text-white/80 transition-colors hover:text-white sm:inline-flex"
+              >
+                <Phone className="h-3 w-3" />
+                <span>(302) 893-5594</span>
+              </a>
+              <a
+                href="mailto:Info@universalconsultingservices.com"
+                className="hidden items-center gap-1.5 text-xs font-medium text-white/80 transition-colors hover:text-white md:inline-flex"
+              >
+                <Mail className="h-3 w-3" />
+                <span>Info@universalconsultingservices.com</span>
+              </a>
+              <span className="flex items-center gap-1.5 text-xs font-medium text-white/80">
+                <MapPin className="h-3 w-3" />
+                <span className="hidden sm:inline">Jackson Heights, NY</span>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B31942]/30 bg-[#B31942]/20 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-white sm:text-xs">
+                <ShieldCheck className="h-3 w-3 text-[#FCA5A5]" />
+                <span className="hidden sm:inline">U.S. Army Veteran-owned Business</span>
+                <span className="sm:hidden">Veteran-owned</span>
+              </span>
+              <button
+                onClick={() => setIsVisible(false)}
+                className="rounded-full p-0.5 text-white/40 transition-colors hover:bg-white/10 hover:text-white/80"
+                aria-label="Close announcement bar"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+    );
+}
+
+/* ===== UNIVERSITY DROPDOWN ===== */
+function UniversityDropdown({ handleNav }: { handleNav: (v: string, id?: string) => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <motion.button
+          custom={1}
+          variants={navItemVariants}
+          initial="hidden"
+          animate="visible"
+          className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-[#0F172A] transition-colors hover:bg-[#002868]/5 hover:text-[#002868] outline-none"
+        >
+          Universities
+          <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+        </motion.button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-72 p-2">
+        <DropdownMenuLabel className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[#B31942]">
+          Featured Universities
+        </DropdownMenuLabel>
+        {featuredUnis.map((item) => (
+          <DropdownMenuItem
+            key={item.id}
+            className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium focus:bg-[#002868]/5 focus:text-[#002868]"
+            onClick={() => handleNav('university', item.id)}
+          >
+            {item.name}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator className="my-1 bg-gray-100" />
+        <DropdownMenuLabel className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[#002868]">
+          Partner Institutions
+        </DropdownMenuLabel>
+        {partnerUnis.map((item) => (
+          <DropdownMenuItem
+            key={item.id}
+            className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium focus:bg-[#002868]/5 focus:text-[#002868]"
+            onClick={() => handleNav('university', item.id)}
+          >
+            {item.name}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/* ===== RESOURCE DROPDOWN ===== */
+function ResourceDropdown({ handleNav }: { handleNav: (v: string, id?: string) => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <motion.button
+          custom={2}
+          variants={navItemVariants}
+          initial="hidden"
+          animate="visible"
+          className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-[#0F172A] transition-colors hover:bg-[#002868]/5 hover:text-[#002868] outline-none"
+        >
+          Resources
+          <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+        </motion.button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-56 p-2">
+        {resourcesLinks.map((item) => (
+          <DropdownMenuItem
+            key={item.id}
+            className="flex cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium focus:bg-[#002868]/5 focus:text-[#002868]"
+            onClick={() => handleNav('resource', item.id)}
+          >
+            <item.icon className="h-4 w-4 text-[#94A3B8]" />
+            {item.name}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

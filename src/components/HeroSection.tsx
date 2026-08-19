@@ -5,6 +5,10 @@ import { MessageCircle, Phone, CheckCircle2, Users, Globe, Award } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
+interface Props {
+  onContactClick?: () => void;
+}
+
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
@@ -21,9 +25,9 @@ const trustBadges = [
   { icon: Award, label: '99% Success' },
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ onContactClick }: Props) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#006F8F] to-[#005A73]">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#002868] to-[#001B4D]">
       {/* Floating decorative circles */}
       <motion.div
         className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-white/5"
@@ -81,7 +85,7 @@ export default function HeroSection() {
 
             {/* Trust element */}
             <motion.p
-              className="mb-3 text-sm font-medium tracking-wide text-teal-100/80"
+              className="mb-3 text-sm font-medium tracking-wide text-blue-100/80"
               variants={fadeUp}
               initial="hidden"
               animate="visible"
@@ -100,7 +104,7 @@ export default function HeroSection() {
             >
               Your Future in the USA Starts with the
               <motion.span
-                className="block mt-1 bg-gradient-to-r from-white to-teal-100 bg-clip-text text-transparent"
+                className="block mt-1 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -111,7 +115,7 @@ export default function HeroSection() {
 
             {/* Subtitle */}
             <motion.p
-              className="mt-6 text-base leading-relaxed text-teal-100 sm:text-lg"
+              className="mt-6 text-base leading-relaxed text-blue-100 sm:text-lg"
               variants={fadeUp}
               initial="hidden"
               animate="visible"
@@ -135,7 +139,7 @@ export default function HeroSection() {
             >
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Button
-                  className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#006F8F] shadow-lg shadow-black/10 hover:bg-[#E0F4F8] hover:shadow-xl"
+                  className="h-12 rounded-full bg-white px-8 text-base font-semibold text-[#002868] shadow-lg shadow-black/10 hover:bg-[#EFF6FF] hover:shadow-xl"
                   size="lg"
                   asChild
                 >
@@ -158,6 +162,15 @@ export default function HeroSection() {
                   </a>
                 </Button>
               </motion.div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  className="h-12 rounded-full border-2 border-[#B31942] bg-[#B31942] px-8 text-base font-semibold text-white shadow-lg shadow-black/10 hover:bg-[#8B122F] hover:shadow-xl"
+                  size="lg"
+                  onClick={onContactClick}
+                >
+                  Get Free Consultation
+                </Button>
+              </motion.div>
             </motion.div>
 
             {/* Trust Badges Row */}
@@ -171,8 +184,8 @@ export default function HeroSection() {
               {trustBadges.map((badge) => {
                 const BadgeIcon = badge.icon;
                 return (
-                  <div key={badge.label} className="flex items-center gap-1.5 text-xs font-medium text-teal-200/80">
-                    <BadgeIcon className="h-3.5 w-3.5 text-teal-200/60" />
+                  <div key={badge.label} className="flex items-center gap-1.5 text-xs font-medium text-blue-200/80">
+                    <BadgeIcon className="h-3.5 w-3.5 text-blue-200/60" />
                     {badge.label}
                   </div>
                 );
@@ -202,7 +215,7 @@ export default function HeroSection() {
                   loading="eager"
                 />
                 {/* Gradient overlay at bottom */}
-                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#005A73]/60 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#001B4D]/60 to-transparent" />
               </div>
               {/* Floating stat card */}
               <motion.div
@@ -213,11 +226,11 @@ export default function HeroSection() {
                 whileHover={{ y: -2 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006F8F]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#002868]">
                     <Users className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-[#1E2D3B]">5,000+</p>
+                    <p className="text-lg font-bold text-[#0F172A]">5,000+</p>
                     <p className="text-[10px] font-medium text-[#6B7280]">Students Placed</p>
                   </div>
                 </div>
@@ -235,7 +248,7 @@ export default function HeroSection() {
                     <CheckCircle2 className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-[#1E2D3B]">99%</p>
+                    <p className="text-lg font-bold text-[#0F172A]">99%</p>
                     <p className="text-[10px] font-medium text-[#6B7280]">Success Rate</p>
                   </div>
                 </div>
@@ -250,12 +263,13 @@ export default function HeroSection() {
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block w-full" preserveAspectRatio="none">
           <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill="white" />
           <path d="M0,80 C360,20 720,110 1080,50 C1260,20 1380,70 1440,80 L1440,120 L0,120 Z" fill="white" opacity="0.5" />
-          <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60" fill="none" stroke="url(#tealFade)" strokeWidth="1.5" opacity="0.4" />
+          <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60" fill="none" stroke="url(#usaFade)" strokeWidth="1.5" opacity="0.4" />
           <defs>
-            <linearGradient id="tealFade" x1="0" y1="0" x2="1440" y2="0">
-              <stop offset="0%" stopColor="#006F8F" stopOpacity="0" />
-              <stop offset="50%" stopColor="#006F8F" stopOpacity="1" />
-              <stop offset="100%" stopColor="#006F8F" stopOpacity="0" />
+            <linearGradient id="usaFade" x1="0" y1="0" x2="1440" y2="0">
+              <stop offset="0%" stopColor="#002868" stopOpacity="0" />
+              <stop offset="30%" stopColor="#002868" stopOpacity="1" />
+              <stop offset="70%" stopColor="#B31942" stopOpacity="1" />
+              <stop offset="100%" stopColor="#B31942" stopOpacity="0" />
             </linearGradient>
           </defs>
         </svg>
