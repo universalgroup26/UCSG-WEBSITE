@@ -821,3 +821,27 @@ Stage Summary:
 - 6 components visually upgraded with premium design patterns
 - All changes maintain existing functionality and data
 - ESLint clean, zero console errors
+---
+Task ID: 1
+Agent: Main Agent
+Task: Unify all university card display and replace logos with official main logos from university websites
+
+Work Log:
+- Read UniversitiesSection.tsx and identified Featured (4) vs Partner (7) card display difference
+- Featured cards had: large logo (h-20 w-20), name, Apply Now button
+- Partner cards had: small logo (h-12 w-12), tiny overlay apply button, smaller text
+- Used agent-browser to visit Trine University website and extracted inline SVG logo from DOM
+- Used agent-browser to visit Monroe University (monroeu.edu) and extracted inline SVG logo
+- Used web-reader/curl to extract logo URLs from: Saint Francis (SVG), Tacoma CC, CSI, Dream IT, NYLC, Curry, Westcliff, IAU
+- Converted SVG logos (Trine, Monroe, Saint Francis) to PNG using sharp
+- Verified all logos via VLM (Trine, Monroe, Saint Francis, Westcliff, Curry, CSI, Dream IT, Tacoma all confirmed as proper logos)
+- Rewrote UniversitiesSection.tsx to show ALL 11 universities in same card style (logo, name, location badge, Apply Now button)
+- Updated Header.tsx to remove Featured/Partner distinction from dropdown and mobile menu
+- Removed FEATURED_IDS, featuredUniversities, partnerUniversities variables from UniversitiesSection
+- Browser verified: all 11 cards show consistently, detail pages work, no Featured/Partner labels remain
+
+Stage Summary:
+- 10 of 11 logos replaced with official logos from university websites (NYGC kept existing - no website content found)
+- UniversitiesSection now shows all 11 universities in unified grid with identical card style
+- Header dropdown and mobile menu unified under single "Partner Universities" label
+- Zero lint errors, dev server compiles successfully

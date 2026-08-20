@@ -22,17 +22,17 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import Logo from './Logo';
 
 const universitiesLinks = [
-  { name: 'Trine University', id: 'trine', category: 'Featured' },
-  { name: 'Monroe University', id: 'monroe', category: 'Featured' },
-  { name: 'Saint Francis University', id: 'saint-francis', category: 'Featured' },
-  { name: 'Tacoma Community College', id: 'tacoma-community', category: 'Featured' },
-  { name: 'Computer System Institutes', id: 'computer-system-institutes', category: 'Partners' },
-  { name: 'Curry College', id: 'curry', category: 'Partners' },
-  { name: 'Dream IT', id: 'dream-it', category: 'Partners' },
-  { name: 'NEW YORK Language Center', id: 'ny-language-center', category: 'Partners' },
-  { name: 'International American University', id: 'international-american-university', category: 'Partners' },
-  { name: 'NEW YORK General Consulting', id: 'ny-general-consulting', category: 'Partners' },
-  { name: 'Westcliff University', id: 'westcliff', category: 'Partners' },
+  { name: 'Trine University', id: 'trine' },
+  { name: 'Monroe University', id: 'monroe' },
+  { name: 'Saint Francis University', id: 'saint-francis' },
+  { name: 'Tacoma Community College', id: 'tacoma-community' },
+  { name: 'Computer System Institutes', id: 'computer-system-institutes' },
+  { name: 'Curry College', id: 'curry' },
+  { name: 'Dream IT', id: 'dream-it' },
+  { name: 'NEW YORK Language Center', id: 'ny-language-center' },
+  { name: 'International American University', id: 'international-american-university' },
+  { name: 'NEW YORK General Consulting', id: 'ny-general-consulting' },
+  { name: 'Westcliff University', id: 'westcliff' },
 ];
 
 const resourcesLinks = [
@@ -56,8 +56,7 @@ const navItemVariants = {
   }),
 };
 
-const featuredUnis = universitiesLinks.filter((u) => u.category === 'Featured');
-const partnerUnis = universitiesLinks.filter((u) => u.category === 'Partners');
+
 
 export default function Header({ onNavigate }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -242,23 +241,10 @@ export default function Header({ onNavigate }: Props) {
                 </button>
 
                 {/* Universities section */}
-                <div className="mt-2 px-4 pb-1.5 text-[11px] font-bold uppercase tracking-widest text-[#B31942]">
-                  Featured Universities
-                </div>
-                {featuredUnis.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNav('university', item.id)}
-                    className="rounded-lg px-4 py-2.5 text-left text-sm text-[#334155] transition-colors hover:bg-[#002868]/5 hover:text-[#002868]"
-                  >
-                    {item.name}
-                  </button>
-                ))}
-
                 <div className="mt-2 px-4 pb-1.5 text-[11px] font-bold uppercase tracking-widest text-[#002868]">
-                  Partner Institutions
+                  Partner Universities
                 </div>
-                {partnerUnis.map((item) => (
+                {universitiesLinks.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => handleNav('university', item.id)}
@@ -403,23 +389,10 @@ function UniversityDropdown({ handleNav }: { handleNav: (v: string, id?: string)
         </motion.button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-72 p-2">
-        <DropdownMenuLabel className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[#B31942]">
-          Featured Universities
-        </DropdownMenuLabel>
-        {featuredUnis.map((item) => (
-          <DropdownMenuItem
-            key={item.id}
-            className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium focus:bg-[#002868]/5 focus:text-[#002868]"
-            onClick={() => handleNav('university', item.id)}
-          >
-            {item.name}
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator className="my-1 bg-gray-100" />
         <DropdownMenuLabel className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[#002868]">
-          Partner Institutions
+          Partner Universities
         </DropdownMenuLabel>
-        {partnerUnis.map((item) => (
+        {universitiesLinks.map((item) => (
           <DropdownMenuItem
             key={item.id}
             className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium focus:bg-[#002868]/5 focus:text-[#002868]"
