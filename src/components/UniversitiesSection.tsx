@@ -5,37 +5,18 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import { Send } from 'lucide-react';
 import type { UniversityData } from '@/lib/data/universities';
-import { getUniversityById } from '@/lib/data/universities';
+import { universities } from '@/lib/data/universities';
 import CampusVisual from '@/components/CampusVisual';
+
+const FEATURED_IDS = ['trine', 'monroe', 'saint-francis', 'tacoma-community'];
+
+const featuredUniversities = universities.filter((u) => FEATURED_IDS.includes(u.id));
+const partnerUniversities = universities.filter((u) => !FEATURED_IDS.includes(u.id));
 
 interface Props {
   onUniversityClick?: (university: UniversityData) => void;
   onApplyClick?: (universityId?: string) => void;
 }
-
-const universities = [
-  { id: 'trine', name: 'Trine University', shortName: 'Trine University', initials: 'TU', color: '#003366', logoPath: '/universities/trine.png' },
-  { id: 'monroe', name: 'Monroe University', shortName: 'Monroe University', initials: 'MU', color: '#1B3A4B', logoPath: '/universities/monroe.png' },
-  { id: 'saint-francis', name: 'Saint Francis University', shortName: 'Saint Francis University', initials: 'SFU', color: '#8B0000', logoPath: '/universities/saint-francis.png' },
-  { id: 'tacoma-community', name: 'Tacoma Community College', shortName: 'Tacoma Community', initials: 'TCC', color: '#1A3C5E', logoPath: '/universities/tacoma-community.png' },
-  { id: 'computer-system-institutes', name: 'Computer System Institutes', shortName: 'Computer System Institutes', initials: 'CSI', color: '#003366', logoPath: '/universities/csi.png' },
-  { id: 'curry', name: 'Curry College', shortName: 'Curry College', initials: 'CC', color: '#003B5C', logoPath: '/universities/curry.png' },
-  { id: 'dream-it', name: 'Dream IT', shortName: 'Dream IT', initials: 'DIT', color: '#2E86AB', logoPath: '/universities/dream-it.png' },
-  { id: 'ny-language-center', name: 'NEW YORK Language Center', shortName: 'NY Language Center', initials: 'NYLC', color: '#B31942', logoPath: '/universities/nylc.png' },
-  { id: 'international-american-university', name: 'International American University', shortName: 'Intl American Univ', initials: 'IAU', color: '#1A3A5C', logoPath: '/universities/iau.png' },
-  { id: 'ny-general-consulting', name: 'NEW YORK General Consulting', shortName: 'NY General Consulting', initials: 'NYGC', color: '#002868', logoPath: '/universities/nygc.png' },
-  { id: 'westcliff', name: 'Westcliff University', shortName: 'Westcliff University', initials: 'WU', color: '#1A3A5C', logoPath: '/universities/westcliff.png' },
-];
-
-const otherUniversities = [
-  { id: 'computer-system-institutes', name: 'Computer System Institutes', shortName: 'Computer System Institutes', initials: 'CSI', color: '#003366', logoPath: '/universities/csi.png' },
-  { id: 'curry', name: 'Curry College', shortName: 'Curry College', initials: 'CC', color: '#003B5C', logoPath: '/universities/curry.png' },
-  { id: 'dream-it', name: 'Dream IT', shortName: 'Dream IT', initials: 'DIT', color: '#2E86AB', logoPath: '/universities/dream-it.png' },
-  { id: 'ny-language-center', name: 'NEW YORK Language Center', shortName: 'NY Language Center', initials: 'NYLC', color: '#B31942', logoPath: '/universities/nylc.png' },
-  { id: 'international-american-university', name: 'International American University', shortName: 'Intl American Univ', initials: 'IAU', color: '#1A3A5C', logoPath: '/universities/iau.png' },
-  { id: 'ny-general-consulting', name: 'NEW YORK General Consulting', shortName: 'NY General Consulting', initials: 'NYGC', color: '#002868', logoPath: '/universities/nygc.png' },
-  { id: 'westcliff', name: 'Westcliff University', shortName: 'Westcliff University', initials: 'WU', color: '#1A3A5C', logoPath: '/universities/westcliff.png' },
-];
 
 export default function UniversitiesSection({ onUniversityClick, onApplyClick }: Props) {
   const ref = useRef(null);
@@ -67,7 +48,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
         >
           <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#B31942]">Featured Universities</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            {universities.slice(0, 4).map((uni, i) => (
+            {featuredUniversities.map((uni, i) => (
               <motion.button
                 key={uni.id}
                 initial={{ opacity: 0, scale: 0.85 }}
@@ -75,10 +56,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                 transition={{ delay: 0.15 + i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -4, scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  const data = getUniversityById(uni.id);
-                  if (data) onUniversityClick?.(data);
-                }}
+                onClick={() => onUniversityClick?.(uni)}
                 className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:p-6"
               >
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-24 sm:w-24">
@@ -115,7 +93,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
         >
           <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#002868]">Partner Institutions</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 sm:gap-4">
-            {otherUniversities.map((uni, i) => (
+            {partnerUniversities.map((uni, i) => (
               <motion.button
                 key={uni.id}
                 initial={{ opacity: 0, scale: 0.85 }}
@@ -123,10 +101,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                 transition={{ delay: 0.4 + i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -4, scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  const data = getUniversityById(uni.id);
-                  if (data) onUniversityClick?.(data);
-                }}
+                onClick={() => onUniversityClick?.(uni)}
                 className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-2 py-4 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:px-3 sm:py-5"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-14 sm:w-14">

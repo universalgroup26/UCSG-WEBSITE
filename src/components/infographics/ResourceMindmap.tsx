@@ -163,7 +163,7 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
           { label: '99%+ Success Rate', icon: TrendingUp },
           { label: 'No Gap in Status', icon: Shield },
           { label: 'Immediate CPT Access', icon: Zap },
-          { label: '29+ University Options', icon: GraduationCap },
+          { label: '11+ Institution Options', icon: GraduationCap },
         ],
       },
     ],

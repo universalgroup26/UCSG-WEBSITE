@@ -95,7 +95,7 @@ export const resources: ResourceData[] = [
       },
       {
         question: 'Which universities offer Day 1 CPT?',
-        answer: 'We work with 29+ SEVP-certified universities across the USA that offer Day 1 CPT programs. Contact us to find the best fit for your situation.',
+        answer: 'We work with 11+ SEVP-certified universities and training institutes across the USA that offer Day 1 CPT programs. Contact us to find the best fit for your situation.',
       },
     ],
     benefits: [
@@ -148,7 +148,7 @@ export const resources: ResourceData[] = [
     keyFacts: [
       { label: 'Transfer Timeline', value: '24-48 Hours', color: '#059669' },
       { label: 'Success Rate', value: '99%+', color: '#002868' },
-      { label: 'Partner Universities', value: '29+', color: '#D97706' },
+      { label: 'Partner Institutions', value: '11+', color: '#D97706' },
       { label: 'SEVIS Termination Support', value: '24/7', color: '#DC2626' },
     ],
     faqs: [
