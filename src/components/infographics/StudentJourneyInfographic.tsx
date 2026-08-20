@@ -49,8 +49,8 @@ const journeySteps = [
   },
   {
     icon: BadgeCheck,
-    title: 'Path to H-1B',
-    description: 'Build experience & transition to H-1B with employer',
+    title: 'OPT',
+    description: 'Post-completion work authorization for up to 36 months',
     color: '#002868',
     bg: '#EFF6FF',
   },
