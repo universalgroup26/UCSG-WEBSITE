@@ -189,7 +189,7 @@ export default function StudentJourneyInfographic() {
           {[
             { value: '5,000+', label: 'Students Helped', color: '#002868' },
             { value: '99%', label: 'Success Rate', color: '#059669' },
-            { value: '29+', label: 'Partner Universities', color: '#D97706' },
+            { value: '11+', label: 'Partner Universities', color: '#D97706' },
             { value: '24/7', label: 'Support Available', color: '#7C3AED' },
           ].map((stat) => (
             <div

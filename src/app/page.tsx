@@ -67,6 +67,36 @@ export default function HomePage() {
     }
   }, []);
 
+  const goHome = useCallback(() => {
+    setView({ type: 'home' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const goContact = useCallback(() => {
+    setView({ type: 'contact' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleUniversityClick = useCallback((uni: UniversityData) => {
+    setView({ type: 'university', university: uni });
+    history.pushState({ universityId: uni.id }, '', `#/university/${uni.id}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleResourceClick = useCallback((resourceId: string) => {
+    const res = getResourceById(resourceId);
+    if (res) {
+      setView({ type: 'resource', resource: res });
+      history.pushState({ resourceId: res.id }, '', `#/resource/${res.id}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
+  const handleApplyClick = useCallback((_universityId?: string) => {
+    setView({ type: 'contact' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -84,41 +114,6 @@ export default function HomePage() {
     return () => window.removeEventListener('popstate', handler);
   }, [view.type]);
 
-  const pushState = useCallback((v: ViewType) => {
-    if (v.type === 'university') {
-      history.pushState({ universityId: v.university.id }, '', `#/university/${v.university.id}`);
-    } else if (v.type === 'resource') {
-      history.pushState({ resourceId: v.resource.id }, '', `#/resource/${v.resource.id}`);
-    } else if (v.type === 'contact') {
-      history.pushState({}, '', '#/contact');
-    } else if (v.type === 'scholarships') {
-      history.pushState({}, '', '#/scholarships');
-    } else {
-      history.pushState({}, '', '/');
-    }
-  }, []);
-
-  const goHome = useCallback(() => {
-    setView({ type: 'home' });
-    pushState({ type: 'home' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [pushState]);
-
-  const handleUniversityClick = useCallback((uni: UniversityData) => {
-    setView({ type: 'university', university: uni });
-    pushState({ type: 'university', university: uni });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [pushState]);
-
-  const handleResourceClick = useCallback((resourceId: string) => {
-    const res = getResourceById(resourceId);
-    if (res) {
-      setView({ type: 'resource', resource: res });
-      pushState({ type: 'resource', resource: res });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [pushState]);
-
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header onNavigate={handleNavigate} />
@@ -126,14 +121,14 @@ export default function HomePage() {
         <AnimatePresence mode="wait">
           {view.type === 'home' && (
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <HeroSection />
+              <HeroSection onContactClick={goContact} />
               <StudentJourneyInfographic />
               <ServicesSection onResourceClick={handleResourceClick} />
               <ServicesMindmap />
               <AboutUCSGSection />
               <TrustSection />
               <TestimonialsSection />
-              <UniversitiesSection onUniversityClick={handleUniversityClick} />
+              <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
             </motion.div>
           )}
           {view.type === 'contact' && (
@@ -148,7 +143,7 @@ export default function HomePage() {
           )}
           {view.type === 'university' && (
             <motion.div key={view.university.id} variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <UniversityPage university={view.university} onBack={goHome} />
+              <UniversityPage university={view.university} onBack={goHome} onApplyClick={handleApplyClick} />
             </motion.div>
           )}
           {view.type === 'resource' && (
@@ -158,7 +153,7 @@ export default function HomePage() {
           )}
         </AnimatePresence>
       </main>
-      <Footer onNavigate={handleNavigate} />
+      <Footer onNavigate={handleNavigate} onContactClick={goContact} />
     </div>
   );
 }

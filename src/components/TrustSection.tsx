@@ -5,18 +5,37 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import { GraduationCap, Shield, Clock, CheckCircle, ArrowRight, ChevronDown } from 'lucide-react';
 
-const TEAL = '#002868';
-const TEAL_LIGHT = '#3B82F6';
+const BRAND_BLUE = '#002868';
+const BRAND_RED = '#B31942';
 const DARK_BG = '#0F172A';
 const DARK_CARD = '#1A2332';
 const LIGHT_TEXT = '#F7F7F7';
 const MUTED_TEXT = '#94A3B8';
 
 const countries = [
-  { emoji: '🇮🇳', name: 'India' },
-  { emoji: '🇨🇳', name: 'China' },
-  { emoji: '🇳🇬', name: 'Nigeria' },
-  { emoji: '🇧🇩', name: 'Bangladesh' },
+  { code: 'in', name: 'India' },
+  { code: 'cn', name: 'China' },
+  { code: 'ng', name: 'Nigeria' },
+  { code: 'bd', name: 'Bangladesh' },
+  { code: 'pk', name: 'Pakistan' },
+  { code: 'br', name: 'Brazil' },
+  { code: 'ph', name: 'Philippines' },
+  { code: 'vn', name: 'Vietnam' },
+  { code: 'kr', name: 'South Korea' },
+  { code: 'np', name: 'Nepal' },
+  { code: 'gh', name: 'Ghana' },
+  { code: 'ke', name: 'Kenya' },
+  { code: 'co', name: 'Colombia' },
+  { code: 'mx', name: 'Mexico' },
+  { code: 'eg', name: 'Egypt' },
+  { code: 'tr', name: 'Turkey' },
+  { code: 'sa', name: 'Saudi Arabia' },
+  { code: 'lk', name: 'Sri Lanka' },
+  { code: 'jp', name: 'Japan' },
+  { code: 'ae', name: 'UAE' },
+  { code: 'et', name: 'Ethiopia' },
+  { code: 'cm', name: 'Cameroon' },
+  { code: 'mm', name: 'Myanmar' },
 ];
 
 const credentials = [
@@ -71,11 +90,11 @@ export default function TrustSection() {
       {/* Decorative background elements */}
       <div
         className="pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full opacity-[0.06]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
       />
       <div
         className="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full opacity-[0.05]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_RED}, transparent 70%)` }}
       />
       {/* Subtle grid pattern overlay */}
       <div
@@ -98,15 +117,16 @@ export default function TrustSection() {
         >
           <div
             className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: `${TEAL}20` }}
+            style={{ backgroundColor: `${BRAND_BLUE}20` }}
           >
-            <GraduationCap className="h-9 w-9" style={{ color: TEAL_LIGHT }} />
+            <GraduationCap className="h-9 w-9" style={{ color: BRAND_BLUE }} />
           </div>
           <p
             className="text-5xl font-extrabold leading-none tracking-tight sm:text-6xl md:text-7xl"
             style={{ color: LIGHT_TEXT }}
           >
-            <span style={{ color: TEAL_LIGHT }}>29</span>{' '}+
+            <span style={{ color: BRAND_BLUE }}>11</span>{' '}
+            +
           </p>
           <p
             className="mt-3 text-lg font-semibold sm:text-xl"
@@ -128,7 +148,7 @@ export default function TrustSection() {
           variants={fadeUp}
         >
           <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:gap-12">
-            {/* Country badges */}
+            {/* Country flags grid */}
             <div className="flex flex-col items-center gap-5 md:items-start">
               <h3
                 className="text-xl font-bold sm:text-2xl"
@@ -138,33 +158,43 @@ export default function TrustSection() {
               </h3>
               <p className="max-w-xs text-center text-sm md:text-left" style={{ color: MUTED_TEXT }}>
                 Students from{' '}
-                <span className="font-semibold" style={{ color: TEAL_LIGHT }}>
-                  20+ countries
+                <span className="font-semibold" style={{ color: BRAND_BLUE }}>
+                  23+ countries
                 </span>{' '}
                 trust UCSG
               </p>
-              <div className="flex items-center gap-3">
-                {countries.map((c) => (
-                  <div
-                    key={c.name}
-                    className="group relative flex h-12 w-12 items-center justify-center rounded-full border-2 transition-transform duration-200 hover:scale-110 sm:h-14 sm:w-14"
-                    style={{
-                      borderColor: `${TEAL}50`,
-                      backgroundColor: `${TEAL}15`,
-                    }}
+              <div className="grid max-w-[280px] grid-cols-6 gap-2 sm:max-w-[320px] sm:grid-cols-6 sm:gap-2.5">
+                {countries.map((c, i) => (
+                  <motion.div
+                    key={c.code}
+                    className="group relative"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                    transition={{ delay: 0.5 + i * 0.04, duration: 0.35, ease: 'easeOut' }}
                     title={c.name}
                   >
-                    <span className="text-2xl sm:text-3xl" role="img" aria-label={c.name}>
-                      {c.emoji}
-                    </span>
+                    <div
+                      className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border transition-transform duration-200 hover:scale-110 sm:h-11 sm:w-11"
+                      style={{
+                        borderColor: `${BRAND_BLUE}40`,
+                        backgroundColor: `${BRAND_BLUE}15`,
+                      }}
+                    >
+                      <img
+                        src={`https://flagcdn.com/w80/${c.code}.png`}
+                        alt={`${c.name} flag`}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
                     {/* Tooltip on hover */}
                     <span
                       className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-0.5 text-[11px] font-medium opacity-0 transition-opacity group-hover:opacity-100"
-                      style={{ backgroundColor: TEAL, color: LIGHT_TEXT }}
+                      style={{ backgroundColor: BRAND_BLUE, color: LIGHT_TEXT }}
                     >
                       {c.name}
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -174,7 +204,7 @@ export default function TrustSection() {
               <div
                 className="pointer-events-none absolute -inset-4 rounded-2xl opacity-30"
                 style={{
-                  background: `radial-gradient(ellipse at center, ${TEAL}40, transparent 70%)`,
+                  background: `radial-gradient(ellipse at center, ${BRAND_BLUE}40, transparent 70%)`,
                 }}
               />
               <div className="relative overflow-hidden rounded-xl">
@@ -212,7 +242,7 @@ export default function TrustSection() {
                   key={item.title}
                   className="group relative rounded-2xl border p-6 transition-colors duration-300"
                   style={{
-                    borderColor: `${TEAL}30`,
+                    borderColor: `${BRAND_BLUE}30`,
                     backgroundColor: DARK_CARD,
                   }}
                   initial="hidden"
@@ -220,20 +250,20 @@ export default function TrustSection() {
                   custom={idx + 3}
                   variants={scaleIn}
                   whileHover={{
-                    borderColor: `${TEAL}80`,
-                    backgroundColor: `${TEAL}12`,
+                    borderColor: `${BRAND_BLUE}80`,
+                    backgroundColor: `${BRAND_BLUE}12`,
                   }}
                 >
                   {/* Accent line on top */}
                   <div
                     className="absolute left-6 top-0 h-[3px] w-10 rounded-b-full transition-all duration-300 group-hover:w-16"
-                    style={{ backgroundColor: TEAL }}
+                    style={{ backgroundColor: BRAND_BLUE }}
                   />
                   <div
                     className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: `${TEAL}20` }}
+                    style={{ backgroundColor: `${BRAND_BLUE}20` }}
                   >
-                    <Icon className="h-6 w-6" style={{ color: TEAL_LIGHT }} />
+                    <Icon className="h-6 w-6" style={{ color: BRAND_BLUE }} />
                   </div>
                   <h4 className="mb-2 text-base font-bold" style={{ color: LIGHT_TEXT }}>
                     {item.title}
@@ -279,8 +309,8 @@ export default function TrustSection() {
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
               transition={{ delay: 0.3, duration: 0.4 }}
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: `${TEAL}25` }}>
-                <ArrowRight className="h-5 w-5" style={{ color: TEAL_LIGHT }} />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: `${BRAND_BLUE}25` }}>
+                <ArrowRight className="h-5 w-5" style={{ color: BRAND_BLUE }} />
               </div>
             </motion.div>
 
@@ -294,10 +324,10 @@ export default function TrustSection() {
               <div
                 className="pointer-events-none absolute -inset-3 rounded-2xl opacity-20"
                 style={{
-                  background: `radial-gradient(ellipse at center, ${TEAL}60, transparent 70%)`,
+                  background: `radial-gradient(ellipse at center, ${BRAND_BLUE}60, transparent 70%)`,
                 }}
               />
-              <div className="relative overflow-hidden rounded-2xl border-2" style={{ borderColor: `${TEAL}40` }}>
+              <div className="relative overflow-hidden rounded-2xl border-2" style={{ borderColor: `${BRAND_BLUE}40` }}>
                 <Image
                   src="/images/consultation.png"
                   alt="Consultation with UCSG advisor"
@@ -310,7 +340,7 @@ export default function TrustSection() {
               </div>
               <p
                 className="mt-2 text-center text-sm font-medium"
-                style={{ color: TEAL_LIGHT }}
+                style={{ color: BRAND_BLUE }}
               >
                 Free Consultation
               </p>
@@ -323,8 +353,8 @@ export default function TrustSection() {
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: `${TEAL}25` }}>
-                <ArrowRight className="h-5 w-5" style={{ color: TEAL_LIGHT }} />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: `${BRAND_BLUE}25` }}>
+                <ArrowRight className="h-5 w-5" style={{ color: BRAND_BLUE }} />
               </div>
             </motion.div>
 
@@ -352,7 +382,7 @@ export default function TrustSection() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
               transition={{ delay: 0.3, duration: 0.4 }}
             >
-              <ChevronDown className="h-6 w-6" style={{ color: TEAL_LIGHT }} />
+              <ChevronDown className="h-6 w-6" style={{ color: BRAND_BLUE }} />
             </motion.div>
 
             <motion.div
@@ -364,10 +394,10 @@ export default function TrustSection() {
               <div
                 className="pointer-events-none absolute -inset-2 rounded-xl opacity-15"
                 style={{
-                  background: `radial-gradient(ellipse at center, ${TEAL}60, transparent 70%)`,
+                  background: `radial-gradient(ellipse at center, ${BRAND_BLUE}60, transparent 70%)`,
                 }}
               />
-              <div className="relative overflow-hidden rounded-xl border-2" style={{ borderColor: `${TEAL}40` }}>
+              <div className="relative overflow-hidden rounded-xl border-2" style={{ borderColor: `${BRAND_BLUE}40` }}>
                 <Image
                   src="/images/consultation.png"
                   alt="Consultation with UCSG advisor"
@@ -380,7 +410,7 @@ export default function TrustSection() {
               </div>
               <p
                 className="mt-2 text-center text-sm font-medium"
-                style={{ color: TEAL_LIGHT }}
+                style={{ color: BRAND_BLUE }}
               >
                 Free Consultation
               </p>
@@ -392,7 +422,7 @@ export default function TrustSection() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <ChevronDown className="h-6 w-6" style={{ color: TEAL_LIGHT }} />
+              <ChevronDown className="h-6 w-6" style={{ color: BRAND_BLUE }} />
             </motion.div>
 
             <ProcessStepMobile
@@ -428,7 +458,7 @@ function ProcessStep({ stepNumber, label, isInView, delay }: StepProps) {
     >
       <div
         className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold"
-        style={{ backgroundColor: TEAL, color: LIGHT_TEXT }}
+        style={{ backgroundColor: BRAND_BLUE, color: LIGHT_TEXT }}
       >
         {stepNumber}
       </div>
@@ -450,7 +480,7 @@ function ProcessStepMobile({ stepNumber, label, isInView, delay }: StepProps) {
     >
       <div
         className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-base font-bold"
-        style={{ backgroundColor: TEAL, color: LIGHT_TEXT }}
+        style={{ backgroundColor: BRAND_BLUE, color: LIGHT_TEXT }}
       >
         {stepNumber}
       </div>

@@ -162,7 +162,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                   <li key={link.id}>
                     <button
                       onClick={() => onNavigate?.('resource', link.id)}
-                      className="text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                      className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                     >
                       {link.name}
                     </button>
@@ -171,7 +171,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 <li>
                   <button
                     onClick={() => onNavigate?.('scholarships')}
-                    className="text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                    className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     Scholarships & Funding
                   </button>
@@ -189,7 +189,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                   <li key={link.name}>
                     <button
                       onClick={() => onNavigate?.('resource', link.id)}
-                      className="text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                      className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                     >
                       {link.name}
                     </button>
@@ -201,7 +201,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
             {/* Column 4: Contact */}
             <div>
               <h4
-                className="text-sm font-semibold uppercase tracking-wider text-white cursor-pointer hover:text-[#60A5FA] transition-colors"
+                className="text-sm font-semibold uppercase tracking-wider text-white cursor-pointer hover:text-[#002868] transition-colors"
                 onClick={() => onNavigate?.('contact')}
                 role="button"
                 tabIndex={0}
@@ -213,7 +213,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 <li>
                   <a
                     href="tel:+13028935594"
-                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">
                       <Phone className="h-4 w-4 text-[#94A3B8]" />
@@ -224,7 +224,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 <li>
                   <a
                     href="mailto:Info@universalconsultingservices.com"
-                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">
                       <Mail className="h-4 w-4 text-[#94A3B8]" />
@@ -237,7 +237,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#60A5FA]"
+                    className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">
                       <MessageCircle className="h-4 w-4 text-[#94A3B8]" />

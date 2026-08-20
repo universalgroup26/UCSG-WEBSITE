@@ -79,7 +79,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                   const data = getUniversityById(uni.id);
                   if (data) onUniversityClick?.(data);
                 }}
-                className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-[#BFDBFE] bg-white p-5 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:p-6"
+                className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:p-6"
               >
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-24 sm:w-24">
                   <Image
@@ -127,7 +127,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                   const data = getUniversityById(uni.id);
                   if (data) onUniversityClick?.(data);
                 }}
-                className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-[#BFDBFE] bg-white px-2 py-4 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:px-3 sm:py-5"
+                className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-2 py-4 transition-all hover:border-[#002868]/40 hover:shadow-lg sm:px-3 sm:py-5"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm sm:h-14 sm:w-14">
                   <Image

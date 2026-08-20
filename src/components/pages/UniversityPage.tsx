@@ -133,9 +133,10 @@ function ScrollReveal({ children, className = '', delay = 0 }: { children: React
 interface Props {
   university: UniversityData;
   onBack: () => void;
+  onApplyClick?: (universityId?: string) => void;
 }
 
-export default function UniversityPage({ university, onBack }: Props) {
+export default function UniversityPage({ university, onBack, onApplyClick }: Props) {
   const compareSuggestions = universities
     .filter((u) => u.id !== university.id)
     .sort(() => 0.5 - Math.random())
@@ -216,7 +217,11 @@ export default function UniversityPage({ university, onBack }: Props) {
             </div>
             <div className="shrink-0">
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105" style={{ color: university.color }}>
+                <Button
+                  className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105"
+                  style={{ color: university.color }}
+                  onClick={() => onApplyClick?.(university.id)}
+                >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Apply Now
                 </Button>

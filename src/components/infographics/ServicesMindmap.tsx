@@ -36,7 +36,7 @@ const serviceBranches: ServiceBranch[] = [
     color: '#002868',
     bg: '#EFF6FF',
     border: '#BFDBFE',
-    subItems: ['Work from Day 1', '29+ Universities', 'Full/Part-time'],
+    subItems: ['Work from Day 1', '11+ Universities', 'Full/Part-time'],
   },
   {
     icon: Shield,

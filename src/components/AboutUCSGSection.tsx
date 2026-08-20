@@ -14,9 +14,9 @@ import {
   HeartHandshake,
 } from 'lucide-react';
 
-const TEAL = '#002868';
-const TEAL_DARK = '#0F172A';
-const TEAL_CARD = '#1A2332';
+const BRAND_BLUE = '#002868';
+const DARK_BG = '#0F172A';
+const DARK_CARD = '#1A2332';
 const MUTED_TEXT = '#94A3B8';
 
 /* ------------------------------------------------------------------ */
@@ -112,11 +112,11 @@ function FounderStorySection() {
       {/* Decorative accent */}
       <div
         className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full opacity-[0.04]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
       />
       <div
         className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full opacity-[0.03]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -126,7 +126,7 @@ function FounderStorySection() {
             <ScrollReveal>
               <p
                 className="text-sm font-semibold uppercase tracking-widest"
-                style={{ color: TEAL }}
+                style={{ color: BRAND_BLUE }}
               >
                 About UCSG
               </p>
@@ -176,7 +176,7 @@ function FounderStorySection() {
                 className="absolute inset-0 rounded-2xl"
                 style={{
                   padding: '3px',
-                  background: `linear-gradient(135deg, ${TEAL}, ${TEAL}88, transparent 60%)`,
+                  background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE}88, transparent 60%)`,
                 }}
               />
               <div className="relative h-full w-full overflow-hidden rounded-2xl">
@@ -219,9 +219,9 @@ function DifferentiatorsSection() {
                 <div className="h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1">
                   <div
                     className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: `${TEAL}14` }}
+                    style={{ backgroundColor: `${BRAND_BLUE}14` }}
                   >
-                    <Icon className="h-5 w-5" style={{ color: TEAL }} />
+                    <Icon className="h-5 w-5" style={{ color: BRAND_BLUE }} />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-gray-900">
                     {item.title}
@@ -246,16 +246,16 @@ function MissionVisionSection() {
   return (
     <section
       className="relative w-full overflow-hidden py-16 md:py-24"
-      style={{ backgroundColor: TEAL_DARK }}
+      style={{ backgroundColor: DARK_BG }}
     >
       {/* Decorative glows */}
       <div
         className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-[0.06]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
       />
       <div
         className="pointer-events-none absolute -bottom-32 -right-32 h-80 w-80 rounded-full opacity-[0.05]"
-        style={{ background: `radial-gradient(circle, ${TEAL}, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -275,15 +275,15 @@ function MissionVisionSection() {
                 <div
                   className="h-full rounded-2xl p-6 transition-transform duration-200 hover:-translate-y-1"
                   style={{
-                    backgroundColor: TEAL_CARD,
-                    border: `1px solid ${TEAL}30`,
+                    backgroundColor: DARK_CARD,
+                    border: `1px solid ${BRAND_BLUE}30`,
                   }}
                 >
                   <div
                     className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: `${TEAL}20` }}
+                    style={{ backgroundColor: `${BRAND_BLUE}20` }}
                   >
-                    <Icon className="h-5 w-5" style={{ color: TEAL }} />
+                    <Icon className="h-5 w-5" style={{ color: BRAND_BLUE }} />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-white">
                     {item.title}

@@ -52,14 +52,14 @@ export default function ServicesSection({ onResourceClick }: Props) {
             return (
               <motion.div
                 key={service.title}
-                className="group flex flex-col rounded-2xl border border-[#BFDBFE] bg-[#F8FAFC] p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
+                className="group flex flex-col rounded-2xl border border-gray-200 bg-[#F8FAFC] p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.1 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -4 }}
               >
                 <motion.div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#EFF6FF]"
+                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#002868]/10"
                   whileHover={{ rotate: [0, -8, 8, -4, 0] }}
                   transition={{ duration: 0.4 }}
                 >

@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring this.
 
 # dependencies
 node_modules
@@ -36,7 +36,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -48,7 +47,19 @@ dev.log
 dev.out.log
 test
 prompt
-
 server.log
+
 # Skills directory
 /skills/
+
+# Tool results
+tool-results/
+
+# Z.ai artifacts
+.zscripts/
+worklog.md
+home-page-check.png
+uni-section-check.png
+
+# Allow PNGs in public folder
+!public/**/*.png
