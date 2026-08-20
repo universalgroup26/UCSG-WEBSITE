@@ -12,6 +12,9 @@ import {
   Handshake,
   Lightbulb,
   HeartHandshake,
+  ShieldCheck,
+  Award,
+  Star,
 } from 'lucide-react';
 
 const BRAND_BLUE = '#002868';
@@ -163,6 +166,29 @@ function FounderStorySection() {
                 academically, personally, and professionally. At UCSG, we are committed
                 to trust, transparency, and your success.
               </p>
+            </ScrollReveal>
+
+            {/* Veteran-Owned Business Highlight Badge */}
+            <ScrollReveal delay={0.5}>
+              <div className="mt-3 rounded-2xl border-2 border-[#B31942]/20 bg-[#FAFBFF] p-5">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#B31942] to-[#002868] shadow-lg shadow-[#B31942]/20">
+                    <ShieldCheck className="h-7 w-7 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h4 className="text-base font-bold text-[#0F172A] sm:text-lg">
+                        U.S. Army Veteran-owned Business
+                      </h4>
+                      <Star className="h-4 w-4 shrink-0 fill-[#B31942] text-[#B31942]" />
+                      <Award className="h-4 w-4 shrink-0 fill-[#002868] text-[#002868]" />
+                    </div>
+                    <p className="mt-1 text-sm leading-relaxed text-[#6B7280]">
+                      Founded and led by Joy Chowdhury, a U.S. Army veteran committed to serving international students with integrity and dedication.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </ScrollReveal>
           </div>
 
