@@ -9,7 +9,6 @@ import ServicesSection from '@/components/ServicesSection';
 import ServicesMindmap from '@/components/infographics/ServicesMindmap';
 import AboutUCSGSection from '@/components/AboutUCSGSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
-import TrustSection from '@/components/TrustSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
 import UniversityPage from '@/components/pages/UniversityPage';
@@ -126,7 +125,6 @@ export default function HomePage() {
               <ServicesSection onResourceClick={handleResourceClick} />
               <ServicesMindmap />
               <AboutUCSGSection />
-              <TrustSection />
               <TestimonialsSection />
               <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
             </motion.div>
