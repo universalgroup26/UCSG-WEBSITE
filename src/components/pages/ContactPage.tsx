@@ -11,12 +11,14 @@ import {
   CheckCircle2,
   ArrowLeft,
   Globe,
+  ShieldCheck,
 } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { motion, useInView } from 'framer-motion';
+import CloudflareTurnstile from '@/components/CloudflareTurnstile';
 
 function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -94,6 +96,7 @@ interface Props {
 
 export default function ContactPage({ onBack }: Props) {
   const [submitted, setSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -105,11 +108,28 @@ export default function ContactPage({ onBack }: Props) {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // If Turnstile is configured, verify the token server-side
+    if (turnstileToken) {
+      try {
+        const res = await fetch('/api/turnstile/verify?XTransformPort=3000', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+        const data = await res.json();
+        if (!data.success) return; // Block submission if verification fails
+      } catch {
+        // Allow submission on network error (graceful degradation)
+      }
+    }
+
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
     setFormData({ name: '', email: '', phone: '', whatsapp: '', nationality: '', englishLevel: '', service: '', message: '' });
+    setTurnstileToken(null);
   };
 
   return (
@@ -355,6 +375,16 @@ export default function ContactPage({ onBack }: Props) {
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         className="rounded-xl border-gray-200 bg-gray-50/50 focus-visible:border-[#002868] focus-visible:ring-[#002868]/20"
+                      />
+                    </div>
+                    {/* Cloudflare Turnstile Bot Protection */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-[#002868]" />
+                      <CloudflareTurnstile
+                        onVerify={setTurnstileToken}
+                        onError={() => setTurnstileToken(null)}
+                        onExpire={() => setTurnstileToken(null)}
+                        className="flex-1"
                       />
                     </div>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

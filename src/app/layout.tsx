@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// Cloudflare Web Analytics token — replace with your token from dash.cloudflare.com
+const CF_ANALYTICS_TOKEN = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN || '';
 
 export const metadata: Metadata = {
   title: "UCSG — Universal Consulting Service Group",
@@ -46,6 +50,14 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased bg-white text-foreground`}
       >
         {children}
+        {/* Cloudflare Web Analytics */}
+        {CF_ANALYTICS_TOKEN && (
+          <Script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
+          />
+        )}
       </body>
     </html>
   );

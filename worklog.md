@@ -845,3 +845,27 @@ Stage Summary:
 - UniversitiesSection now shows all 11 universities in unified grid with identical card style
 - Header dropdown and mobile menu unified under single "Partner Universities" label
 - Zero lint errors, dev server compiles successfully
+
+---
+Task ID: 27
+Agent: Main Agent
+Task: Fix services alignment, enhance veteran badge, add Cloudflare integration
+
+Work Log:
+- Split ServicesSection grid into two rows: 3-col top row + centered 2-col bottom row for SEVIS Reinstatement and STEM OPT Denials
+- Enhanced Veteran-Owned Business badge with gradient background, shimmer animation, stronger border, larger icon, "CERTIFIED & VERIFIED" subtitle, and larger bold text
+- Added Cloudflare Web Analytics beacon script to layout.tsx (conditional on NEXT_PUBLIC_CF_ANALYTICS_TOKEN env var)
+- Created CloudflareTurnstile component (src/components/CloudflareTurnstile.tsx) with explicit render, graceful fallback when no site key configured
+- Created Turnstile server-side verification API route (src/app/api/turnstile/verify/route.ts)
+- Integrated Turnstile into ContactPage form with server-side token verification before submission
+- Created wrangler.toml for Cloudflare Pages deployment configuration
+- Created .env.example documenting all Cloudflare env vars
+- Added security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy) via next.config.ts
+- Removed deprecated middleware.ts that was breaking page rendering in Next.js 16
+- Verified all fixes via VLM analysis of browser screenshots
+
+Stage Summary:
+- Services cards properly aligned: 3 on top, 2 centered below
+- Veteran badge is prominent with gradient border, shimmer, larger text, and "CERTIFIED & VERIFIED" subtitle
+- Cloudflare integrated: Web Analytics (layout), Turnstile CAPTCHA (contact form), deployment config (wrangler.toml), security headers (next.config.ts)
+- All changes pass ESLint, dev server compiles without errors

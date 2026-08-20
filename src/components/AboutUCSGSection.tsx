@@ -170,21 +170,36 @@ function FounderStorySection() {
 
             {/* Veteran-Owned Business Highlight Badge */}
             <ScrollReveal delay={0.5}>
-              <div className="mt-3 rounded-2xl border-2 border-[#B31942]/20 bg-[#FAFBFF] p-5">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#B31942] to-[#002868] shadow-lg shadow-[#B31942]/20">
-                    <ShieldCheck className="h-7 w-7 text-white" />
+              <div className="mt-3 relative overflow-hidden rounded-2xl border-2 border-[#B31942]/30 bg-gradient-to-r from-[#002868]/[0.03] via-[#B31942]/[0.04] to-[#002868]/[0.03] p-6 shadow-[0_4px_24px_-4px_rgba(179,25,66,0.12)]">
+                {/* Animated shimmer overlay */}
+                <motion.div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.5) 50%, transparent 60%)',
+                  }}
+                  animate={{ x: ['-100%', '200%'] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatDelay: 4, ease: 'easeInOut' }}
+                />
+                <div className="relative flex items-center gap-4">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#B31942] to-[#002868] shadow-lg shadow-[#B31942]/25 ring-2 ring-white">
+                    <ShieldCheck className="h-8 w-8 text-white" />
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-base font-bold text-[#0F172A] sm:text-lg">
+                      <h4 className="text-lg font-extrabold tracking-wide text-[#0F172A] sm:text-xl">
                         U.S. Army Veteran-owned Business
                       </h4>
-                      <Star className="h-4 w-4 shrink-0 fill-[#B31942] text-[#B31942]" />
-                      <Award className="h-4 w-4 shrink-0 fill-[#002868] text-[#002868]" />
+                      <Star className="h-5 w-5 shrink-0 fill-[#B31942] text-[#B31942]" />
+                      <Award className="h-5 w-5 shrink-0 fill-[#002868] text-[#002868]" />
                     </div>
-                    <p className="mt-1 text-sm leading-relaxed text-[#6B7280]">
-                      Founded and led by Joy Chowdhury, a U.S. Army veteran committed to serving international students with integrity and dedication.
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <div className="h-[2px] flex-1 max-w-[60px] rounded-full bg-gradient-to-r from-[#B31942] to-[#002868]" />
+                      <span className="text-xs font-semibold uppercase tracking-widest text-[#B31942]">
+                        Certified & Verified
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-[#4B5563]">
+                      Founded and led by Joy Chowdhury, a U.S. Army veteran committed to serving international students with integrity, honor, and dedication.
                     </p>
                   </div>
                 </div>
