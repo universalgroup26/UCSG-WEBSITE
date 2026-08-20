@@ -84,8 +84,7 @@ export default function TrustSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full overflow-hidden py-16 md:py-24 lg:py-28"
-      style={{ backgroundColor: DARK_BG }}
+      className="relative w-full overflow-hidden bg-gradient-to-b from-[#0A0F1A] via-[#0F172A] to-[#0A0F1A] py-16 md:py-24 lg:py-28"
     >
       {/* Decorative background elements */}
       <div
@@ -115,28 +114,30 @@ export default function TrustSection() {
           custom={0}
           variants={fadeUp}
         >
-          <div
-            className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: `${BRAND_BLUE}20` }}
-          >
-            <GraduationCap className="h-9 w-9" style={{ color: BRAND_BLUE }} />
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-8 py-8 sm:px-12 sm:py-10">
+            <div
+              className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
+              style={{ backgroundColor: `${BRAND_BLUE}20` }}
+            >
+              <GraduationCap className="h-9 w-9" style={{ color: BRAND_BLUE }} />
+            </div>
+            <p
+              className="text-5xl font-extrabold leading-none tracking-tight sm:text-6xl md:text-7xl"
+              style={{ color: LIGHT_TEXT }}
+            >
+              <span style={{ color: BRAND_BLUE }}>11</span>{' '}
+              +
+            </p>
+            <p
+              className="mt-3 text-lg font-semibold sm:text-xl"
+              style={{ color: LIGHT_TEXT }}
+            >
+              Partner Universities
+            </p>
+            <p className="mt-1 text-sm" style={{ color: MUTED_TEXT }}>
+              SEVP-Certified Institutions
+            </p>
           </div>
-          <p
-            className="text-5xl font-extrabold leading-none tracking-tight sm:text-6xl md:text-7xl"
-            style={{ color: LIGHT_TEXT }}
-          >
-            <span style={{ color: BRAND_BLUE }}>11</span>{' '}
-            +
-          </p>
-          <p
-            className="mt-3 text-lg font-semibold sm:text-xl"
-            style={{ color: LIGHT_TEXT }}
-          >
-            Partner Universities
-          </p>
-          <p className="mt-1 text-sm" style={{ color: MUTED_TEXT }}>
-            SEVP-Certified Institutions
-          </p>
         </motion.div>
 
         {/* ──────────────────────────── 2. Global Reach ──────────────────────────── */}
@@ -150,11 +151,13 @@ export default function TrustSection() {
           <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:gap-12">
             {/* Country flags grid */}
             <div className="flex flex-col items-center gap-5 md:items-start">
-              <h3
-                className="text-xl font-bold sm:text-2xl"
-                style={{ color: LIGHT_TEXT }}
-              >
+              <span className="bg-[#B31942]/10 border border-[#B31942]/20 rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#B31942]">
                 Global Reach
+              </span>
+              <h3
+                className="text-3xl sm:text-4xl font-bold text-white"
+              >
+                Students Worldwide
               </h3>
               <p className="max-w-xs text-center text-sm md:text-left" style={{ color: MUTED_TEXT }}>
                 Students from{' '}
@@ -174,11 +177,7 @@ export default function TrustSection() {
                     title={c.name}
                   >
                     <div
-                      className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border transition-transform duration-200 hover:scale-110 sm:h-11 sm:w-11"
-                      style={{
-                        borderColor: `${BRAND_BLUE}40`,
-                        backgroundColor: `${BRAND_BLUE}15`,
-                      }}
+                      className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-200 hover:scale-110 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(0,40,104,0.3)] sm:h-11 sm:w-11"
                     >
                       <img
                         src={`https://flagcdn.com/w80/${c.code}.png`}
@@ -186,6 +185,7 @@ export default function TrustSection() {
                         className="h-full w-full object-cover"
                         loading="lazy"
                       />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
                     {/* Tooltip on hover */}
                     <span
@@ -240,30 +240,20 @@ export default function TrustSection() {
               return (
                 <motion.div
                   key={item.title}
-                  className="group relative rounded-2xl border p-6 transition-colors duration-300"
-                  style={{
-                    borderColor: `${BRAND_BLUE}30`,
-                    backgroundColor: DARK_CARD,
-                  }}
+                  className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(0,40,104,0.15)]"
                   initial="hidden"
                   animate={isInView ? 'visible' : 'hidden'}
                   custom={idx + 3}
                   variants={scaleIn}
-                  whileHover={{
-                    borderColor: `${BRAND_BLUE}80`,
-                    backgroundColor: `${BRAND_BLUE}12`,
-                  }}
                 >
                   {/* Accent line on top */}
                   <div
-                    className="absolute left-6 top-0 h-[3px] w-10 rounded-b-full transition-all duration-300 group-hover:w-16"
-                    style={{ backgroundColor: BRAND_BLUE }}
+                    className="absolute left-6 top-0 h-[3px] w-10 rounded-b-full bg-gradient-to-r from-[#002868] to-[#B31942] transition-all duration-300 group-hover:w-16"
                   />
                   <div
-                    className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: `${BRAND_BLUE}20` }}
+                    className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#002868]/20 to-[#B31942]/10"
                   >
-                    <Icon className="h-6 w-6" style={{ color: BRAND_BLUE }} />
+                    <Icon className="h-6 w-6 text-white" />
                   </div>
                   <h4 className="mb-2 text-base font-bold" style={{ color: LIGHT_TEXT }}>
                     {item.title}
@@ -457,8 +447,7 @@ function ProcessStep({ stepNumber, label, isInView, delay }: StepProps) {
       animate={isInView ? 'visible' : 'hidden'}
     >
       <div
-        className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold"
-        style={{ backgroundColor: BRAND_BLUE, color: LIGHT_TEXT }}
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#B31942] text-lg font-bold text-white shadow-[0_0_20px_rgba(0,40,104,0.3)]"
       >
         {stepNumber}
       </div>
@@ -479,8 +468,7 @@ function ProcessStepMobile({ stepNumber, label, isInView, delay }: StepProps) {
       animate={isInView ? 'visible' : 'hidden'}
     >
       <div
-        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-base font-bold"
-        style={{ backgroundColor: BRAND_BLUE, color: LIGHT_TEXT }}
+        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#B31942] text-base font-bold text-white shadow-[0_0_15px_rgba(0,40,104,0.3)]"
       >
         {stepNumber}
       </div>

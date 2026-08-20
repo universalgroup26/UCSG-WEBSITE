@@ -68,8 +68,10 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={i}
           className={cn(
-            'h-4 w-4',
-            i < rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'
+            'h-5 w-5',
+            i < rating
+              ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]'
+              : 'text-gray-300'
           )}
         />
       ))}
@@ -93,48 +95,50 @@ function TestimonialCard({
       }}
       transition={{ duration: 0.5, delay: index * 0.15, ease: 'easeOut' }}
     >
-      <div className="flex h-full w-full flex-col rounded-2xl border border-gray-200/60 bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg sm:p-8">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_4px_30px_-4px_rgba(0,40,104,0.1)] transition-shadow duration-300 hover:shadow-[0_8px_40px_-4px_rgba(0,40,104,0.15)]">
+        {/* Top gradient accent line */}
+        <div className="bg-gradient-to-r from-[#002868] via-[#B31942] to-[#002868] h-1 rounded-t-2xl" />
+
+        <div className="flex flex-1 flex-col p-8 sm:p-10">
+          {/* Decorative quote watermark */}
           <Quote
-            className="h-8 w-8 shrink-0 opacity-20"
-            style={{ color: BRAND_BLUE }}
+            className="pointer-events-none absolute right-8 top-10 h-10 w-10 sm:right-10 sm:top-12"
+            style={{ color: BRAND_BLUE, opacity: 0.1 }}
             aria-hidden="true"
           />
-          <StarRating rating={testimonial.rating} />
-        </div>
 
-        <blockquote className="mb-6 flex-1 text-base leading-relaxed text-gray-700">
-          &ldquo;{testimonial.quote}&rdquo;
-        </blockquote>
-
-        <div className="flex items-center gap-4 border-t border-gray-100 pt-5">
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-[#002868]">
-            <Image
-              src={testimonial.avatar}
-              alt={`Photo of ${testimonial.name}`}
-              fill
-              className="object-cover"
-              sizes="48px"
-            />
+          <div className="mb-5 flex items-center justify-between">
+            <StarRating rating={testimonial.rating} />
           </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-900">
-              {testimonial.name}
-            </p>
-            <p className="truncate text-xs text-gray-500">
-              {testimonial.role}
-            </p>
-            <Badge
-              className="mt-1 text-[10px] font-medium"
-              style={{
-                backgroundColor: `${BRAND_BLUE}18`,
-                color: BRAND_BLUE,
-                borderColor: `${BRAND_BLUE}30`,
-              }}
-              variant="outline"
-            >
-              {testimonial.country}
-            </Badge>
+
+          <blockquote className="mb-8 flex-1 text-base leading-relaxed text-[#334155] sm:text-lg">
+            &ldquo;{testimonial.quote}&rdquo;
+          </blockquote>
+
+          <div className="flex items-center gap-4 border-t border-gray-100 pt-6">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-4 ring-[#002868]/10 ring-offset-2 ring-offset-white">
+              <Image
+                src={testimonial.avatar}
+                alt={`Photo of ${testimonial.name}`}
+                fill
+                className="object-cover"
+                sizes="48px"
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-gray-900">
+                {testimonial.name}
+              </p>
+              <p className="truncate text-xs text-gray-500">
+                {testimonial.role}
+              </p>
+              <Badge
+                className="mt-1.5 text-[10px] font-medium bg-[#002868]/5 border-[#002868]/10 text-[#002868]"
+                variant="outline"
+              >
+                {testimonial.country}
+              </Badge>
+            </div>
           </div>
         </div>
       </div>
@@ -188,7 +192,7 @@ export default function TestimonialsSection() {
     <section
       ref={sectionRef}
       aria-labelledby="testimonials-heading"
-      className="relative overflow-hidden bg-[#F8FAFC] py-20 sm:py-28"
+      className="relative overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-white to-[#F8FAFC] py-20 sm:py-28 lg:py-32"
     >
       <div
         className="pointer-events-none absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full opacity-[0.07] blur-3xl"
@@ -208,15 +212,14 @@ export default function TestimonialsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <div
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"
-            style={{ backgroundColor: `${BRAND_BLUE}15` }}
-          >
-            <Quote className="h-6 w-6" style={{ color: BRAND_BLUE }} aria-hidden="true" />
-          </div>
+          {/* Pill label */}
+          <span className="mb-6 inline-block bg-[#B31942]/5 border border-[#B31942]/10 rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#B31942]">
+            Student Success Stories
+          </span>
+
           <h2
             id="testimonials-heading"
-            className="text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl"
+            className="mt-4 text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl lg:text-[2.5rem]"
           >
             What Our Students Say
           </h2>
@@ -261,14 +264,16 @@ export default function TestimonialsSection() {
           </div>
 
           <div className="mt-8 flex items-center justify-center gap-4">
-            <button
+            <motion.button
               type="button"
               onClick={handlePrev}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] text-white shadow-lg shadow-[#002868]/20 hover:shadow-[#002868]/40 transition-shadow duration-300"
               aria-label="Previous testimonial"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <ChevronLeft className="h-5 w-5" />
-            </button>
+            </motion.button>
 
             <div className="flex items-center gap-2" role="tablist" aria-label="Testimonial pages">
               {TESTIMONIALS.map((_, i) => (
@@ -285,26 +290,23 @@ export default function TestimonialsSection() {
                   className={cn(
                     'h-2.5 rounded-full transition-all duration-300',
                     i === currentPage
-                      ? 'w-8'
+                      ? 'w-8 bg-gradient-to-r from-[#002868] to-[#B31942]'
                       : 'w-2.5 bg-gray-300 hover:bg-gray-400'
                   )}
-                  style={
-                    i === currentPage
-                      ? { backgroundColor: BRAND_BLUE }
-                      : undefined
-                  }
                 />
               ))}
             </div>
 
-            <button
+            <motion.button
               type="button"
               onClick={handleNext}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#002868] to-[#001B4D] text-white shadow-lg shadow-[#002868]/20 hover:shadow-[#002868]/40 transition-shadow duration-300"
               aria-label="Next testimonial"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <ChevronRight className="h-5 w-5" />
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>

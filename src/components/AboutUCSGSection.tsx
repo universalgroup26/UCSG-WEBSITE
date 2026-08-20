@@ -168,16 +168,15 @@ function FounderStorySection() {
 
           {/* Image column */}
           <ScrollReveal delay={0.2} className="flex justify-center lg:justify-end">
-            <div
-              className="relative h-72 w-full max-w-md overflow-hidden rounded-2xl sm:h-80 lg:h-[420px]"
-            >
-              {/* Teal border accent */}
-              <div
-                className="absolute inset-0 rounded-2xl"
+            <div className="relative h-72 w-full max-w-md sm:h-80 lg:h-[420px]">
+              {/* Rotating conic gradient border */}
+              <motion.div
+                className="absolute -inset-[2px] rounded-2xl"
                 style={{
-                  padding: '3px',
-                  background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE}88, transparent 60%)`,
+                  background: `conic-gradient(from 0deg, ${BRAND_BLUE}, #B31942, ${BRAND_BLUE})`,
                 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
               />
               <div className="relative h-full w-full overflow-hidden rounded-2xl">
                 <Image
@@ -205,7 +204,10 @@ function DifferentiatorsSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <span className="mb-4 inline-block rounded-full border border-[#002868]/10 bg-[#002868]/5 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#002868]">
+              Why UCSG
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
               How Are We Different?
             </h2>
           </div>
@@ -216,7 +218,9 @@ function DifferentiatorsSection() {
             const Icon = item.icon;
             return (
               <ScrollReveal key={item.title} delay={i * 0.08}>
-                <div className="h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1">
+                <div className="relative h-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_30px_-4px_rgba(0,40,104,0.12)]">
+                  {/* Gradient top border accent */}
+                  <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-2xl bg-gradient-to-r from-[#002868] to-[#B31942]" />
                   <div
                     className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
                     style={{ backgroundColor: `${BRAND_BLUE}14` }}
@@ -273,11 +277,7 @@ function MissionVisionSection() {
             return (
               <ScrollReveal key={item.title} delay={i * 0.1}>
                 <div
-                  className="h-full rounded-2xl p-6 transition-transform duration-200 hover:-translate-y-1"
-                  style={{
-                    backgroundColor: DARK_CARD,
-                    border: `1px solid ${BRAND_BLUE}30`,
-                  }}
+                  className="h-full rounded-2xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.1]"
                 >
                   <div
                     className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
