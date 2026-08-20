@@ -869,3 +869,25 @@ Stage Summary:
 - Veteran badge is prominent with gradient border, shimmer, larger text, and "CERTIFIED & VERIFIED" subtitle
 - Cloudflare integrated: Web Analytics (layout), Turnstile CAPTCHA (contact form), deployment config (wrangler.toml), security headers (next.config.ts)
 - All changes pass ESLint, dev server compiles without errors
+
+---
+Task ID: 28
+Agent: Main Agent
+Task: Deploy to Vercel via GitHub, configure custom domain with Cloudflare DNS
+
+Work Log:
+- Fixed .gitignore to allow .env.example, committed and pushed all changes to GitHub (universalgroup26/UCSG-WEBSITE)
+- Verified Vercel project (prj_ykEii9FZlIWpzN7B5vc3hWOQrqGz) is connected to GitHub repo with production branch main
+- Triggered new production deployment (dpl_2rQGbq9asYvW8BF4QnZv) with latest code from GitHub
+- Verified both custom domains (universalconsultingservices.com, www.universalconsultingservices.com) are configured and verified on Vercel
+- Added Cloudflare env vars (NEXT_PUBLIC_CF_ANALYTICS_TOKEN, NEXT_PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY) to Vercel project
+- Confirmed domain currently points to Wix (via Cloudflare proxy) — DNS records in Cloudflare need updating
+- Cloudflare API token (cfk_*) lacks DNS permissions — cannot update DNS records via API
+- Created setup-cloudflare-dns.sh script for user to run with a valid Cloudflare API token
+- Committed DNS setup script to GitHub
+
+Stage Summary:
+- GitHub: pushed to universalgroup26/UCSG-WEBSITE, all latest code including Cloudflare integration
+- Vercel: production deployment READY, domains configured and verified
+- DNS: BLOCKED — Cloudflare token invalid for DNS API, user needs to update 2 CNAME records in Cloudflare dashboard
+- Script provided: setup-cloudflare-dns.sh for automated DNS update
