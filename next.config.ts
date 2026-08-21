@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Allow preview panel cross-origin access
+  allowedDevOrigins: ["https://space-z.ai"],
   // Security headers (complement Cloudflare edge security)
   async headers() {
     return [

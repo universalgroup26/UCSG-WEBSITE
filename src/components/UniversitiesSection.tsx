@@ -47,7 +47,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
         >
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:gap-5">
             {universities.map((uni, i) => (
-              <motion.button
+              <motion.div
                 key={uni.id}
                 initial={{ opacity: 0, scale: 0.9, y: 16 }}
                 animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
@@ -55,7 +55,10 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                 whileHover={{ y: -6, scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onUniversityClick?.(uni)}
-                className="group relative flex flex-col items-center justify-center gap-3 rounded-2xl border border-gray-200/80 bg-white p-4 shadow-sm transition-all duration-300 hover:border-[#002868]/30 hover:shadow-xl hover:shadow-[#002868]/5 sm:p-5 lg:p-6"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onUniversityClick?.(uni); }}
+                className="group relative cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-gray-200/80 bg-white p-4 shadow-sm transition-all duration-300 hover:border-[#002868]/30 hover:shadow-xl hover:shadow-[#002868]/5 sm:p-5 lg:p-6"
               >
                 {/* Logo Container */}
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 group-hover:shadow-md sm:h-24 sm:w-24">
@@ -88,7 +91,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                   <Send className="mr-1 inline h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   Apply Now
                 </button>
-              </motion.button>
+              </motion.div>
             ))}
           </div>
         </motion.div>
