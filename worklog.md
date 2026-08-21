@@ -917,3 +917,34 @@ Stage Summary:
 - SSL mode: Full, Certificate: Active
 - All Office 365 email records preserved and working
 \n---\nTask ID: 9\nAgent: Main Agent\nTask: Recheck and solve all issues\n\nWork Log:\n- Checked dev log - all 200 OK, no runtime errors\n- ESLint - clean, 0 errors\n- Fixed allowedDevOrigins warning in next.config.ts (added space-z.ai)\n- Browser verified: homepage all 10+ sections render correctly\n- Browser verified: all 5 page types navigate correctly (home, university, resource, contact, scholarships)\n- Browser verified: mobile responsive, hamburger menu works, veteran badge in sheet header\n- FOUND AND FIXED: nested <button> inside <motion.button> in UniversitiesSection.tsx (line 50/84)\n  - Changed outer <motion.button> to <motion.div> with role=button, tabIndex=0, onKeyDown for a11y\n  - This was causing React console errors: "button cannot contain a nested button"\n  - 10+ console error instances on mobile view before fix, 0 after\n- Verified: no other nested button issues across all 71 component files\n- Verified: zero console errors on both desktop and mobile after fix\n\nStage Summary:\n- 1 real bug fixed (nested button in UniversitiesSection)\n- 1 config improvement (allowedDevOrigins)\n- All pages verified rendering and navigating correctly\n- Zero console errors on desktop and mobile\n- ESLint clean
+
+---
+Task ID: commit-push-verify
+Agent: Main Agent
+Task: Commit code to GitHub, verify live Vercel deployment, browser-test all pages
+
+Work Log:
+- Ran git status: 5 unpushed commits, clean working tree
+- Ran bun run lint: passed with zero errors
+- Git pull --rebase origin main (remote had diverged), then git push origin main → success
+- Waited 30s for Vercel deployment
+- Agent Browser: Opened live site at https://ucsg-website-hazel.vercel.app/
+- Full accessibility tree snapshot confirmed ALL sections present (header, hero, journey, services, service map, about, why UCSG, mission, testimonials, universities, footer)
+- Checked console errors: NONE on any page
+- Tested navigation: Universities dropdown (11 items), Resources dropdown (5 items), Day 1 CPT, Scholarships, Contact
+- Clicked Trine University from dropdown → university detail page loaded with logo, stats, profile
+- Contact page loaded with all contact methods (Call, WhatsApp, Email, Visit)
+- Mobile test (iPhone 14): hamburger menu opens with veteran badge, all 11 universities + resources listed
+- All 22 images verified loading (0 broken)
+- VLM analysis of viewport-sized screenshots confirmed: hero, services, testimonials, universities all rendering correctly
+- VLM false alarm on full-page 10112px screenshot (too tall for model) — confirmed sections render via individual scroll-position screenshots
+- Cleaned up temp screenshot files
+- Final lint: clean
+
+Stage Summary:
+- All code pushed to GitHub (universalgroup26/UCSG-WEBSITE, main branch)
+- Live site verified: https://ucsg-website-hazel.vercel.app/
+- Zero console errors, zero broken images, all navigation working
+- All pages tested: Homepage, University Detail, Contact, Day 1 CPT, Scholarships
+- Desktop and mobile responsive verified
+- Lint: clean
