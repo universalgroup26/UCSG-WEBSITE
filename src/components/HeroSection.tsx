@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { MessageCircle, Phone, CheckCircle2, Users, Globe, Award } from 'lucide-react';
+import { MessageCircle, Phone, CheckCircle2, Users, Globe, Award, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -194,21 +194,31 @@ export default function HeroSection({ onContactClick }: Props) {
 
             {/* Trust Badges Row */}
             <motion.div
-              className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 lg:justify-start"
+              className="mt-8 flex flex-col gap-3 lg:items-start"
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               custom={5}
             >
-              {trustBadges.map((badge) => {
-                const BadgeIcon = badge.icon;
-                return (
-                  <div key={badge.label} className="flex items-center gap-1.5 text-xs font-medium text-blue-200/70">
-                    <BadgeIcon className="h-3.5 w-3.5 text-blue-200/50" />
-                    {badge.label}
-                  </div>
-                );
-              })}
+              {/* Veteran-owned Badge — highlighted */}
+              <motion.div
+                className="inline-flex w-fit items-center gap-2 rounded-full border border-[#B31942]/40 bg-gradient-to-r from-[#B31942]/20 to-[#002868]/20 px-4 py-1.5 backdrop-blur-sm"
+                whileHover={{ scale: 1.03 }}
+              >
+                <ShieldCheck className="h-4 w-4 text-[#FCA5A5]" />
+                <span className="text-xs font-bold tracking-wide text-white">U.S. Army Veteran-owned Business</span>
+              </motion.div>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                {trustBadges.map((badge) => {
+                  const BadgeIcon = badge.icon;
+                  return (
+                    <div key={badge.label} className="flex items-center gap-1.5 text-xs font-medium text-blue-200/70">
+                      <BadgeIcon className="h-3.5 w-3.5 text-blue-200/50" />
+                      {badge.label}
+                    </div>
+                  );
+                })}
+              </div>
             </motion.div>
           </div>
 

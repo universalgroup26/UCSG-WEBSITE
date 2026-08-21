@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, ChevronDown, Phone, Mail, ShieldCheck, MapPin, X, GraduationCap, BookOpen, DollarSign, ArrowRight } from 'lucide-react';
+import { Menu, ChevronDown, Phone, Mail, ShieldCheck, X, GraduationCap, BookOpen, DollarSign, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -76,9 +76,6 @@ export default function Header({ onNavigate }: Props) {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* ===== TOP ANNOUNCEMENT BAR ===== */}
-      <TopBar />
-
       {/* ===== MAIN HEADER ===== */}
       <div
         className={
@@ -310,67 +307,7 @@ export default function Header({ onNavigate }: Props) {
   );
 }
 
-/* ===== TOP ANNOUNCEMENT BAR ===== */
-function TopBar() {
-  const [isVisible, setIsVisible] = useState(true);
 
-  if (!isVisible) return null;
-
-  return (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden bg-gradient-to-r from-[#002868] via-[#001B4D] to-[#002868]"
-        >
-          {/* Decorative elements */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/[0.03]" />
-            <div className="absolute -bottom-6 right-20 h-24 w-24 rounded-full bg-white/[0.03]" />
-            <div className="absolute bottom-0 left-1/2 h-px w-1/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          </div>
-
-          <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <a
-                href="tel:+13028935594"
-                className="hidden items-center gap-1.5 text-xs font-medium text-white/80 transition-colors hover:text-white sm:inline-flex"
-              >
-                <Phone className="h-3 w-3" />
-                <span>(302) 893-5594</span>
-              </a>
-              <a
-                href="mailto:Info@universalconsultingservices.com"
-                className="hidden items-center gap-1.5 text-xs font-medium text-white/80 transition-colors hover:text-white md:inline-flex"
-              >
-                <Mail className="h-3 w-3" />
-                <span>Info@universalconsultingservices.com</span>
-              </a>
-              <span className="flex items-center gap-1.5 text-xs font-medium text-white/80">
-                <MapPin className="h-3 w-3" />
-                <span className="hidden sm:inline">Jackson Heights, NY</span>
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B31942]/30 bg-[#B31942]/20 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-white sm:text-xs">
-                <ShieldCheck className="h-3 w-3 text-[#FCA5A5]" />
-                <span className="hidden sm:inline">U.S. Army Veteran-owned Business</span>
-                <span className="sm:hidden">Veteran-owned</span>
-              </span>
-              <button
-                onClick={() => setIsVisible(false)}
-                className="rounded-full p-0.5 text-white/40 transition-colors hover:bg-white/10 hover:text-white/80"
-                aria-label="Close announcement bar"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        </motion.div>
-    );
-}
 
 /* ===== UNIVERSITY DROPDOWN ===== */
 function UniversityDropdown({ handleNav }: { handleNav: (v: string, id?: string) => void }) {
