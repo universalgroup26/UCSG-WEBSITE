@@ -1,0 +1,6 @@
+{
+  "name": "UCSG",
+  "description": "Universal Consulting Service Group - Study in USA, Day 1 CPT, University Transfers, SEVIS Reinstatement, and immigration consulting platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
