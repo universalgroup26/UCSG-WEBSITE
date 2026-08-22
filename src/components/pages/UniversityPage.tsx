@@ -641,10 +641,13 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                     <Mail className="h-4 w-4 text-[#002868]" />
                     {university.contactEmail}
                   </a>
-                  <div className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#0F172A]">
+                  <a
+                    href="tel:+13028935594"
+                    className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#0F172A] transition-colors hover:bg-[#F1F5F9]"
+                  >
                     <Phone className="h-4 w-4 text-[#002868]" />
                     +1 (302) 893-5594
-                  </div>
+                  </a>
                 </div>
               </div>
 
@@ -655,13 +658,17 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   <p className="mt-2 text-sm text-[#94A3B8]">
                     UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
                   </p>
-                  <Button className="mt-5 w-full rounded-full bg-[#002868] text-white hover:bg-[#001B4D]">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Chat on WhatsApp
+                  <Button className="mt-5 w-full rounded-full bg-[#25D366] text-white hover:bg-[#1EB954]" asChild>
+                    <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Chat on WhatsApp
+                    </a>
                   </Button>
-                  <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10">
-                    Get Free Consultation
-                    <ArrowRight className="ml-1 h-4 w-4" />
+                  <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10" asChild>
+                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20applying%20to%20" target="_blank" rel="noopener noreferrer">
+                      Get Free Consultation
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </a>
                   </Button>
                 </div>
               </ScrollReveal>

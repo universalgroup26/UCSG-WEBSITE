@@ -108,15 +108,19 @@ export default function ResourcePage({ resource, onBack }: Props) {
               transition={{ delay: 0.45, duration: 0.5 }}
             >
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#002868' }}>
-                  {resource.ctaText}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" asChild style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#002868' }}>
+                  <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20{encodeURIComponent(resource.title)}" target="_blank" rel="noopener noreferrer">
+                    {resource.ctaText}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </a>
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button className="h-12 rounded-full border-2 border-white bg-transparent px-8 font-semibold text-white hover:bg-white/10">
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  WhatsApp 24/7
+                <Button className="h-12 rounded-full border-2 border-white bg-transparent px-8 font-semibold text-white hover:bg-white/10" asChild>
+                  <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    WhatsApp 24/7
+                  </a>
                 </Button>
               </motion.div>
             </motion.div>

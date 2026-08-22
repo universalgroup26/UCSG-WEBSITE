@@ -427,11 +427,13 @@ export default function ScholarshipsPage({ onBack }: Props) {
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                   <Button
-                    onClick={onBack}
+                    asChild
                     className="w-full rounded-xl border border-white/20 bg-white/10 px-8 text-white backdrop-blur-sm hover:bg-white/20 sm:w-auto"
                   >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Contact Us
+                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%20need%20help%20with%20scholarships" target="_blank" rel="noopener noreferrer">
+                      <Globe className="mr-2 h-4 w-4" />
+                      Contact Us
+                    </a>
                   </Button>
                 </motion.div>
               </div>
