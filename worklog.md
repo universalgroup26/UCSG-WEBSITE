@@ -976,3 +976,38 @@ Stage Summary:
 - Added section dividers and marquee banner for visual rhythm
 - All animations use Framer Motion with proper easing [0.22, 1, 0.36, 1]
 - Zero lint errors, zero console errors
+---
+Task ID: 1
+Agent: main
+Task: Implement popup contact form with scroll-based auto-trigger on all pages
+
+Work Log:
+- Read existing project structure: page.tsx, ContactPage.tsx, CloudflareTurnstile.tsx, UI components
+- Created /home/z/my-project/src/components/ContactPopup.tsx with:
+  - Beautiful animated popup modal (Framer Motion spring animations)
+  - Compact contact form (Name, Email, Phone, Service dropdown, Message)
+  - Graduation cap icon + gradient header matching UCSG branding
+  - Cloudflare Turnstile bot protection (compact size)
+  - Success state with checkmark animation + "Done"/"Send Another" buttons
+  - Footer with Call Us, WhatsApp links, and "Don't show again" option
+  - AnimatePresence for smooth open/close transitions
+  - Floating Action Button (FAB) with pulse animation on initial load
+  - Scroll-triggered auto-open at ~50% and ~90% of page height
+  - Session-based flags (only triggers once per scroll point per session)
+  - Permanent dismiss via localStorage (respects "Don't show again")
+- Integrated ContactPopup into page.tsx with currentView prop
+- Popup hidden on contact page (no FAB, no auto-trigger)
+- Fixed lint error (react-hooks/set-state-in-effect) by using handleOpen callback
+- Verified with agent-browser:
+  - FAB appears after 2s with pulse animation ✓
+  - Click FAB opens popup with smooth spring animation ✓
+  - Form fill and submit shows success state ✓
+  - Scroll to 50% triggers auto-open ✓
+  - Scroll to 90% triggers auto-open ✓
+  - No FAB/popup on Contact page ✓
+  - "Don't show again" permanently hides popup ✓
+
+Stage Summary:
+- Created ContactPopup.tsx component at /home/z/my-project/src/components/ContactPopup.tsx
+- Modified page.tsx to include <ContactPopup currentView={view.type} />
+- All features tested and working: FAB, auto-trigger (50% + 90%), form submission, permanent dismiss

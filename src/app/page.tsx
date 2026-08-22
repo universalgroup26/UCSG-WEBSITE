@@ -12,6 +12,7 @@ import AboutUCSGSection from '@/components/AboutUCSGSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
+import ContactPopup from '@/components/ContactPopup';
 import { SectionDivider, MarqueeBanner } from '@/components/animations/TextReveal';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -163,6 +164,7 @@ export default function HomePage() {
         </AnimatePresence>
       </main>
       <Footer onNavigate={handleNavigate} onContactClick={goContact} />
+      <ContactPopup currentView={view.type} />
     </div>
   );
 }
