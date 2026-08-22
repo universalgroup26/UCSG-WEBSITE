@@ -90,10 +90,12 @@ function TestimonialCard({
     <motion.div
       className="relative flex h-full"
       variants={{
-        hidden: { opacity: 0, y: 40 },
-        visible: { opacity: 1, y: 0 },
+        hidden: { opacity: 0, y: 40, scale: 0.95 },
+        visible: { opacity: 1, y: 0, scale: 1 },
       }}
-      transition={{ duration: 0.5, delay: index * 0.15, ease: 'easeOut' }}
+      transition={{ duration: 0.6, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -8, rotateY: 3, rotateX: 2 }}
+      style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
     >
       <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_4px_30px_-4px_rgba(0,40,104,0.1)] transition-shadow duration-300 hover:shadow-[0_8px_40px_-4px_rgba(0,40,104,0.15)]">
         {/* Top gradient accent line */}

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { MessageCircle, Phone, CheckCircle2, Users, Globe, Award, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { useRef, useCallback } from 'react';
 
 interface Props {
   onContactClick?: () => void;
@@ -148,7 +149,7 @@ export default function HeroSection({ onContactClick }: Props) {
               and real-world experience. Your success is our mission.
             </motion.p>
 
-            {/* ===== CTA BUTTONS ===== */}
+            {/* ===== CTA BUTTONS (Magnetic) ===== */}
             <motion.div
               className="mt-12 flex flex-col items-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
               variants={fadeUp}
@@ -156,40 +157,17 @@ export default function HeroSection({ onContactClick }: Props) {
               animate="visible"
               custom={4}
             >
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Button
-                  className="h-13 w-full rounded-full bg-white px-8 text-base font-semibold text-[#002868] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:bg-[#EFF6FF] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] sm:w-auto"
-                  size="lg"
-                  asChild
-                >
-                  <a href="tel:+13028935594">
-                    <Phone className="mr-2 h-4 w-4" />
-                    Call +1 (302) 893-5594
-                  </a>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Button
-                  className="h-13 w-full rounded-full border-2 border-white bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10 sm:w-auto"
-                  size="lg"
-                  variant="outline"
-                  asChild
-                >
-                  <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    WhatsApp 24/7
-                  </a>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Button
-                  className="h-13 w-full rounded-full border-2 border-[#B31942] bg-[#B31942] px-8 text-base font-semibold text-white shadow-[0_0_20px_rgba(179,25,66,0.3)] hover:bg-[#8B122F] hover:shadow-[0_0_30px_rgba(179,25,66,0.5)] sm:w-auto"
-                  size="lg"
-                  onClick={onContactClick}
-                >
-                  Get Free Consultation
-                </Button>
-              </motion.div>
+              <MagneticButton href="tel:+13028935594" className="h-13 w-full rounded-full bg-white px-8 text-base font-semibold text-[#002868] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:bg-[#EFF6FF] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] sm:w-auto">
+                <Phone className="mr-2 h-4 w-4" />
+                Call +1 (302) 893-5594
+              </MagneticButton>
+              <MagneticButton href="https://wa.me/13028935594" external className="h-13 w-full rounded-full border-2 border-white bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10 sm:w-auto">
+                <MessageCircle className="mr-2 h-4 w-4" />
+                WhatsApp 24/7
+              </MagneticButton>
+              <MagneticButton className="h-13 w-full rounded-full border-2 border-[#B31942] bg-[#B31942] px-8 text-base font-semibold text-white shadow-[0_0_20px_rgba(179,25,66,0.3)] hover:bg-[#8B122F] hover:shadow-[0_0_30px_rgba(179,25,66,0.5)] sm:w-auto" onClick={onContactClick}>
+                Get Free Consultation
+              </MagneticButton>
             </motion.div>
 
             {/* Trust Badges Row */}
@@ -258,9 +236,12 @@ export default function HeroSection({ onContactClick }: Props) {
               <motion.div
                 className="absolute -bottom-8 -left-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4 }}
+                animate={{ opacity: 1, y: [0, -6, 0] }}
+                transition={{
+                  opacity: { delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                  y: { delay: 1.5, duration: 4, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                whileHover={{ y: -4, scale: 1.05 }}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -279,9 +260,12 @@ export default function HeroSection({ onContactClick }: Props) {
               <motion.div
                 className="absolute -right-6 top-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
                 initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4 }}
+                animate={{ opacity: 1, y: [0, 5, 0] }}
+                transition={{
+                  opacity: { delay: 1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                  y: { delay: 1.8, duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                whileHover={{ y: -4, scale: 1.05 }}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -300,9 +284,13 @@ export default function HeroSection({ onContactClick }: Props) {
               <motion.div
                 className="absolute -bottom-4 -right-6 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
                 initial={{ opacity: 0, y: 10, x: 10 }}
-                animate={{ opacity: 1, y: 0, x: 0 }}
-                transition={{ delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4 }}
+                animate={{ opacity: 1, y: [0, -4, 0], x: [0, 4, 0] }}
+                transition={{
+                  opacity: { delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                  y: { delay: 2.1, duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+                  x: { delay: 2.1, duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                whileHover={{ y: -4, scale: 1.05 }}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -339,5 +327,69 @@ export default function HeroSection({ onContactClick }: Props) {
         </svg>
       </div>
     </section>
+  );
+}
+
+/* ───────────────────────────────────────────────
+   MagneticButton — follows cursor slightly on hover
+   ─────────────────────────────────────────────── */
+function MagneticButton({
+  children,
+  className,
+  href,
+  external,
+  onClick,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  href?: string;
+  external?: boolean;
+  onClick?: () => void;
+}) {
+  const magRef = useRef<HTMLDivElement>(null);
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = magRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    el.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+    el.style.transition = 'transform 0.15s ease-out';
+  }, []);
+  const handleMouseLeave = useCallback(() => {
+    const el = magRef.current;
+    if (!el) return;
+    el.style.transform = 'translate(0px, 0px)';
+    el.style.transition = 'transform 0.4s ease-out';
+  }, []);
+
+  return (
+    <motion.div
+      ref={magRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      whileTap={{ scale: 0.95 }}
+      className="inline-flex"
+    >
+      <Button
+        className={className}
+        size="lg"
+        variant={href === 'https://wa.me/13028935594' ? 'outline' : 'default'}
+        asChild={!!href}
+        onClick={onClick}
+      >
+        {href ? (
+          <a
+            href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+          >
+            {children}
+          </a>
+        ) : (
+          children
+        )}
+      </Button>
+    </motion.div>
   );
 }

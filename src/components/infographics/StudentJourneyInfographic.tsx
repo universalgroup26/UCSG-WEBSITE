@@ -10,6 +10,7 @@ import {
   Briefcase,
   BadgeCheck,
 } from 'lucide-react';
+import { useCounterAnimation } from '@/lib/animations';
 
 const journeySteps = [
   {
@@ -55,6 +56,35 @@ const journeySteps = [
     bg: '#EFF6FF',
   },
 ];
+
+const counterConfigs: Record<string, { target: number; prefix?: string; suffix?: string } | null> = {
+  '5,000+': { target: 5000, suffix: ',+' },
+  '99%': { target: 99, suffix: '%' },
+  '11+': { target: 11, suffix: '+' },
+  '24/7': null,
+};
+
+function StatCounter({ stat }: { stat: { value: string; label: string; color: string } }) {
+  const config = counterConfigs[stat.value];
+  const { ref, text } = useCounterAnimation(config?.target ?? 0, {
+    suffix: config?.suffix,
+    prefix: config?.prefix,
+  });
+
+  if (!config) {
+    return (
+      <p className="text-xl font-bold sm:text-2xl lg:text-3xl" style={{ color: stat.color }}>
+        {stat.value}
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-xl font-bold sm:text-2xl lg:text-3xl" style={{ color: stat.color }}>
+      <span ref={ref}>{text}</span>
+    </p>
+  );
+}
 
 export default function StudentJourneyInfographic() {
   const ref = useRef(null);
@@ -112,21 +142,31 @@ export default function StudentJourneyInfographic() {
                     transition={{ delay: 0.2 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {/* Circle node */}
-                    <motion.div
-                      className="relative z-10 mb-4 flex h-20 w-20 items-center justify-center rounded-full shadow-lg"
-                      style={{ backgroundColor: step.bg, boxShadow: `0 4px 20px ${step.color}20` }}
-                      whileHover={{ scale: 1.1, rotate: 3 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                    >
-                      <Icon className="h-9 w-9" style={{ color: step.color }} />
-                      {/* Step number badge */}
-                      <span
-                        className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white"
-                        style={{ backgroundColor: step.color }}
+                    <div className="relative mb-4">
+                      {/* Pulsing glow ring */}
+                      {isInView && (
+                        <motion.div
+                          className="absolute inset-0 rounded-full"
+                          animate={{ boxShadow: ['0 0 0 0 rgba(0,40,104,0.3)', '0 0 0 8px rgba(0,40,104,0)'] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                      )}
+                      <motion.div
+                        className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full shadow-lg"
+                        style={{ backgroundColor: step.bg, boxShadow: `0 4px 20px ${step.color}20` }}
+                        whileHover={{ scale: 1.1, rotate: 3 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                       >
-                        {i + 1}
-                      </span>
-                    </motion.div>
+                        <Icon className="h-9 w-9" style={{ color: step.color }} />
+                        {/* Step number badge */}
+                        <span
+                          className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white"
+                          style={{ backgroundColor: step.color }}
+                        >
+                          {i + 1}
+                        </span>
+                      </motion.div>
+                    </div>
                     <h3 className="text-sm font-bold text-[#0F172A]">{step.title}</h3>
                     <p className="mt-1 max-w-[150px] text-xs leading-relaxed text-[#6B7280]">{step.description}</p>
                   </motion.div>
@@ -194,11 +234,16 @@ export default function StudentJourneyInfographic() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-[#BFDBFE] bg-white p-4 text-center shadow-sm sm:p-5"
+              className="relative overflow-hidden rounded-xl border border-[#BFDBFE] bg-white p-4 text-center shadow-sm sm:p-5"
             >
-              <p className="text-xl font-bold sm:text-2xl lg:text-3xl" style={{ color: stat.color }}>
-                {stat.value}
-              </p>
+              {/* Shine sweep overlay */}
+              <motion.div
+                className="pointer-events-none absolute inset-0"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)' }}
+              />
+              <StatCounter stat={stat} />
               <p className="mt-1 text-xs text-[#6B7280] sm:text-sm">{stat.label}</p>
             </div>
           ))}
