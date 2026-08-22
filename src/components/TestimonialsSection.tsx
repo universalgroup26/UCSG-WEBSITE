@@ -6,6 +6,7 @@ import { motion, useInView } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { AnimatedHeading } from '@/components/animations/TextReveal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -208,26 +209,31 @@ export default function TestimonialsSection() {
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="mx-auto mb-16 max-w-2xl text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
-          {/* Pill label */}
-          <span className="mb-6 inline-block bg-[#B31942]/5 border border-[#B31942]/10 rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#B31942]">
-            Student Success Stories
-          </span>
+        <AnimatedHeading
+          badge="Student Success Stories"
+          title="What Our Students Say"
+          description="Real stories from international students who found their path with UCSG guidance."
+          badgeColor="#B31942"
+        />
 
-          <h2
-            id="testimonials-heading"
-            className="mt-4 text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl lg:text-[2.5rem]"
-          >
-            What Our Students Say
-          </h2>
-          <p className="mt-4 text-lg text-[#6B7280]">
-            Real stories from international students who found their path with UCSG guidance.
-          </p>
+        {/* Decorative floating quotes */}
+        <motion.div
+          className="pointer-events-none absolute left-[10%] top-[30%] text-[#002868]/[0.04]"
+          initial={{ opacity: 0, scale: 0.5, rotate: -15 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: -15 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
+          <Quote className="h-32 w-32" />
+        </motion.div>
+        <motion.div
+          className="pointer-events-none absolute right-[8%] bottom-[25%] text-[#B31942]/[0.04]"
+          initial={{ opacity: 0, scale: 0.5, rotate: 12 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 12 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
+          <Quote className="h-24 w-24" />
         </motion.div>
 
         {/* Desktop: 3-column grid */}

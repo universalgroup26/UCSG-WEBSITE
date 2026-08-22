@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import { MessageCircle, Phone, CheckCircle2, Users, Globe, Award, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useCallback } from 'react';
+import { FloatingParticles } from '@/components/animations/TextReveal';
 
 interface Props {
   onContactClick?: () => void;
@@ -28,6 +29,7 @@ const trustBadges = [
 
 export default function HeroSection({ onContactClick }: Props) {
   return (
+    <HeroParallaxWrapper>
     <section className="relative overflow-hidden bg-gradient-to-br from-[#0A0F2C] via-[#002868] to-[#0B1A3E]">
       {/* ===== ANIMATED GRADIENT ORBS ===== */}
       <motion.div
@@ -45,6 +47,8 @@ export default function HeroSection({ onContactClick }: Props) {
         animate={{ x: [0, 20, 0], y: [0, 25, 0], scale: [0.92, 1.1, 0.92] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      <FloatingParticles count={25} />
 
       {/* Subtle dot pattern overlay */}
       <div
@@ -201,12 +205,7 @@ export default function HeroSection({ onContactClick }: Props) {
           </div>
 
           {/* ===== RIGHT: HERO ILLUSTRATION ===== */}
-          <motion.div
-            className="relative hidden lg:block"
-            initial={{ opacity: 0, x: 40, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <HeroImageWrapper>
             <div className="relative">
               {/* Rotating gradient border effect */}
               <motion.div
@@ -232,16 +231,11 @@ export default function HeroSection({ onContactClick }: Props) {
                 <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1A3E]/60 to-transparent" />
               </div>
 
-              {/* ===== FLOATING GLASS STAT CARD: Students ===== */}
-              <motion.div
+              {/* ===== FLOATING GLASS STAT CARD: Students (Parallax) ===== */}
+              <ParallaxFloatCard
                 className="absolute -bottom-8 -left-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: [0, -6, 0] }}
-                transition={{
-                  opacity: { delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-                  y: { delay: 1.5, duration: 4, repeat: Infinity, ease: 'easeInOut' },
-                }}
-                whileHover={{ y: -4, scale: 1.05 }}
+                enterDelay={0.8}
+                floatDelay={1.5}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -254,18 +248,14 @@ export default function HeroSection({ onContactClick }: Props) {
                     <p className="text-[11px] font-medium text-blue-200/70">Students Placed</p>
                   </div>
                 </div>
-              </motion.div>
+              </ParallaxFloatCard>
 
-              {/* ===== FLOATING GLASS STAT CARD: Success Rate ===== */}
-              <motion.div
+              {/* ===== FLOATING GLASS STAT CARD: Success Rate (Parallax) ===== */}
+              <ParallaxFloatCard
                 className="absolute -right-6 top-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: [0, 5, 0] }}
-                transition={{
-                  opacity: { delay: 1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-                  y: { delay: 1.8, duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
-                }}
-                whileHover={{ y: -4, scale: 1.05 }}
+                enterDelay={1}
+                floatDelay={1.8}
+                floatYRange={5}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -278,19 +268,15 @@ export default function HeroSection({ onContactClick }: Props) {
                     <p className="text-[11px] font-medium text-blue-200/70">Success Rate</p>
                   </div>
                 </div>
-              </motion.div>
+              </ParallaxFloatCard>
 
-              {/* ===== FLOATING GLASS STAT CARD: Partner Universities ===== */}
-              <motion.div
+              {/* ===== FLOATING GLASS STAT CARD: Partner Universities (Parallax) ===== */}
+              <ParallaxFloatCard
                 className="absolute -bottom-4 -right-6 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 shadow-2xl backdrop-blur-xl"
-                initial={{ opacity: 0, y: 10, x: 10 }}
-                animate={{ opacity: 1, y: [0, -4, 0], x: [0, 4, 0] }}
-                transition={{
-                  opacity: { delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-                  y: { delay: 2.1, duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
-                  x: { delay: 2.1, duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
-                }}
-                whileHover={{ y: -4, scale: 1.05 }}
+                enterDelay={1.2}
+                floatDelay={2.1}
+                floatYRange={4}
+                floatXRange={4}
               >
                 {/* Inner glow border effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 via-transparent to-white/5" />
@@ -303,13 +289,13 @@ export default function HeroSection({ onContactClick }: Props) {
                     <p className="text-[11px] font-medium text-blue-200/70">Partner Universities</p>
                   </div>
                 </div>
-              </motion.div>
+              </ParallaxFloatCard>
             </div>
-          </motion.div>
+          </HeroImageWrapper>
         </div>
       </div>
 
-      {/* ===== WAVE DIVIDER ===== */}
+      {/* ===== ANIMATED WAVE DIVIDER ===== */}
       <div className="relative -mb-1">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="block w-full" preserveAspectRatio="none">
           <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill="white" />
@@ -327,6 +313,98 @@ export default function HeroSection({ onContactClick }: Props) {
         </svg>
       </div>
     </section>
+    </HeroParallaxWrapper>
+  );
+}
+
+/* ───────────────────────────────────────────────
+   HeroParallaxWrapper — adds scroll-linked parallax to the hero
+   ─────────────────────────────────────────────── */
+function HeroParallaxWrapper({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  return (
+    <motion.div ref={ref} style={{ opacity }}>
+      <motion.div style={{ y: bgY }}>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ───────────────────────────────────────────────
+   HeroImageWrapper — parallax image + staggered entrance
+   ─────────────────────────────────────────────── */
+function HeroImageWrapper({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], [60, -60]);
+
+  return (
+    <motion.div
+      ref={ref}
+      className="relative hidden lg:block"
+      initial={{ opacity: 0, x: 40, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div style={{ y: imgY }}>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ───────────────────────────────────────────────
+   ParallaxFloatCard — floating card with parallax offset + hover
+   ─────────────────────────────────────────────── */
+function ParallaxFloatCard({
+  children,
+  className,
+  enterDelay = 0.8,
+  floatDelay = 1.5,
+  floatYRange = 6,
+  floatXRange = 0,
+}: {
+  children: React.ReactNode;
+  className: string;
+  enterDelay?: number;
+  floatDelay?: number;
+  floatYRange?: number;
+  floatXRange?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ y: parallaxY }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: [0, -floatYRange, 0], x: floatXRange ? [0, floatXRange, 0] : 0 }}
+      transition={{
+        opacity: { delay: enterDelay, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+        y: { delay: floatDelay, duration: 4, repeat: Infinity, ease: 'easeInOut' },
+        ...(floatXRange ? { x: { delay: floatDelay, duration: 4.5, repeat: Infinity, ease: 'easeInOut' } } : {}),
+      }}
+      whileHover={{ y: -4, scale: 1.05 }}
+    >
+      {children}
+    </motion.div>
   );
 }
 

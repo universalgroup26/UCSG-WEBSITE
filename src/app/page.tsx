@@ -12,6 +12,7 @@ import AboutUCSGSection from '@/components/AboutUCSGSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
+import { SectionDivider, MarqueeBanner } from '@/components/animations/TextReveal';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
 import ContactPage from '@/components/pages/ContactPage';
@@ -124,10 +125,18 @@ export default function HomePage() {
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <HeroSection onContactClick={goContact} />
               <StudentJourneyInfographic />
+              <MarqueeBanner
+                items={['Day 1 CPT', 'SEVP Certified', '24/7 Support', 'University Transfer', 'SEVIS Reinstatement', 'Change of Status', 'STEM OPT', '99% Success Rate', '5,000+ Students']}
+                speed={30}
+                className="py-5 bg-white"
+              />
               <ServicesSection onResourceClick={handleResourceClick} />
+              <SectionDivider from="white" to="white" variant="zigzag" />
               <ServicesMindmap />
               <AboutUCSGSection />
+              <SectionDivider from="#0F172A" to="#F8FAFC" variant="wave" />
               <TestimonialsSection />
+              <SectionDivider from="#F8FAFC" to="white" variant="curve" />
               <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
             </motion.div>
           )}

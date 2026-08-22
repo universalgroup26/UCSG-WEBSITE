@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.framer.com/blog/website-animation-examples",
+    "name": "11 strategic animation techniques to enhance UX engagement",
+    "snippet": "Feb 28, 2025 · To inspire your next project, we've collected a set of stunning website animation examples from the Framer gallery. Explore how different types ...",
+    "host_name": "www.framer.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=PczQ0qSwe1E",
+    "name": "The Framer Motion Scroll Animation Masterclass - YouTube",
+    "snippet": "Mar 30, 2024 · Animated UI components for React, Tailwind CSS, Framer Motion & More ✨ https://www.hover.dev There are THREE distinct ways to create scroll ...",
+    "host_name": "www.youtube.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.framer.com/community/marketplace/components/tags/scroll-animation",
+    "name": "Scroll Animation UI Components & Animations for Framer Websites",
+    "snippet": "Explore scroll animation UI components, animations, and visual assets for Framer websites. Enhance your site with high-quality scroll animation elements ...",
+    "host_name": "www.framer.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://motion.dev/docs/react-scroll-animations",
+    "name": "React scroll animation | scroll-linked & parallax - Motion.dev",
+    "snippet": "This guide covers scroll-linked animations, scroll-triggered animations, parallax, horizontal scrolling, and more. All with live examples and copy-paste code.",
+    "host_name": "motion.dev",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://jb.desishub.com/blog/framer-motion",
+    "name": "Framer Motion Scroll Animations Guide - Next.js, TypeScript  - JB",
+    "snippet": "This documentation provides practical, production-ready examples for common scroll animation patterns in modern web applications. Core Concepts · Case Study 1: Fade & Zoom... · Case Study 3: Horizontal...",
+    "host_name": "jb.desishub.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.framer.community/c/support/scrolling-animation-like-apple-website",
+    "name": "Scrolling Animation Like Apple website - Framer Community",
+    "snippet": "Apr 23, 2024 · 1. Start by creating a large scroll section in your Framer project. · 2. Draw another frame within the scroll section and set its dimensions to ...",
+    "host_name": "www.framer.community",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.awwwards.com/websites/motion",
+    "name": "Best Framer Motion Websites | Web Design Inspiration - Awwwards",
+    "snippet": "With Framer Motion, you can design interactive, visually stunning sites at lightning speed, all without writing a single line of code.",
+    "host_name": "www.awwwards.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://codeymaze.medium.com/scroll-animations-using-framer-motion-in-react-2957443e9bea",
+    "name": "Scroll Animations using Framer Motion in React - CodeyMaze",
+    "snippet": "Jan 29, 2025 · Here's a working example that demonstrates how to use Framer Motion for scroll-based animations in React: a smooth, scroll-based animation ...",
+    "host_name": "codeymaze.medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.framer.com/academy/lessons/scroll-animations",
+    "name": "Framer Academy: Scroll animations in Framer",
+    "snippet": "Nov 9, 2022 · Some UI may differ, but the core concepts still apply. Scroll Animations. Add high-fidelity effects and animate variants within specific ...",
+    "host_name": "www.framer.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=1yhwglXdDjQ&vl=en",
+    "name": "Bringing websites to life with animation in Framer  - YouTube",
+    "snippet": "Jul 9, 2025 · Animation isn't just movement, it's communication. This course shows you how to use motion in Framer to guide attention, provide feedback, ...",
+    "host_name": "www.youtube.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

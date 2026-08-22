@@ -7,6 +7,7 @@ import { Send, MapPin, GraduationCap } from 'lucide-react';
 import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
 import CampusVisual from '@/components/CampusVisual';
+import { AnimatedHeading } from '@/components/animations/TextReveal';
 
 interface Props {
   onUniversityClick?: (university: UniversityData) => void;
@@ -38,22 +39,12 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
     <section ref={ref} className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          className="mx-auto max-w-2xl text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="inline-block rounded-full bg-[#002868]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#002868]">
-            SEVP-Certified Partners
-          </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl lg:text-[2.25rem]">
-            Our Partner Universities
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-[#6B7280]">
-            UCSG partners with {universities.length} SEVP-certified universities and training institutes offering CPT or Day 1 CPT programs. Click any card to explore.
-          </p>
-        </motion.div>
+        <AnimatedHeading
+          badge="SEVP-Certified Partners"
+          title="Our Partner Universities"
+          description={`UCSG partners with ${universities.length} SEVP-certified universities and training institutes offering CPT or Day 1 CPT programs. Click any card to explore.`}
+          badgeColor="#002868"
+        />
 
         {/* All Universities Grid - Same Style */}
         <motion.div

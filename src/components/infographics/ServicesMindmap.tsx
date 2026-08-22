@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CheckCircle2,
 } from 'lucide-react';
+import { AnimatedHeading } from '@/components/animations/TextReveal';
 
 interface ServiceBranch {
   icon: React.ElementType;
@@ -71,22 +72,12 @@ export default function ServicesMindmap() {
   return (
     <section ref={ref} className="bg-white py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="inline-block rounded-full bg-[#EFF6FF] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#002868]">
-            Service Map
-          </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
-            How UCSG Covers Every Angle
-          </h2>
-          <p className="mt-3 text-[#6B7280]">
-            One consultation, complete coverage — every immigration challenge solved
-          </p>
-        </motion.div>
+        <AnimatedHeading
+          badge="Service Map"
+          title="How UCSG Covers Every Angle"
+          description="One consultation, complete coverage — every immigration challenge solved"
+          badgeColor="#002868"
+        />
 
         <div className="hidden lg:block">
           <div className="relative mx-auto max-w-6xl">

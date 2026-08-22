@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import {
   MessageCircle,
   FileSearch,
@@ -11,6 +11,7 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 import { useCounterAnimation } from '@/lib/animations';
+import { AnimatedHeading } from '@/components/animations/TextReveal';
 
 const journeySteps = [
   {
@@ -93,41 +94,39 @@ export default function StudentJourneyInfographic() {
   return (
     <section ref={ref} className="bg-[#F8FAFC] py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="mx-auto mb-12 max-w-2xl text-center sm:mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="inline-block rounded-full bg-[#EFF6FF] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#002868]">
-            Your Journey
-          </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
-            From Consultation to Your First Paycheck
-          </h2>
-          <p className="mt-3 text-[#6B7280]">
-            A proven 6-step pathway that has helped 5000+ international students
-          </p>
-        </motion.div>
+        <AnimatedHeading
+          badge="Your Journey"
+          title="From Consultation to Your First Paycheck"
+          description="A proven 6-step pathway that has helped 5000+ international students"
+          badgeColor="#002868"
+        />
 
         {/* Desktop: Horizontal flow with SVG connector */}
         <div className="hidden lg:block">
           <div className="relative">
-            {/* SVG connecting line */}
+            {/* SVG connecting line with gradient */}
             <svg
               className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2"
               style={{ margin: '0 60px' }}
               preserveAspectRatio="none"
             >
+              <line x1="0" y1="1" x2="100%" y2="1" stroke="#E2E8F0" strokeWidth="2" />
               <motion.line
                 x1="0" y1="1" x2="100%" y2="1"
-                stroke="#BFDBFE"
-                strokeWidth="2"
-                strokeDasharray="8 4"
+                stroke="url(#journeyGrad)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={isInView ? { pathLength: 1 } : {}}
-                transition={{ duration: 1.5, delay: 0.3, ease: 'easeInOut' }}
+                transition={{ duration: 2, delay: 0.3, ease: 'easeInOut' }}
               />
+              <defs>
+                <linearGradient id="journeyGrad" x1="0%" y1="0" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#002868" />
+                  <stop offset="50%" stopColor="#B31942" />
+                  <stop offset="100%" stopColor="#002868" />
+                </linearGradient>
+              </defs>
             </svg>
 
             <div className="grid grid-cols-6 gap-3">
@@ -137,38 +136,55 @@ export default function StudentJourneyInfographic() {
                   <motion.div
                     key={step.title}
                     className="relative flex flex-col items-center text-center"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.2 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                    transition={{ delay: 0.2 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {/* Circle node */}
                     <div className="relative mb-4">
-                      {/* Pulsing glow ring */}
+                      {/* Animated expanding ring on scroll */}
                       {isInView && (
                         <motion.div
                           className="absolute inset-0 rounded-full"
-                          animate={{ boxShadow: ['0 0 0 0 rgba(0,40,104,0.3)', '0 0 0 8px rgba(0,40,104,0)'] }}
-                          transition={{ duration: 2, repeat: Infinity }}
+                          animate={{ boxShadow: ['0 0 0 0 rgba(0,40,104,0.3)', '0 0 0 12px rgba(0,40,104,0)'] }}
+                          transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.3 }}
                         />
                       )}
                       <motion.div
                         className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full shadow-lg"
                         style={{ backgroundColor: step.bg, boxShadow: `0 4px 20px ${step.color}20` }}
-                        whileHover={{ scale: 1.1, rotate: 3 }}
+                        whileHover={{ scale: 1.15, rotate: 5 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                       >
                         <Icon className="h-9 w-9" style={{ color: step.color }} />
                         {/* Step number badge */}
-                        <span
+                        <motion.span
                           className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white"
                           style={{ backgroundColor: step.color }}
+                          initial={{ scale: 0 }}
+                          animate={isInView ? { scale: 1 } : { scale: 0 }}
+                          transition={{ delay: 0.4 + i * 0.12, type: 'spring', stiffness: 400, damping: 15 }}
                         >
                           {i + 1}
-                        </span>
+                        </motion.span>
                       </motion.div>
                     </div>
-                    <h3 className="text-sm font-bold text-[#0F172A]">{step.title}</h3>
-                    <p className="mt-1 max-w-[150px] text-xs leading-relaxed text-[#6B7280]">{step.description}</p>
+                    <motion.h3
+                      className="text-sm font-bold text-[#0F172A]"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ delay: 0.5 + i * 0.12, duration: 0.4 }}
+                    >
+                      {step.title}
+                    </motion.h3>
+                    <motion.p
+                      className="mt-1 max-w-[150px] text-xs leading-relaxed text-[#6B7280]"
+                      initial={{ opacity: 0 }}
+                      animate={isInView ? { opacity: 1 } : {}}
+                      transition={{ delay: 0.6 + i * 0.12, duration: 0.4 }}
+                    >
+                      {step.description}
+                    </motion.p>
                   </motion.div>
                 );
               })}
@@ -176,7 +192,7 @@ export default function StudentJourneyInfographic() {
           </div>
         </div>
 
-        {/* Mobile/Tablet: 2x3 grid with vertical connectors */}
+        {/* Mobile/Tablet: timeline with vertical connectors */}
         <div className="lg:hidden">
           <div className="space-y-0">
             {journeySteps.map((step, i) => {
@@ -190,7 +206,6 @@ export default function StudentJourneyInfographic() {
                   transition={{ delay: 0.15 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <div className={`flex items-center gap-4 py-4 ${isEven ? 'flex-row' : 'flex-row-reverse sm:flex-row'}`}>
-                    {/* Icon circle */}
                     <div
                       className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full shadow-md sm:h-16 sm:w-16"
                       style={{ backgroundColor: step.bg }}
@@ -203,15 +218,19 @@ export default function StudentJourneyInfographic() {
                         {i + 1}
                       </span>
                     </div>
-                    {/* Text content */}
                     <div className={`flex-1 ${isEven ? '' : 'sm:text-left'}`}>
                       <h3 className="text-sm font-bold text-[#0F172A] sm:text-base">{step.title}</h3>
                       <p className="mt-0.5 text-xs leading-relaxed text-[#6B7280] sm:text-sm">{step.description}</p>
                     </div>
                   </div>
-                  {/* Connector line */}
                   {i < journeySteps.length - 1 && (
-                    <div className="ml-7 h-3 w-0.5 bg-[#BFDBFE] sm:ml-8" />
+                    <motion.div
+                      className="ml-7 h-3 w-0.5 bg-[#BFDBFE] sm:ml-8"
+                      initial={{ scaleY: 0 }}
+                      animate={isInView ? { scaleY: 1 } : {}}
+                      transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
+                      style={{ transformOrigin: 'top' }}
+                    />
                   )}
                 </motion.div>
               );
@@ -219,7 +238,7 @@ export default function StudentJourneyInfographic() {
           </div>
         </div>
 
-        {/* Bottom stats bar */}
+        {/* Bottom stats bar with enhanced animation */}
         <motion.div
           className="mt-12 grid grid-cols-2 gap-4 sm:mt-16 sm:grid-cols-4"
           initial={{ opacity: 0, y: 20 }}
@@ -231,21 +250,25 @@ export default function StudentJourneyInfographic() {
             { value: '99%', label: 'Success Rate', color: '#059669' },
             { value: '11+', label: 'Partner Universities', color: '#D97706' },
             { value: '24/7', label: 'Support Available', color: '#7C3AED' },
-          ].map((stat) => (
-            <div
+          ].map((stat, i) => (
+            <motion.div
               key={stat.label}
               className="relative overflow-hidden rounded-xl border border-[#BFDBFE] bg-white p-4 text-center shadow-sm sm:p-5"
+              whileHover={{ y: -4, scale: 1.03, boxShadow: `0 8px 25px ${stat.color}15` }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 1 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Shine sweep overlay */}
               <motion.div
                 className="pointer-events-none absolute inset-0"
                 animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)' }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, delay: i * 0.5 }}
+                style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)' }}
               />
               <StatCounter stat={stat} />
               <p className="mt-1 text-xs text-[#6B7280] sm:text-sm">{stat.label}</p>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>

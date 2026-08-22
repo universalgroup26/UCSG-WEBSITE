@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import {
   Heart,
   Users,
@@ -16,6 +16,7 @@ import {
   Award,
   Star,
 } from 'lucide-react';
+import { CursorSpotlight, TextReveal, AnimatedHeading } from '@/components/animations/TextReveal';
 
 const BRAND_BLUE = '#002868';
 const DARK_BG = '#0F172A';
@@ -207,27 +208,10 @@ function FounderStorySection() {
             </ScrollReveal>
           </div>
 
-          {/* Image column */}
+          {/* Image column with parallax */}
           <ScrollReveal delay={0.2} className="flex justify-center lg:justify-end">
             <div className="relative h-72 w-full max-w-md sm:h-80 lg:h-[420px]">
-              {/* Rotating conic gradient border */}
-              <motion.div
-                className="absolute -inset-[2px] rounded-2xl"
-                style={{
-                  background: `conic-gradient(from 0deg, ${BRAND_BLUE}, #B31942, ${BRAND_BLUE})`,
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-              />
-              <div className="relative h-full w-full overflow-hidden rounded-2xl">
-                <Image
-                  src="/images/campus.png"
-                  alt="University campus"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 90vw, 448px"
-                />
-              </div>
+              <ParallaxImage />
             </div>
           </ScrollReveal>
         </div>
@@ -243,38 +227,39 @@ function DifferentiatorsSection() {
   return (
     <section className="relative w-full bg-gray-50/70 py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <ScrollReveal>
-          <div className="mb-12 text-center">
-            <span className="mb-4 inline-block rounded-full border border-[#002868]/10 bg-[#002868]/5 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#002868]">
-              Why UCSG
-            </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
-              How Are We Different?
-            </h2>
-          </div>
-        </ScrollReveal>
+        <AnimatedHeading
+          badge="Why UCSG"
+          title="How Are We Different?"
+          badgeColor="#002868"
+        />
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {differentiators.map((item, i) => {
             const Icon = item.icon;
             return (
               <ScrollReveal key={item.title} delay={i * 0.08}>
-                <div className="relative h-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_30px_-4px_rgba(0,40,104,0.12)]">
+                <motion.div
+                  className="relative h-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.06)] transition-all duration-200"
+                  whileHover={{ y: -6, shadow: '0 8px 30px -4px rgba(0,40,104,0.15)' }}
+                  style={{ transformStyle: 'preserve-3d', perspective: '600px' }}
+                >
                   {/* Gradient top border accent */}
                   <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-2xl bg-gradient-to-r from-[#002868] to-[#B31942]" />
-                  <div
+                  <motion.div
                     className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
                     style={{ backgroundColor: `${BRAND_BLUE}14` }}
+                    whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
+                    transition={{ duration: 0.4 }}
                   >
                     <Icon className="h-5 w-5" style={{ color: BRAND_BLUE }} />
-                  </div>
+                  </motion.div>
                   <h3 className="mb-2 text-lg font-semibold text-gray-900">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-gray-500">
                     {item.description}
                   </p>
-                </div>
+                </motion.div>
               </ScrollReveal>
             );
           })}
@@ -293,24 +278,34 @@ function MissionVisionSection() {
       className="relative w-full overflow-hidden py-16 md:py-24"
       style={{ backgroundColor: DARK_BG }}
     >
-      {/* Decorative glows */}
-      <div
-        className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-[0.06]"
+      {/* Cursor spotlight effect on dark section */}
+      <CursorSpotlight />
+      {/* Animated decorative glows */}
+      <motion.div
+        className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full"
         style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
+        animate={{ opacity: [0.06, 0.1, 0.06], scale: [1, 1.1, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <div
-        className="pointer-events-none absolute -bottom-32 -right-32 h-80 w-80 rounded-full opacity-[0.05]"
+      <motion.div
+        className="pointer-events-none absolute -bottom-32 -right-32 h-80 w-80 rounded-full"
         style={{ background: `radial-gradient(circle, ${BRAND_BLUE}, transparent 70%)` }}
+        animate={{ opacity: [0.05, 0.09, 0.05], scale: [1, 1.15, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <ScrollReveal>
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Our Mission & Vision
-            </h2>
-          </div>
-        </ScrollReveal>
+        <div className="mb-12 text-center">
+          <motion.h2
+            className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
+            initial={{ opacity: 0, y: 20, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            Our Mission & Vision
+          </motion.h2>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {missionCards.map((item, i) => {
@@ -339,6 +334,41 @@ function MissionVisionSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  ParallaxImage — parallax campus image                                 */
+/* ------------------------------------------------------------------ */
+function ParallaxImage() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  return (
+    <motion.div ref={ref} className="absolute inset-0" style={{ y }}>
+      {/* Rotating conic gradient border */}
+      <motion.div
+        className="absolute -inset-[2px] rounded-2xl"
+        style={{
+          background: `conic-gradient(from 0deg, ${BRAND_BLUE}, #B31942, ${BRAND_BLUE})`,
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+      />
+      <div className="relative h-full w-full overflow-hidden rounded-2xl">
+        <Image
+          src="/images/campus.png"
+          alt="University campus"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 90vw, 448px"
+        />
+      </div>
+    </motion.div>
   );
 }
 

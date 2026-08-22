@@ -10,8 +10,9 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useTiltEffect } from '@/lib/animations';
+import { AnimatedHeading, ClipPathReveal } from '@/components/animations/TextReveal';
 
 const services = [
   { icon: GraduationCap, title: 'University Transfers', resourceId: 'university-transfers', description: "If your SEVIS is terminated or you need a university transfer, UCSG can connect you with SEVP-approved universities within 24\u201348 hours. Don't risk falling out of status \u2013 act now.", cta: 'Start University Transfer Today' },
@@ -46,25 +47,13 @@ export default function ServicesSection({ onResourceClick }: Props) {
   return (
     <section ref={ref} className="bg-gradient-to-b from-white via-[#F8FAFC] to-white py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          className="mx-auto max-w-2xl text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span className="inline-block bg-[#002868]/5 border border-[#002868]/10 rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#002868]">
-            Our Services
-          </span>
-          <h2 className="mt-5 text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl lg:text-5xl">
-            Comprehensive Student Services
-          </h2>
-          <div className="mx-auto mt-5 h-1 w-[60px] rounded-full bg-gradient-to-r from-[#002868] to-[#B31942]" />
-          <p className="mt-5 text-base leading-relaxed text-[#6B7280] sm:text-lg">
-            UCSG provides fast, reliable support for every immigration and
-            academic challenge international students face
-          </p>
-        </motion.div>
+        {/* Section Header with Blur Reveal */}
+        <AnimatedHeading
+          badge="Our Services"
+          title="Comprehensive Student Services"
+          description="UCSG provides fast, reliable support for every immigration and academic challenge international students face"
+          badgeColor="#002868"
+        />
 
         {/* Services Grid - Top row: 3 cards */}
         <div className="mt-14 grid gap-6 sm:gap-8 sm:mt-18 lg:mt-20 sm:grid-cols-2 lg:grid-cols-3">
@@ -73,12 +62,15 @@ export default function ServicesSection({ onResourceClick }: Props) {
             return (
               <TiltCard key={service.title}>
                 <motion.div
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_8px_30px_-4px_rgba(0,40,104,0.15)] sm:p-8"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.1 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -8, scale: 1.02, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_12px_40px_-4px_rgba(0,40,104,0.2)] sm:p-8"
+                  initial={{ opacity: 0, y: 40, rotateX: 8 }}
+                  animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -10, scale: 1.03, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                  style={{ transformStyle: 'preserve-3d', perspective: '800px' }}
                 >
+                  {/* Animated gradient top border on hover */}
+                  <div className="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-[#002868] via-[#B31942] to-[#002868] scale-x-0 transition-transform duration-500 group-hover:scale-x-100" />
                   <div className="absolute left-0 top-6 bottom-6 w-1 rounded-r-full bg-gradient-to-b from-[#002868] to-[#B31942] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <motion.div
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#002868]/10 to-[#002868]/5"
@@ -117,12 +109,14 @@ export default function ServicesSection({ onResourceClick }: Props) {
             return (
               <TiltCard key={service.title}>
                 <motion.div
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_8px_30px_-4px_rgba(0,40,104,0.15)] sm:p-8"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.1 + (i + 3) * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -8, scale: 1.02, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_12px_40px_-4px_rgba(0,40,104,0.2)] sm:p-8"
+                  initial={{ opacity: 0, y: 40, rotateX: 8 }}
+                  animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+                  transition={{ delay: 0.1 + (i + 3) * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -10, scale: 1.03, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                  style={{ transformStyle: 'preserve-3d', perspective: '800px' }}
                 >
+                  <div className="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-[#002868] via-[#B31942] to-[#002868] scale-x-0 transition-transform duration-500 group-hover:scale-x-100" />
                   <div className="absolute left-0 top-6 bottom-6 w-1 rounded-r-full bg-gradient-to-b from-[#002868] to-[#B31942] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <motion.div
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#002868]/10 to-[#002868]/5"
