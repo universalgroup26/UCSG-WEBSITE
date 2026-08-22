@@ -13,28 +13,13 @@ import {
   Globe,
   ShieldCheck,
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
+import ScrollReveal from '@/components/ScrollReveal';
 import CloudflareTurnstile from '@/components/CloudflareTurnstile';
-
-function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const contactMethods = [
   {
@@ -111,19 +96,31 @@ export default function ContactPage({ onBack }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // If Turnstile is configured, verify the token server-side
+    // Verify Turnstile
     if (turnstileToken) {
       try {
-        const res = await fetch('/api/turnstile/verify?XTransformPort=3000', {
+        const res = await fetch('/api/turnstile/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: turnstileToken }),
         });
         const data = await res.json();
-        if (!data.success) return; // Block submission if verification fails
+        if (!data.success) return;
       } catch {
         // Allow submission on network error (graceful degradation)
       }
+    }
+
+    // Submit form data to backend
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) return;
+    } catch {
+      // Allow on network error
     }
 
     setSubmitted(true);
@@ -212,7 +209,7 @@ export default function ContactPage({ onBack }: Props) {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {contactMethods.map((method) => {
               const Icon = method.icon;
-              const Wrapper = method.external ? 'a' : 'a';
+              // External link rendering
               return (
                 <motion.a
                   key={method.title}

@@ -10,7 +10,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useTiltEffect } from '@/lib/animations';
 import { AnimatedHeading, ClipPathReveal } from '@/components/animations/TextReveal';
 

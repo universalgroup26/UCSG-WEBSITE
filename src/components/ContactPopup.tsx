@@ -479,9 +479,10 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Verify Turnstile
     if (turnstileToken) {
       try {
-        const res = await fetch('/api/turnstile/verify?XTransformPort=3000', {
+        const res = await fetch('/api/turnstile/verify', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: turnstileToken }),
         });
@@ -489,6 +490,17 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
         if (!data.success) return;
       } catch { /* graceful */ }
     }
+
+    // Submit form data to backend
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) return;
+    } catch { /* graceful */ }
+
     setSubmitted(true);
   };
 

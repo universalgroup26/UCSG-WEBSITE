@@ -28,13 +28,6 @@ import {
   TrendingUp,
 } from 'lucide-react';
 
-type MindmapNode = {
-  label: string;
-  icon?: React.ElementType;
-  color?: string;
-  children?: { label: string; icon?: React.ElementType; highlight?: boolean }[];
-};
-
 type MindmapConfig = {
   id: string;
   centerLabel: string;

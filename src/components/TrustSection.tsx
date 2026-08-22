@@ -8,7 +8,6 @@ import { GraduationCap, Shield, Clock, CheckCircle, ArrowRight, ChevronDown } fr
 const BRAND_BLUE = '#002868';
 const BRAND_RED = '#B31942';
 const DARK_BG = '#0F172A';
-const DARK_CARD = '#1A2332';
 const LIGHT_TEXT = '#F7F7F7';
 const MUTED_TEXT = '#94A3B8';
 

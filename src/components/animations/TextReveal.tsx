@@ -1,52 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-
-/* ───────────────────────────────────────────────────────────────────────
-   TextReveal — word-by-word blur-to-clear reveal on scroll
-   ─────────────────────────────────────────────────────────────────────── */
-export function TextReveal({
-  text,
-  className = '',
-  delay = 0,
-  as: Tag = 'p',
-}: {
-  text: string;
-  className?: string;
-  delay?: number;
-  as?: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'span';
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-  const words = text.split(' ');
-
-  return (
-    <Tag className={className}>
-      <span ref={ref} className="inline-flex flex-wrap gap-x-[0.25em]">
-        {words.map((word, i) => (
-          <motion.span
-            key={`${word}-${i}`}
-            className="inline-block"
-            initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
-            animate={
-              isInView
-                ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-                : { opacity: 0, y: 12, filter: 'blur(6px)' }
-            }
-            transition={{
-              duration: 0.5,
-              delay: delay + i * 0.04,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            {word}
-          </motion.span>
-        ))}
-      </span>
-    </Tag>
-  );
-}
+import { motion, useInView } from 'framer-motion';
 
 /* ───────────────────────────────────────────────────────────────────────
    AnimatedHeading — section heading with line + blur reveal
@@ -121,32 +76,6 @@ export function AnimatedHeading({
         </motion.p>
       )}
     </div>
-  );
-}
-
-/* ───────────────────────────────────────────────────────────────────────
-   ParallaxElement — moves at a different speed on scroll
-   ─────────────────────────────────────────────────────────────────────── */
-export function ParallaxElement({
-  children,
-  speed = 0.3,
-  className = '',
-}: {
-  children: React.ReactNode;
-  speed?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], [speed * -100, speed * 100]);
-
-  return (
-    <motion.div ref={ref} className={className} style={{ y }}>
-      {children}
-    </motion.div>
   );
 }
 

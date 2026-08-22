@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import Image from 'next/image';
 import {
   ArrowLeft,
@@ -17,12 +16,13 @@ import {
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { ResourceData } from '@/lib/data/resources';
 import ResourceMindmap from '@/components/infographics/ResourceMindmap';
 import CPTvsOPTInfographic from '@/components/infographics/CPTvsOPTInfographic';
 import VisaPathwayFlowchart from '@/components/infographics/VisaPathwayFlowchart';
 import SEVISRecoveryFlowchart from '@/components/infographics/SEVISRecoveryFlowchart';
+import ScrollReveal from '@/components/ScrollReveal';
 
 const iconComponents: Record<string, React.ElementType> = {
   briefcase: Briefcase,
@@ -30,22 +30,6 @@ const iconComponents: Record<string, React.ElementType> = {
   'shield-check': ShieldCheck,
   'refresh-cw': RefreshCw,
 };
-
-function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 interface Props {
   resource: ResourceData;

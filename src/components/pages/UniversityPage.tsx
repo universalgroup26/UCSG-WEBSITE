@@ -34,9 +34,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import UniversityMindmap from '@/components/infographics/UniversityMindmap';
+import ScrollReveal from '@/components/ScrollReveal';
 
 const iconMap: Record<string, React.ElementType> = {
   calendar: Calendar,
@@ -112,22 +112,6 @@ const amenityIcons: Record<string, React.ElementType> = {
 
 function getAmenityIcon(name: string): React.ElementType {
   return amenityIcons[name] || Building;
-}
-
-function ScrollReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
 }
 
 interface Props {
