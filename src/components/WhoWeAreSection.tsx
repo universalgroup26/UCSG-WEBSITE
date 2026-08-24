@@ -1,15 +1,23 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { useInView, motion } from 'framer-motion';
-import { GraduationCap, Star, Globe, ShieldCheck, Shield, Check, Quote, Award } from 'lucide-react';
+import { useInView, motion, AnimatePresence } from 'framer-motion';
+import { GraduationCap, Star, Globe, ShieldCheck, Shield, Quote } from 'lucide-react';
 import ScrollReveal from '@/components/ScrollReveal';
 import { track } from '@/lib/analytics';
 
 /* ─── brand colors ─── */
 const NAVY = '#002868';
 const RED = '#B31942';
+
+/* ─── background slideshow images ─── */
+const BG_IMAGES = [
+  '/images/whoware-bg-1.png',
+  '/images/whoware-bg-2.png',
+  '/images/whoware-bg-3.png',
+];
+const SLIDE_INTERVAL = 5000; // 5 seconds per slide
 
 /* ─── counter hook ─── */
 function useCounter(target: number, suffix = '', inView: boolean, duration = 1600) {
@@ -34,7 +42,60 @@ function useCounter(target: number, suffix = '', inView: boolean, duration = 160
   return `${count.toLocaleString()}${suffix}`;
 }
 
-/* ─── stat card (extracted to avoid re-mounting on parent render) ─── */
+/* ─── background slideshow ─── */
+function BackgroundSlideshow() {
+  const [current, setCurrent] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startSlideshow = useCallback(() => {
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % BG_IMAGES.length);
+    }, SLIDE_INTERVAL);
+  }, []);
+
+  const stopSlideshow = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    startSlideshow();
+    return stopSlideshow;
+  }, [startSlideshow, stopSlideshow]);
+
+  return (
+    <div className="absolute inset-0 z-0">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.5, ease: 'easeInOut' }}
+        >
+          <Image
+            src={BG_IMAGES[current]}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority={current === 0}
+          />
+        </motion.div>
+      </AnimatePresence>
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/55" />
+      {/* Gradient fade at bottom */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/40 to-transparent" />
+    </div>
+  );
+}
+
+/* ─── stat card ─── */
 function StatCard({
   value,
   suffix,
@@ -53,19 +114,14 @@ function StatCard({
   const display = useCounter(value, suffix, inView);
   return (
     <ScrollReveal delay={delay}>
-      <div className="group relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 md:p-6">
-        {/* Top accent line */}
-        <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-2xl bg-gradient-to-r from-[#002868] to-[#B31942] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <span
-          className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
-          style={{ backgroundColor: NAVY }}
-        >
+      <div className="group relative flex flex-col items-center rounded-2xl border border-white/20 bg-white/10 p-5 text-center backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:-translate-y-1 md:p-6">
+        <span className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-white/20">
           <Icon className="h-6 w-6 text-white" />
         </span>
-        <span className="block text-3xl font-extrabold md:text-4xl" style={{ color: NAVY }}>
+        <span className="block text-3xl font-extrabold text-white md:text-4xl">
           {display}
         </span>
-        <span className="mt-1 text-sm font-medium text-gray-500">{label}</span>
+        <span className="mt-1 text-sm font-medium text-white/80">{label}</span>
       </div>
     </ScrollReveal>
   );
@@ -79,71 +135,97 @@ const stats = [
   { value: 11, suffix: '+', label: 'Partner Universities', Icon: ShieldCheck },
 ];
 
+/* ─── slide indicators ─── */
+function SlideIndicators({ current }: { current: number }) {
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {BG_IMAGES.map((_, i) => (
+        <span
+          key={i}
+          className={`block h-1.5 rounded-full transition-all duration-500 ${
+            i === current ? 'w-8 bg-white' : 'w-1.5 bg-white/40'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ─── main section ─── */
 export default function WhoWeAreSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
+  // Track current slide for indicators
+  const [slideIndex, setSlideIndex] = useState(0);
+  const slideIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
     if (isInView) track.sectionView('who_we_are');
   }, [isInView]);
 
-  return (
-    <section id="who-we-are" ref={sectionRef} className="relative overflow-hidden bg-white py-16 md:py-24">
-      {/* Subtle background accents */}
-      <div
-        className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full opacity-[0.03]"
-        style={{ background: `radial-gradient(circle, ${NAVY}, transparent 70%)` }}
-      />
-      <div
-        className="pointer-events-none absolute -left-32 bottom-0 h-80 w-80 rounded-full opacity-[0.03]"
-        style={{ background: `radial-gradient(circle, ${RED}, transparent 70%)` }}
-      />
+  // Sync slide index for indicators (mirrors BackgroundSlideshow logic)
+  useEffect(() => {
+    slideIntervalRef.current = setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % BG_IMAGES.length);
+    }, SLIDE_INTERVAL);
+    return () => {
+      if (slideIntervalRef.current) clearInterval(slideIntervalRef.current);
+    };
+  }, []);
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+  return (
+    <section
+      id="who-we-are"
+      ref={sectionRef}
+      className="relative flex min-h-[90vh] flex-col justify-center overflow-hidden py-16 md:py-24"
+    >
+      {/* Background Slideshow */}
+      <BackgroundSlideshow />
+
+      {/* Content over slideshow */}
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* ── Eyebrow ── */}
         <ScrollReveal className="flex items-center justify-center gap-3">
-          <span className="h-px w-8 md:w-12" style={{ backgroundColor: NAVY }} />
-          <span className="text-xs font-semibold uppercase tracking-[0.25em]" style={{ color: NAVY }}>
+          <span className="h-px w-8 md:w-12 bg-white/60" />
+          <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/90">
             WHO WE ARE
           </span>
-          <span className="h-px w-8 md:w-12" style={{ backgroundColor: NAVY }} />
+          <span className="h-px w-8 md:w-12 bg-white/60" />
         </ScrollReveal>
 
         {/* ── Headline ── */}
         <ScrollReveal delay={0.1} className="mx-auto mt-6 max-w-3xl text-center">
-          <h2 className="text-3xl font-extrabold leading-tight tracking-tight md:text-4xl lg:text-5xl" style={{ color: NAVY }}>
+          <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-white md:text-4xl lg:text-5xl">
             Universal Consulting Service Group
           </h2>
         </ScrollReveal>
 
         {/* ── Sub-headline ── */}
-        <ScrollReveal delay={0.2} className="mx-auto mt-4 max-w-2xl text-center">
-          <p className="text-base leading-relaxed text-gray-600 md:text-lg">
-            Empowering international students with trusted guidance for U.S. university admissions,{' '}
-            <strong className="font-bold" style={{ color: NAVY }}>
-              Day 1 CPT programs
-            </strong>
-            , and visa success.
+        <ScrollReveal delay={0.15} className="mx-auto mt-4 max-w-2xl text-center">
+          <p className="text-base leading-relaxed text-white/80 md:text-lg">
+            Empowering international students with trusted guidance for U.S. university admissions,
+            {' '}<strong className="font-bold text-white">Day 1 CPT programs</strong>,
+            and visa success.
           </p>
         </ScrollReveal>
 
-        {/* ── Founder Card with Image & Message ── */}
-        <ScrollReveal delay={0.25} className="mt-14">
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br from-gray-50 to-white shadow-[0_4px_40px_-8px_rgba(0,40,104,0.1)]">
-            {/* Animated shimmer overlay */}
+        {/* ── Founder Card ── */}
+        <ScrollReveal delay={0.2} className="mt-12">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-white/15 bg-white/10 p-6 shadow-2xl backdrop-blur-md md:p-10">
+            {/* Shimmer overlay */}
             <motion.div
               className="pointer-events-none absolute inset-0 z-10"
               style={{
-                background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%)',
+                background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
               }}
               animate={{ x: ['-100%', '200%'] }}
               transition={{ duration: 4, repeat: Infinity, repeatDelay: 6, ease: 'easeInOut' }}
             />
 
-            <div className="relative z-0 flex flex-col gap-8 p-6 md:flex-row md:items-center md:gap-10 md:p-10">
+            <div className="relative z-0 flex flex-col gap-8 md:flex-row md:items-center md:gap-10">
               {/* Left — Founder Image */}
-              <div className="relative mx-auto w-full max-w-[240px] shrink-0 md:mx-0 md:max-w-[260px]">
+              <div className="relative mx-auto w-full max-w-[220px] shrink-0 md:mx-0 md:max-w-[240px]">
                 {/* Rotating border ring */}
                 <motion.div
                   className="absolute -inset-[3px] rounded-2xl"
@@ -153,18 +235,18 @@ export default function WhoWeAreSection() {
                   animate={{ rotate: 360 }}
                   transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
                 />
-                <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 md:h-72">
+                <div className="relative h-60 w-full overflow-hidden rounded-2xl bg-gray-800 md:h-68">
                   <Image
                     src="/images/founder.jpg"
                     alt="Joy Chowdhury — Founder & CEO, Universal Consulting Service Group"
                     fill
                     className="object-cover object-top"
-                    sizes="260px"
+                    sizes="240px"
                     priority
                   />
                 </div>
-                {/* Name badge below image */}
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-1.5 shadow-lg ring-1 ring-gray-100">
+                {/* Name badge */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-1.5 shadow-lg ring-1 ring-white/20">
                   <span className="text-sm font-extrabold" style={{ color: NAVY }}>
                     Joy Chowdhury
                   </span>
@@ -175,26 +257,24 @@ export default function WhoWeAreSection() {
               <div className="flex-1 pt-4 md:pt-0">
                 {/* Quote icon + Founder tag */}
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: `${NAVY}12` }}>
-                    <Quote className="h-5 w-5" style={{ color: NAVY }} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
+                    <Quote className="h-5 w-5 text-white" />
                   </div>
-                  <div>
-                    <span
-                      className="inline-block rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest"
-                      style={{ backgroundColor: RED, color: 'white' }}
-                    >
-                      Message from Our Founder
-                    </span>
-                  </div>
+                  <span
+                    className="inline-block rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest"
+                    style={{ backgroundColor: RED, color: 'white' }}
+                  >
+                    Message from Our Founder
+                  </span>
                 </div>
 
                 {/* The Message */}
                 <div className="relative">
-                  <span className="absolute -left-2 -top-3 text-6xl leading-none font-serif" style={{ color: `${NAVY}15` }}>
+                  <span className="absolute -left-2 -top-3 text-6xl leading-none font-serif text-white/20">
                     &ldquo;
                   </span>
-                  <p className="relative pl-6 text-base leading-[1.85] text-gray-700 md:text-[17px]">
-                    <strong className="font-bold" style={{ color: NAVY }}>
+                  <p className="relative pl-6 text-base leading-[1.85] text-white/90 md:text-[17px]">
+                    <strong className="font-bold text-white">
                       When I served in the United States Army, I learned that true leadership means
                       standing beside those you lead — not above them.
                     </strong>{' '}
@@ -205,20 +285,20 @@ export default function WhoWeAreSection() {
                 </div>
 
                 <div className="relative mt-5 pl-6">
-                  <p className="text-base leading-[1.85] text-gray-700 md:text-[17px]">
+                  <p className="text-base leading-[1.85] text-white/85 md:text-[17px]">
                     We are not just consultants. We are your advocates, your strategists, and your
                     partners in building a future in the United States. From your very first Day 1 CPT
                     opportunity to the moment you land your dream career —{' '}
-                    <strong className="font-bold" style={{ color: NAVY }}>
+                    <strong className="font-bold text-white">
                       we will be there, every single step of the way.
                     </strong>
                   </p>
                 </div>
 
                 <div className="relative mt-5 pl-6">
-                  <p className="text-base leading-[1.85] text-gray-700 md:text-[17px]">
+                  <p className="text-base leading-[1.85] text-white/85 md:text-[17px]">
                     With integrity as our compass and your success as our mission,{' '}
-                    <strong className="font-bold" style={{ color: NAVY }}>
+                    <strong className="font-bold text-white">
                       I personally promise you this: at UCSG, your American dream is in the safest
                       hands possible.
                     </strong>
@@ -227,14 +307,14 @@ export default function WhoWeAreSection() {
 
                 {/* Closing quotation + signature */}
                 <div className="mt-6 flex items-end justify-between gap-4 pl-6">
-                  <span className="text-5xl leading-none font-serif" style={{ color: `${NAVY}15` }}>
+                  <span className="text-5xl leading-none font-serif text-white/20">
                     &rdquo;
                   </span>
                   <div className="text-right">
-                    <p className="text-sm font-semibold" style={{ color: NAVY }}>
+                    <p className="text-sm font-semibold text-white">
                       Joy Chowdhury
                     </p>
-                    <p className="mt-0.5 text-xs text-gray-500">
+                    <p className="mt-0.5 text-xs text-white/70">
                       Founder & CEO, UCSG
                     </p>
                     <p className="mt-0.5 text-xs font-medium" style={{ color: RED }}>
@@ -243,44 +323,21 @@ export default function WhoWeAreSection() {
                   </div>
                 </div>
 
-                {/* Trust Badges Row */}
-                <div className="mt-6 flex flex-wrap gap-3 pl-6">
-                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
+                {/* Veteran-Owned Badge — Only remaining badge */}
+                <div className="mt-6 pl-6">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm transition-shadow hover:bg-white/20">
+                    <span
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: NAVY }}
+                    >
                       <Shield className="h-4 w-4 text-white" />
                     </span>
                     <div className="flex flex-col">
                       <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
                         Veteran-owned
                       </span>
-                      <span className="text-xs font-bold" style={{ color: NAVY }}>
+                      <span className="text-xs font-bold text-white">
                         U.S. Army Veteran
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
-                      <Check className="h-4 w-4 text-white" />
-                    </span>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
-                        Trusted
-                      </span>
-                      <span className="text-xs font-bold" style={{ color: NAVY }}>
-                        Certified & Verified
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
-                      <Award className="h-4 w-4 text-white" />
-                    </span>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
-                        Excellence
-                      </span>
-                      <span className="text-xs font-bold" style={{ color: NAVY }}>
-                        SEVP Certified
                       </span>
                     </div>
                   </div>
@@ -290,8 +347,13 @@ export default function WhoWeAreSection() {
           </div>
         </ScrollReveal>
 
+        {/* ── Slide Indicators ── */}
+        <div className="mt-8">
+          <SlideIndicators current={slideIndex} />
+        </div>
+
         {/* ── Stats Grid ── */}
-        <div className="mt-16 grid grid-cols-2 gap-4 md:mt-20 md:grid-cols-4 md:gap-6">
+        <div className="mt-12 grid grid-cols-2 gap-4 md:mt-16 md:grid-cols-4 md:gap-6">
           {stats.map((stat, i) => (
             <StatCard
               key={stat.label}
@@ -300,7 +362,7 @@ export default function WhoWeAreSection() {
               label={stat.label}
               Icon={stat.Icon}
               inView={isInView}
-              delay={0.4 + i * 0.1}
+              delay={0.35 + i * 0.1}
             />
           ))}
         </div>
