@@ -165,35 +165,6 @@ export default function Header({ onNavigate }: Props) {
             </motion.button>
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden items-center gap-3 xl:flex">
-            <motion.div
-              custom={6}
-              variants={navItemVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex items-center gap-2"
-            >
-              <a
-                href="tel:+13028935594"
-                className="hidden items-center gap-1.5 text-sm font-medium text-[#64748B] transition-colors hover:text-[#002868] lg:inline-flex"
-              >
-                <Phone className="h-3.5 w-3.5" />
-                <span className="hidden xl:inline">(302) 893-5594</span>
-              </a>
-              <Button
-                className="relative overflow-hidden rounded-full bg-gradient-to-r from-[#B31942] to-[#002868] px-6 text-sm font-bold text-white shadow-lg shadow-[#B31942]/20 transition-all hover:shadow-xl hover:shadow-[#B31942]/30 hover:brightness-110"
-                size="default"
-                asChild
-              >
-                <a href="tel:+13028935594">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Get Free Consultation
-                </a>
-              </Button>
-            </motion.div>
-          </div>
-
           {/* Mobile Menu Trigger */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild className="xl:hidden">

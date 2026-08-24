@@ -62,5 +62,11 @@ worklog.md
 home-page-check.png
 uni-section-check.png
 
+# Screenshots and temp JSONs
+anim-check-*.png
+comp_*.json
+competitors*.json
+vlm-*.json
+
 # Allow PNGs in public folder
 !public/**/*.png
