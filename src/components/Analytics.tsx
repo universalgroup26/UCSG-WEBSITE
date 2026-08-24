@@ -6,9 +6,10 @@ import { track } from '@/lib/analytics';
 
 const GA_MEASUREMENT_ID = 'G-MHC25XBP3P';
 const GTM_ID = 'GTM-K65M9LJW';
+const META_PIXEL_ID = '2582317282238910';
 
 /**
- * Analytics provider — loads GA4 (gtag.js) + GTM, initializes dataLayer.
+ * Analytics provider — loads GA4 (gtag.js) + GTM + Meta Pixel, initializes dataLayer.
  * Place once in layout.tsx. No props needed.
  */
 export default function Analytics() {
@@ -39,6 +40,35 @@ export default function Analytics() {
           `,
         }}
       />
+
+      {/* ─── Meta Pixel (Facebook) ─── */}
+      <Script
+        id="meta-pixel-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '${META_PIXEL_ID}');
+            fbq('track', 'PageView');
+          `,
+        }}
+      />
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: 'none' }}
+          src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+          alt=""
+        />
+      </noscript>
 
       {/* ─── Google Tag Manager ─── */}
       <Script

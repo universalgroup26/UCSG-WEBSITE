@@ -13,6 +13,8 @@ declare global {
   interface Window {
     dataLayer: Record<string, unknown>[];
     gtag: (...args: unknown[]) => void;
+    fbq: (...args: unknown[]) => void;
+    _fbq: unknown;
   }
 }
 
@@ -90,6 +92,44 @@ function push(event: Record<string, unknown>) {
     }
 
     window.gtag('event', gaEventName, gaParams);
+  }
+
+  // 3. Fire Meta Pixel event (if fbq is loaded)
+  if (typeof window.fbq === 'function') {
+    const metaEventMap: Record<string, string | null> = {
+      page_view: 'PageView',
+      cta_click: 'Lead',
+      form_submit: 'Lead',
+      form_start: 'Contact',
+      section_view: null, // no direct Meta equivalent — skip
+      university_view: 'ViewContent',
+      resource_view: 'ViewContent',
+      nav_click: null,
+      popup_open: null,
+      popup_close: null,
+      popup_dismiss: null,
+      mobile_menu: null,
+      social_click: null,
+      external_link: null,
+      form_error: null,
+    };
+
+    const metaEventName = metaEventMap[event.event];
+    if (metaEventName) {
+      const metaParams: Record<string, string> = {};
+      if (event.event === 'cta_click') {
+        metaParams.content_name = `${event.cta_type} — ${event.cta_source}`;
+      } else if (event.event === 'form_submit') {
+        metaParams.content_name = event.form_id as string;
+      } else if (event.event === 'university_view') {
+        metaParams.content_name = event.university_name as string;
+        metaParams.content_category = 'University';
+      } else if (event.event === 'resource_view') {
+        metaParams.content_name = event.resource_name as string;
+        metaParams.content_category = 'Resource';
+      }
+      window.fbq('track', metaEventName, metaParams);
+    }
   }
 }
 
