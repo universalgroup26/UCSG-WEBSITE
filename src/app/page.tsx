@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import ScrollProgress from '@/components/ScrollProgress';
 import BrandIntroSection from '@/components/BrandIntroSection';
 import HeroSection from '@/components/HeroSection';
+import WhoWeAreSection from '@/components/WhoWeAreSection';
 import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
 import ServicesSection from '@/components/ServicesSection';
 import ServicesMindmap from '@/components/infographics/ServicesMindmap';
@@ -142,6 +143,7 @@ export default function HomePage() {
           {view.type === 'home' && (
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <HeroSection onContactClick={goContact} />
+              <WhoWeAreSection />
               <BrandIntroSection />
               <StudentJourneyInfographic />
               <MarqueeBanner

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 import { db } from '@/lib/db';
 
 // ─── Configuration ─────────────────────────────────────────────────────
@@ -9,6 +10,11 @@ const GHL_PIPELINE_ID = process.env.GHL_PIPELINE_ID || '';
 const GHL_STAGE_ID = process.env.GHL_STAGE_ID || '';
 const UCSG_API_KEY = process.env.UCSG_API_KEY || '';
 const UCSG_TRACKING_ID = process.env.UCSG_TRACKING_ID || '';
+const SMTP_HOST = process.env.SMTP_HOST || '';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const EMAIL_TO = process.env.EMAIL_TO || SMTP_USER;
 
 // ─── GoHighLevel Direct API Integration ────────────────────────────────
 
@@ -184,6 +190,90 @@ async function pushToUCSGTracking(leadData: {
   return null;
 }
 
+// ─── Email Notification ──────────────────────────────────────────────
+
+/**
+ * Send email notification via Gmail SMTP.
+ * Requires SMTP_PASS (Gmail App Password) to be configured in .env
+ */
+async function sendEmailNotification(data: {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+  source: string;
+  whatsapp?: string;
+  nationality?: string;
+}) {
+  if (!SMTP_USER || !SMTP_PASS) {
+    console.log('[Email] Skipping: SMTP credentials not configured');
+    return;
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_PORT === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    });
+
+    const subject = `New Lead from ${data.name} — ${data.service || 'General Inquiry'}`;
+
+    const htmlBody = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fa; border-radius: 12px; overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #002868 0%, #001540 100%); padding: 24px 32px;">
+          <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 700;">New Lead — UCSG Website</h1>
+          <p style="color: rgba(255,255,255,0.7); margin: 4px 0 0; font-size: 13px;">${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}</p>
+        </div>
+        <div style="padding: 24px 32px; background: white;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500; width: 120px;">Name</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Email</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><a href="mailto:${data.email}" style="color: #002868; text-decoration: none; font-weight: 600;">${data.email}</a></td>
+            </tr>
+            ${data.phone ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Phone</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="tel:${data.phone}" style="color: #002868; text-decoration: none;">${data.phone}</a></td></tr>` : ''}
+            ${data.whatsapp ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">WhatsApp</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="https://wa.me/${data.whatsapp.replace(/[^0-9]/g, '')}" style="color: #25D366; text-decoration: none;">${data.whatsapp}</a></td></tr>` : ''}
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Service</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.service || 'Not specified'}</td>
+            </tr>
+            ${data.nationality ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Nationality</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.nationality}</td></tr>` : ''}
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Source</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.source}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #64748b; font-weight: 500; vertical-align: top;">Message</td>
+              <td style="padding: 10px 0; font-weight: 500; color: #334155; line-height: 1.6;">${data.message.replace(/\n/g, '<br>')}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="padding: 16px 32px; background: #f8f9fa; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #94a3b8;">UCSG — Universal Consulting Service Group</p>
+        </div>
+      </div>
+    `;
+
+    await transporter.sendMail({
+      from: `"UCSG Website" <${SMTP_USER}>`,
+      to: EMAIL_TO,
+      replyTo: data.email,
+      subject,
+      html: htmlBody,
+    });
+
+    console.log('[Email] Notification sent successfully to', EMAIL_TO);
+  } catch (err) {
+    console.error('[Email] Failed to send notification:', err);
+  }
+}
+
 // ─── Main Handler ──────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -253,7 +343,19 @@ export async function POST(req: NextRequest) {
       source: formSource,
     }).catch(() => {});
 
-    // 3. Store in local database (synchronous — always succeeds independently)
+    // 3. Email notification to ucsgassist@gmail.com
+    sendEmailNotification({
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      service: trimmedService,
+      message: trimmedMessage,
+      source: formSource,
+      whatsapp: whatsapp?.trim() || undefined,
+      nationality: nationality?.trim() || undefined,
+    }).catch(() => {});
+
+    // 4. Store in local database (synchronous — always succeeds independently)
     const submission = await db.contactSubmission.create({
       data: {
         name: trimmedName,
