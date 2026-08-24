@@ -8,15 +8,18 @@ const GA_MEASUREMENT_ID = 'G-MHC25XBP3P';
 const GTM_ID = 'GTM-K65M9LJW';
 const META_PIXEL_ID = '2582317282238910';
 const CLARITY_PROJECT_ID = 'y7hrmh5gu4';
+const UCSG_TRACKING_ID = 'tk_b6bec4688bdc473b85ae341de9f730fc';
+const UCSG_API_KEY = 'pit-69ae3778-3aec-4cf3-b494-80b75a454f9f';
 
 /**
- * Analytics provider — loads GA4 (gtag.js) + GTM + Meta Pixel + Clarity, initializes dataLayer.
+ * Analytics provider — loads GA4 + GTM + Meta Pixel + Clarity + UCSG Lead Tracking.
  * Place once in layout.tsx. No props needed.
  */
 export default function Analytics() {
-  // Initialize dataLayer on mount
+  // Initialize dataLayer and expose UCSG API key
   useEffect(() => {
     track.init();
+    window.__ucsg_api_key = UCSG_API_KEY;
   }, []);
 
   return (
@@ -81,6 +84,14 @@ export default function Analytics() {
             })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
           `,
         }}
+      />
+
+      {/* ─── UCSG Lead Tracking ─── */}
+      <Script
+        id="ucsg-external-tracking"
+        src="https://lead.universalconsultingservices.com/js/external-tracking.js"
+        data-tracking-id={UCSG_TRACKING_ID}
+        strategy="afterInteractive"
       />
 
       {/* ─── Google Tag Manager ─── */}

@@ -15,6 +15,7 @@ declare global {
     gtag: (...args: unknown[]) => void;
     fbq: (...args: unknown[]) => void;
     _fbq: unknown;
+    __ucsg_api_key?: string;
   }
 }
 
