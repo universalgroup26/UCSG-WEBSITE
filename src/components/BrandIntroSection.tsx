@@ -1,10 +1,10 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { ShieldCheck, Star, GraduationCap, Globe } from 'lucide-react';
 
-const letters = 'Universal Consulting Service Group'.split('');
+const WORDS = ['Universal', 'Consulting', 'Service', 'Group'];
 
 const letterVariants = {
   hidden: { opacity: 0, y: 20, rotateX: -90 },
@@ -18,6 +18,11 @@ const letterVariants = {
       ease: [0.22, 1, 0.36, 1],
     },
   }),
+};
+
+const wordVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.01 } },
 };
 
 const statItems = [
@@ -34,7 +39,7 @@ const statVariants = {
     y: 0,
     scale: 1,
     transition: {
-      delay: 1.1 + i * 0.1,
+      delay: 1.0 + i * 0.1,
       duration: 0.6,
       ease: [0.22, 1, 0.36, 1],
     },
@@ -44,6 +49,18 @@ const statVariants = {
 export default function BrandIntroSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  // Pre-compute flat letter indices so they're stable across re-renders
+  const letterData = useMemo(() => {
+    const data: { word: string; char: string; globalIndex: number }[] = [];
+    let gi = 0;
+    for (const word of WORDS) {
+      for (const char of word.split('')) {
+        data.push({ word, char, globalIndex: gi++ });
+      }
+    }
+    return data;
+  }, []);
 
   return (
     <section
@@ -69,32 +86,41 @@ export default function BrandIntroSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="h-px flex-1 max-w-[80px] bg-gradient-to-r from-transparent to-[#002868]/30" />
+          <div className="h-px max-w-[80px] flex-1 bg-gradient-to-r from-transparent to-[#002868]/30" />
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#002868]/60">
             Who We Are
           </span>
-          <div className="h-px flex-1 max-w-[80px] bg-gradient-to-l from-transparent to-[#002868]/30" />
+          <div className="h-px max-w-[80px] flex-1 bg-gradient-to-l from-transparent to-[#002868]/30" />
         </motion.div>
 
-        {/* Animated letter-by-letter full name */}
-        <div className="flex flex-wrap justify-center perspective-[800px]">
-          {letters.map((char, i) => (
+        {/* Animated word-by-word with letter reveals */}
+        <div
+          className="flex flex-wrap items-baseline justify-center gap-x-3 sm:gap-x-4 md:gap-x-5"
+          style={{ perspective: '800px' }}
+        >
+          {WORDS.map((word, wi) => (
             <motion.span
-              key={i}
-              custom={i}
-              variants={letterVariants}
+              key={word}
+              variants={wordVariants}
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
-              className={`inline-block text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl ${
-                char === ' '
-                  ? 'w-[0.3em]'
-                  : 'bg-gradient-to-br from-[#0F172A] via-[#002868] to-[#0F172A] bg-clip-text text-transparent'
-              }`}
-              style={{
-                transformOrigin: 'center bottom',
-              }}
+              className="inline-flex shrink-0"
             >
-              {char === ' ' ? '\u00A0' : char}
+              {letterData
+                .filter((d) => d.word === word)
+                .map((d) => (
+                  <motion.span
+                    key={d.globalIndex}
+                    custom={d.globalIndex}
+                    variants={letterVariants}
+                    initial="hidden"
+                    animate={isInView ? 'visible' : 'hidden'}
+                    className="inline-block bg-gradient-to-br from-[#0F172A] via-[#002868] to-[#0F172A] bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+                    style={{ transformOrigin: 'center bottom' }}
+                  >
+                    {d.char}
+                  </motion.span>
+                ))}
             </motion.span>
           ))}
         </div>
