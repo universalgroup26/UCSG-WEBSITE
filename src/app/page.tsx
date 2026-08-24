@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import ScrollProgress from '@/components/ScrollProgress';
+import BrandIntroSection from '@/components/BrandIntroSection';
 import HeroSection from '@/components/HeroSection';
 import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
 import ServicesSection from '@/components/ServicesSection';
@@ -125,6 +126,7 @@ export default function HomePage() {
           {view.type === 'home' && (
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <HeroSection onContactClick={goContact} />
+              <BrandIntroSection />
               <StudentJourneyInfographic />
               <MarqueeBanner
                 items={['Day 1 CPT', 'SEVP Certified', '24/7 Support', 'University Transfer', 'SEVIS Reinstatement', 'Change of Status', 'STEM OPT', '99% Success Rate', '5,000+ Students']}

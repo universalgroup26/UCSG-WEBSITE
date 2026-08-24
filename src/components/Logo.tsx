@@ -2,15 +2,18 @@
 
 import Image from 'next/image';
 import { ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface LogoProps {
   variant?: 'dark' | 'light';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   showBadge?: boolean;
+  /** Header-only mode: shows just UCSG with gradient, no subtitle */
+  compact?: boolean;
 }
 
-export default function Logo({ variant = 'dark', size = 'md', showText = false, showBadge = true }: LogoProps) {
+export default function Logo({ variant = 'dark', size = 'md', showText = false, showBadge = true, compact = false }: LogoProps) {
   const sizes = {
     sm: { img: 36, title: 'text-base', sub: 'text-[9px]', badge: 'text-[8px]' },
     md: { img: 44, title: 'text-xl', sub: 'text-[10px]', badge: 'text-[9px]' },
@@ -40,7 +43,21 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
           priority
         />
       </div>
-      {showText && (
+      {compact ? (
+        <motion.span
+          className={`text-2xl font-black tracking-tight sm:text-3xl ${
+            variant === 'light'
+              ? 'bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent'
+              : 'bg-gradient-to-r from-[#002868] via-[#1E40AF] to-[#B31942] bg-clip-text text-transparent'
+          }`}
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ scale: 1.02 }}
+        >
+          UCSG
+        </motion.span>
+      ) : showText ? (
         <div className="flex flex-col leading-none">
           <span className={`font-extrabold tracking-tight ${sizes[size].title} ${textColor}`}>
             UCSG
@@ -57,7 +74,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
             </span>
           )}
         </div>
-      )}
+      ) : null}
     </a>
   );
 }
