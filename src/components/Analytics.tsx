@@ -7,9 +7,10 @@ import { track } from '@/lib/analytics';
 const GA_MEASUREMENT_ID = 'G-MHC25XBP3P';
 const GTM_ID = 'GTM-K65M9LJW';
 const META_PIXEL_ID = '2582317282238910';
+const CLARITY_PROJECT_ID = 'y7hrmh5gu4';
 
 /**
- * Analytics provider — loads GA4 (gtag.js) + GTM + Meta Pixel, initializes dataLayer.
+ * Analytics provider — loads GA4 (gtag.js) + GTM + Meta Pixel + Clarity, initializes dataLayer.
  * Place once in layout.tsx. No props needed.
  */
 export default function Analytics() {
@@ -69,6 +70,21 @@ export default function Analytics() {
           alt=""
         />
       </noscript>
+
+      {/* ─── Microsoft Clarity ─── */}
+      <Script
+        id="ms-clarity"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
+          `,
+        }}
+      />
 
       {/* ─── Google Tag Manager ─── */}
       <Script
