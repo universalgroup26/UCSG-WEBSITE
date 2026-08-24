@@ -1,24 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-// GoHighLevel Configuration (set in .env)
+// ─── Configuration ─────────────────────────────────────────────────────
+
 const GHL_API_KEY = process.env.GHL_API_KEY || '';
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || '';
 const GHL_PIPELINE_ID = process.env.GHL_PIPELINE_ID || '';
 const GHL_STAGE_ID = process.env.GHL_STAGE_ID || '';
+const UCSG_API_KEY = process.env.UCSG_API_KEY || '';
+const UCSG_TRACKING_ID = process.env.UCSG_TRACKING_ID || '';
+
+// ─── GoHighLevel Direct API Integration ────────────────────────────────
 
 /**
- * Create or update a contact in GoHighLevel and optionally add to pipeline
+ * Create or update a contact in GoHighLevel via the official API.
+ * Requires GHL_API_KEY + GHL_LOCATION_ID.
+ * Optionally adds the contact to a pipeline stage.
  */
 async function pushToGoHighLevel(data: {
   firstName: string;
+  lastName?: string;
   email: string;
   phone?: string;
   tags: string[];
   customFields: { id: string; value: string }[];
 }) {
   if (!GHL_API_KEY || !GHL_LOCATION_ID) {
-    console.log('[GHL] Skipping: API key or location ID not configured');
+    console.log('[GHL] Skipping direct API: API key or location ID not configured');
     return null;
   }
 
@@ -36,6 +44,7 @@ async function pushToGoHighLevel(data: {
         },
         body: JSON.stringify({
           firstName: data.firstName,
+          lastName: data.lastName || '',
           email: data.email,
           phone: data.phone || undefined,
           tags: data.tags,
@@ -66,14 +75,14 @@ async function pushToGoHighLevel(data: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
             },
-            body: JSON.stringify({
-              contact_id: [contactId],
-            }),
+            body: JSON.stringify({ contact_id: [contactId] }),
           },
         );
 
         if (!pipelineRes.ok) {
           console.error(`[GHL] Pipeline add failed (${pipelineRes.status}):`, await pipelineRes.text());
+        } else {
+          console.log(`[GHL] Contact ${contactId} added to pipeline ${GHL_PIPELINE_ID}/${GHL_STAGE_ID}`);
         }
       } catch (pipelineErr) {
         console.error('[GHL] Pipeline error:', pipelineErr);
@@ -83,15 +92,104 @@ async function pushToGoHighLevel(data: {
     console.log(`[GHL] Contact ${contactId} created/updated successfully`);
     return contactId;
   } catch (err) {
-    console.error('[GHL] Error:', err);
+    console.error('[GHL] Direct API error:', err);
     return null;
   }
 }
 
+// ─── UCSG Lead Tracking System ────────────────────────────────────────
+
+/**
+ * Push lead data to UCSG external tracking system at
+ * lead.universalconsultingservices.com. This is the GoHighLevel-powered
+ * lead capture endpoint that feeds directly into the GHL CRM.
+ *
+ * Uses the UCSG tracking ID (from the external-tracking.js script)
+ * and API key for authentication.
+ */
+async function pushToUCSGTracking(leadData: {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+  source: string;
+}) {
+  if (!UCSG_API_KEY || !UCSG_TRACKING_ID) {
+    console.log('[UCSG-Track] Skipping: API key or tracking ID not configured');
+    return null;
+  }
+
+  const payload = {
+    tracking_id: UCSG_TRACKING_ID,
+    event: 'lead_capture',
+    lead: {
+      name: leadData.name,
+      email: leadData.email,
+      phone: leadData.phone,
+      service_needed: leadData.service,
+      message: leadData.message,
+      source: leadData.source,
+      submitted_at: new Date().toISOString(),
+    },
+  };
+
+  // Try the UCSG lead capture endpoint
+  try {
+    const res = await fetch('https://lead.universalconsultingservices.com/api/lead-capture', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${UCSG_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      const result = await res.json().catch(() => null);
+      console.log('[UCSG-Track] Lead captured successfully:', result?.id || 'ok');
+      return result;
+    }
+    console.warn(`[UCSG-Track] Lead capture returned ${res.status}:`, await res.text().catch(() => ''));
+  } catch (err) {
+    console.warn('[UCSG-Track] Lead capture request failed:', err);
+  }
+
+  // Fallback: try alternative endpoint pattern
+  try {
+    const res = await fetch('https://lead.universalconsultingservices.com/api/v1/leads', {
+      method: 'POST',
+      headers: {
+        'x-api-key': UCSG_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        ...payload,
+        api_key: UCSG_API_KEY,
+      }),
+    });
+
+    if (res.ok) {
+      const result = await res.json().catch(() => null);
+      console.log('[UCSG-Track] Lead captured via fallback endpoint:', result?.id || 'ok');
+      return result;
+    }
+    console.warn(`[UCSG-Track] Fallback endpoint returned ${res.status}`);
+  } catch (err) {
+    console.warn('[UCSG-Track] Fallback endpoint request failed:', err);
+  }
+
+  return null;
+}
+
+// ─── Main Handler ──────────────────────────────────────────────────────
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone, message, service, whatsapp, nationality, englishLevel } = body;
+    const { name, email, phone, message, service, whatsapp, nationality, englishLevel, source } = body;
 
     // Basic validation
     if (!name || !name.trim() || !email || !email.trim() || !message || !message.trim()) {
@@ -109,6 +207,7 @@ export async function POST(req: NextRequest) {
     const trimmedPhone = phone?.trim() || '';
     const trimmedService = service?.trim() || '';
     const trimmedMessage = message.trim();
+    const formSource = source?.trim() || 'UCSG Website';
 
     // Split name into first/last name
     const nameParts = trimmedName.split(/\s+/);
@@ -118,6 +217,7 @@ export async function POST(req: NextRequest) {
     // Build tags
     const tags: string[] = ['UCSG Website Lead', 'Contact Form'];
     if (trimmedService) tags.push(trimmedService);
+    if (formSource && formSource !== 'UCSG Website') tags.push(`Source: ${formSource}`);
     if (nationality?.trim()) tags.push(`Nationality: ${nationality.trim()}`);
 
     // Build custom fields for GHL
@@ -128,19 +228,32 @@ export async function POST(req: NextRequest) {
       { id: 'service_needed', value: trimmedService },
       { id: 'message', value: trimmedMessage },
       { id: 'last_name', value: lastName },
-      { id: 'source', value: 'UCSG Website' },
+      { id: 'source', value: formSource },
     ];
 
-    // Push to GoHighLevel (non-blocking, won't fail the submission)
+    // ─── Push to all lead destinations (non-blocking, fire-and-forget) ───
+
+    // 1. GoHighLevel Direct API (contact upsert + pipeline)
     pushToGoHighLevel({
       firstName,
+      lastName: lastName || undefined,
       email: trimmedEmail,
       phone: trimmedPhone || undefined,
       tags,
       customFields,
-    }).catch(() => {}); // Fire and forget
+    }).catch(() => {});
 
-    // Store in local database (always succeeds independently)
+    // 2. UCSG External Lead Tracking System
+    pushToUCSGTracking({
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      service: trimmedService,
+      message: trimmedMessage,
+      source: formSource,
+    }).catch(() => {});
+
+    // 3. Store in local database (synchronous — always succeeds independently)
     const submission = await db.contactSubmission.create({
       data: {
         name: trimmedName,

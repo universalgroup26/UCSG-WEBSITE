@@ -128,12 +128,21 @@ export default function ContactPage({ onBack }: Props) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, source: 'Contact Page' }),
       });
       if (!res.ok) {
         track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: `HTTP ${res.status}` });
         return;
       }
+      // Fire comprehensive lead conversion to ALL analytics platforms
+      track.leadConversion({
+        formId: 'contact_page',
+        formName: 'Contact Page Form',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || formData.whatsapp,
+        service: formData.service,
+      });
     } catch {
       track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: 'Network error' });
     }

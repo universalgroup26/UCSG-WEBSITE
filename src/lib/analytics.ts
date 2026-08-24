@@ -15,7 +15,10 @@ declare global {
     gtag: (...args: unknown[]) => void;
     fbq: (...args: unknown[]) => void;
     _fbq: unknown;
+    clarity: (...args: unknown[]) => void;
     __ucsg_api_key?: string;
+    goTrackLead?: (data: Record<string, string>) => void;
+    _ucsgq?: Record<string, unknown>[];
   }
 }
 
@@ -51,6 +54,7 @@ function push(event: Record<string, unknown>) {
       resource_view: 'page_view',
       social_click: 'share',
       external_link: 'outbound_click',
+      lead_conversion: 'generate_lead',
     };
 
     const gaEventName = gaEventMap[event.event] || event.event;
@@ -113,6 +117,7 @@ function push(event: Record<string, unknown>) {
       social_click: null,
       external_link: null,
       form_error: null,
+      lead_conversion: 'Lead',
     };
 
     const metaEventName = metaEventMap[event.event];
@@ -199,6 +204,18 @@ interface SocialClickEvent {
   social_url: string;
 }
 
+interface LeadConversionEvent {
+  event: 'lead_conversion';
+  form_id: string;
+  form_name?: string;
+  lead_name?: string;
+  lead_email?: string;
+  lead_phone?: string;
+  lead_service?: string;
+  value?: number;
+  currency?: string;
+}
+
 interface ExternalLinkEvent {
   event: 'external_link';
   link_url: string;
@@ -216,7 +233,8 @@ type AnalyticsEvent =
   | UniversityViewEvent
   | ResourceViewEvent
   | SocialClickEvent
-  | ExternalLinkEvent;
+  | ExternalLinkEvent
+  | LeadConversionEvent;
 
 // ─── Public tracking API ────────────────────────────────────────────────
 
@@ -293,6 +311,110 @@ function externalLink(url: string, text: string) {
   push({ event: 'external_link', link_url: url, link_text: text });
 }
 
+/**
+ * Track a successful lead conversion — fires to ALL analytics platforms:
+ * 1. dataLayer (GTM + UCSG external tracking)
+ * 2. GA4 via gtag (generate_lead with value)
+ * 3. Meta Pixel (Lead with Advanced Matching)
+ * 4. Microsoft Clarity (conversion event)
+ * 5. GoHighLevel external tracking (if exposed)
+ */
+function leadConversion(params: {
+  formId: string;
+  formName?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  service?: string;
+  value?: number;
+  currency?: string;
+}) {
+  if (typeof window === 'undefined') return;
+
+  // 1. Push to dataLayer (GTM + UCSG external tracking consume this)
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'lead_conversion',
+    form_id: params.formId,
+    form_name: params.formName || '',
+    lead_name: params.name || '',
+    lead_email: params.email || '',
+    lead_phone: params.phone || '',
+    lead_service: params.service || '',
+    value: params.value || 0,
+    currency: params.currency || 'USD',
+  });
+
+  // 2. GA4 — generate_lead with value
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'generate_lead', {
+      form_id: params.formId,
+      form_name: params.formName || '',
+      currency: params.currency || 'USD',
+      value: params.value || 0,
+    });
+  }
+
+  // 3. Meta Pixel — Lead with Advanced Matching (hashed PII)
+  if (typeof window.fbq === 'function') {
+    const metaParams: Record<string, string> = {
+      content_name: params.formId,
+      content_category: 'Lead Form',
+    };
+    if (params.service) metaParams.service = params.service;
+
+    // Advanced Matching — send user data for better attribution
+    if (params.email || params.name || params.phone) {
+      window.fbq('init', '2582317282238910', {
+        em: params.email || undefined,
+        fn: params.name?.split(' ')[0] || undefined,
+        ln: params.name?.split(' ').slice(1).join(' ') || undefined,
+        ph: params.phone || undefined,
+      });
+    }
+
+    window.fbq('track', 'Lead', metaParams);
+  }
+
+  // 4. Microsoft Clarity — custom conversion event
+  if (typeof window.clarity === 'function') {
+    try {
+      (window.clarity as (...args: unknown[]) => void)('event', params.formId);
+    } catch {
+      // Clarity not loaded yet — ignore
+    }
+  }
+
+  // 5. GoHighLevel external tracking — try to call exposed lead tracker
+  //    The external-tracking.js script may expose goTrackLead or _ucsgq
+  if (typeof window.goTrackLead === 'function') {
+    try {
+      window.goTrackLead({
+        name: params.name || '',
+        email: params.email || '',
+        phone: params.phone || '',
+        service: params.service || '',
+        source: params.formId,
+      });
+    } catch {
+      // GHL tracking function not available
+    }
+  }
+
+  // Also push to UCSG tracking queue if available
+  if (Array.isArray(window._ucsgq)) {
+    window._ucsgq.push({
+      event: 'lead',
+      data: {
+        name: params.name || '',
+        email: params.email || '',
+        phone: params.phone || '',
+        service: params.service || '',
+      },
+    });
+  }
+}
+
 export const track = {
   init,
   pageView,
@@ -306,4 +428,5 @@ export const track = {
   resourceView,
   socialClick,
   externalLink,
+  leadConversion,
 };
