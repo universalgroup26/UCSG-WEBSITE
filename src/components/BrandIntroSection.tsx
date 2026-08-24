@@ -2,27 +2,22 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useMemo } from 'react';
-import { ShieldCheck, Star, GraduationCap, Globe } from 'lucide-react';
+import { ShieldCheck, Star, GraduationCap, Globe, Award, CheckCircle2 } from 'lucide-react';
 
 const WORDS = ['Universal', 'Consulting', 'Service', 'Group'];
 
 const letterVariants = {
-  hidden: { opacity: 0, y: 20, rotateX: -90 },
+  hidden: { opacity: 0, y: 24, rotateX: -80 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     rotateX: 0,
     transition: {
-      delay: 0.3 + i * 0.025,
-      duration: 0.5,
+      delay: 0.2 + i * 0.02,
+      duration: 0.45,
       ease: [0.22, 1, 0.36, 1],
     },
   }),
-};
-
-const wordVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.01 } },
 };
 
 const statItems = [
@@ -39,7 +34,7 @@ const statVariants = {
     y: 0,
     scale: 1,
     transition: {
-      delay: 1.0 + i * 0.1,
+      delay: 0.9 + i * 0.1,
       duration: 0.6,
       ease: [0.22, 1, 0.36, 1],
     },
@@ -48,9 +43,8 @@ const statVariants = {
 
 export default function BrandIntroSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
 
-  // Pre-compute flat letter indices so they're stable across re-renders
   const letterData = useMemo(() => {
     const data: { word: string; char: string; globalIndex: number }[] = [];
     let gi = 0;
@@ -67,7 +61,7 @@ export default function BrandIntroSection() {
       ref={ref}
       className="relative overflow-hidden bg-white py-20 sm:py-28"
     >
-      {/* Subtle radial glow behind text */}
+      {/* Subtle radial glow */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         <div className="h-[500px] w-[800px] rounded-full bg-gradient-to-br from-[#002868]/[0.04] via-[#B31942]/[0.03] to-transparent blur-3xl" />
       </div>
@@ -93,19 +87,13 @@ export default function BrandIntroSection() {
           <div className="h-px max-w-[80px] flex-1 bg-gradient-to-l from-transparent to-[#002868]/30" />
         </motion.div>
 
-        {/* Animated word-by-word with letter reveals */}
+        {/* Animated letter-by-letter full name — uses normal text flow, no flex */}
         <div
-          className="flex flex-wrap items-baseline justify-center gap-x-3 sm:gap-x-4 md:gap-x-5"
+          className="text-center"
           style={{ perspective: '800px' }}
         >
           {WORDS.map((word, wi) => (
-            <motion.span
-              key={word}
-              variants={wordVariants}
-              initial="hidden"
-              animate={isInView ? 'visible' : 'hidden'}
-              className="inline-flex shrink-0"
-            >
+            <span key={word} style={{ whiteSpace: 'nowrap' }}>
               {letterData
                 .filter((d) => d.word === word)
                 .map((d) => (
@@ -121,7 +109,11 @@ export default function BrandIntroSection() {
                     {d.char}
                   </motion.span>
                 ))}
-            </motion.span>
+              {/* space between words */}
+              {wi < WORDS.length - 1 && (
+                <span className="inline-block w-3 sm:w-4 md:w-5" />
+              )}
+            </span>
           ))}
         </div>
 
@@ -130,11 +122,57 @@ export default function BrandIntroSection() {
           className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-[#475569] sm:text-lg"
           initial={{ opacity: 0, y: 16 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.9, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           Empowering international students with trusted guidance for U.S. university admissions,{' '}
           <strong className="font-semibold text-[#0F172A]">Day 1 CPT programs</strong>, and visa success.
         </motion.p>
+
+        {/* Veteran-owned + Founder card */}
+        <motion.div
+          className="mx-auto mt-10 max-w-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 1.0, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-[#002868]/10 bg-gradient-to-br from-[#002868]/[0.03] to-[#B31942]/[0.02] p-6 sm:p-8">
+            {/* Inner accent line */}
+            <div className="pointer-events-none absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#002868] via-[#B31942] to-[#002868]" />
+
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+              {/* Left: badges */}
+              <div className="flex flex-row gap-3 sm:flex-col sm:gap-4">
+                <div className="flex items-center gap-2 rounded-full border border-[#B31942]/20 bg-[#B31942]/[0.06] px-3.5 py-2">
+                  <ShieldCheck className="h-4 w-4 text-[#B31942]" />
+                  <span className="text-xs font-bold tracking-wide text-[#B31942]">
+                    U.S. Army Veteran-owned
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-[#002868]/15 bg-[#002868]/[0.04] px-3.5 py-2">
+                  <CheckCircle2 className="h-4 w-4 text-[#002868]" />
+                  <span className="text-xs font-bold tracking-wide text-[#002868]">
+                    Certified &amp; Verified
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: founder info */}
+              <div className="flex-1">
+                <div className="mb-2 flex items-center gap-2">
+                  <Award className="h-4 w-4 text-[#002868]/60" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#002868]/60">
+                    Our Founder
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-[#334155] sm:text-base">
+                  Founded and led by <strong className="font-semibold text-[#0F172A]">Joy Chowdhury</strong>,
+                  a U.S. Army veteran committed to serving international students with{' '}
+                  <strong className="font-semibold text-[#0F172A]">integrity, honor, and dedication</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Stat cards */}
         <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
@@ -149,7 +187,6 @@ export default function BrandIntroSection() {
                 animate={isInView ? 'visible' : 'hidden'}
                 className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-gray-50/50 p-5 text-center shadow-sm transition-shadow duration-300 hover:shadow-lg hover:shadow-[#002868]/[0.06] sm:p-6"
               >
-                {/* Hover gradient overlay */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#002868]/[0.03] to-[#B31942]/[0.02] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="relative z-10">
                   <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#002868] to-[#001B4D] shadow-md shadow-[#002868]/20">
