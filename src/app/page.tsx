@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import ScrollProgress from '@/components/ScrollProgress';
 import HeroSection from '@/components/HeroSection';
+import FutureUSASection from '@/components/FutureUSASection';
 import WhoWeAreSection from '@/components/WhoWeAreSection';
 import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
 import ServicesSection from '@/components/ServicesSection';
@@ -142,6 +143,7 @@ export default function HomePage() {
           {view.type === 'home' && (
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <HeroSection onContactClick={goContact} />
+              <FutureUSASection />
               <WhoWeAreSection />
               <StudentJourneyInfographic />
               <MarqueeBanner

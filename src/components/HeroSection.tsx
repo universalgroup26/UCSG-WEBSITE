@@ -122,18 +122,18 @@ export default function HeroSection({ onContactClick }: Props) {
             >
               {/* Blurred glow layer behind text */}
               <h1 className="absolute inset-0 text-5xl font-extrabold leading-[1.1] tracking-tight text-white/30 blur-2xl sm:text-6xl md:text-6xl lg:text-7xl select-none" aria-hidden="true">
-                Your Future in the USA Starts with the Right University &amp; Guidance
+                Your American Dream, Our Expertise
               </h1>
               {/* Actual heading */}
               <h1 className="relative text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl md:text-6xl lg:text-7xl">
-                Your Future in the USA Starts with the
+                Your American Dream,
                 <motion.span
                   className="mt-2 block bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  Right University &amp; Guidance
+                  Our Expertise
                 </motion.span>
               </h1>
             </motion.div>
