@@ -318,6 +318,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                           href={platform.website}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => track.externalLink(platform.website, `Visit ${platform.name}`)}
                         >
                           Visit Platform
                           <ArrowRight className="ml-2 h-4 w-4" />

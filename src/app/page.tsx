@@ -39,7 +39,7 @@ const pageVariants = {
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
 
-  // Track page views on view change
+  // Track page views on view change (covers initial + SPA navigation)
   useEffect(() => {
     if (view.type === 'home') track.pageView('Home');
     else if (view.type === 'contact') track.pageView('Contact');
@@ -47,11 +47,6 @@ export default function HomePage() {
     else if (view.type === 'university') track.universityView(view.university.id, view.university.name);
     else if (view.type === 'resource') track.resourceView(view.resource.id, view.resource.title);
   }, [view]);
-
-  // Initial page view
-  useEffect(() => {
-    track.pageView('Home');
-  }, []);
 
   const handleNavigate = useCallback((_view: string, id?: string) => {
     const navTarget = id ? `${_view}:${id}` : _view;

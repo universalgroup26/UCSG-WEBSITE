@@ -205,7 +205,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                 <Button
                   className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105"
                   style={{ color: university.color }}
-                  onClick={() => onApplyClick?.(university.id)}
+                  onClick={() => { track.ctaClick({ cta_type: 'apply', cta_source: 'university_hero', cta_text: `Apply Now — ${university.shortName}` }); onApplyClick?.(university.id); }}
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Apply Now
@@ -638,6 +638,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   <a
                     href={`mailto:${university.contactEmail}`}
                     className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#0F172A] transition-colors hover:bg-[#F1F5F9]"
+                    onClick={() => track.ctaClick({ cta_type: 'email', cta_source: 'university_sidebar', cta_text: university.contactEmail })}
                   >
                     <Mail className="h-4 w-4 text-[#002868]" />
                     {university.contactEmail}
@@ -645,6 +646,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   <a
                     href="tel:+13028935594"
                     className="flex items-center gap-3 rounded-lg bg-[#F8FAFC] p-3 text-sm text-[#0F172A] transition-colors hover:bg-[#F1F5F9]"
+                    onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'university_sidebar', cta_text: 'Call +1 (302) 893-5594' })}
                   >
                     <Phone className="h-4 w-4 text-[#002868]" />
                     +1 (302) 893-5594

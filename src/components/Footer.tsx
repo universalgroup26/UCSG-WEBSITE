@@ -73,7 +73,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 <button
-                  onClick={() => { onContactClick?.(); onNavigate?.('contact'); }}
+                  onClick={() => { track.ctaClick({ cta_type: 'consultation', cta_source: 'footer_hero', cta_text: 'Get Free Consultation' }); onContactClick?.(); onNavigate?.('contact'); }}
                   className="text-2xl font-bold text-white sm:text-3xl underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-all"
                 >
                   Get Free Consultation
@@ -135,6 +135,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                     rel="noopener noreferrer"
                     title={social.name}
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0C1A2E] text-[#94A3B8] transition-colors hover:bg-[#002868] hover:text-white"
+                    onClick={() => track.socialClick(social.icon, social.name, social.href)}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -168,7 +169,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 {resourceLinks.map((link, i) => (
                   <li key={link.id}>
                     <motion.button
-                      onClick={() => onNavigate?.('resource', link.id)}
+                      onClick={() => { track.navClick({ nav_type: 'footer', nav_target: `resource:${link.id}`, nav_text: link.name }); onNavigate?.('resource', link.id); }}
                       className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
@@ -182,7 +183,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 ))}
                 <li>
                   <button
-                    onClick={() => onNavigate?.('scholarships')}
+                    onClick={() => { track.navClick({ nav_type: 'footer', nav_target: 'scholarships', nav_text: 'Scholarships & Funding' }); onNavigate?.('scholarships'); }}
                     className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     Scholarships & Funding
@@ -200,7 +201,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 {quickHelpLinks.map((link) => (
                   <li key={link.name}>
                     <button
-                      onClick={() => onNavigate?.('resource', link.id)}
+                      onClick={() => { track.navClick({ nav_type: 'footer', nav_target: `resource:${link.id}`, nav_text: link.name }); onNavigate?.('resource', link.id); }}
                       className="text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                     >
                       {link.name}
@@ -214,10 +215,10 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
             <div>
               <h4
                 className="text-sm font-semibold uppercase tracking-wider text-white cursor-pointer hover:text-[#002868] transition-colors"
-                onClick={() => onNavigate?.('contact')}
+                onClick={() => { track.navClick({ nav_type: 'footer', nav_target: 'contact', nav_text: 'Contact' }); onNavigate?.('contact'); }}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigate?.('contact'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { track.navClick({ nav_type: 'footer', nav_target: 'contact', nav_text: 'Contact' }); onNavigate?.('contact'); } }}
               >
                 Contact
               </h4>

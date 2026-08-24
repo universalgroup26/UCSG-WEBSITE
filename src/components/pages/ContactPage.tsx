@@ -83,6 +83,13 @@ interface Props {
 export default function ContactPage({ onBack }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [formStarted, setFormStarted] = useState(false);
+  const handleFormInteraction = () => {
+    if (!formStarted) {
+      setFormStarted(true);
+      track.formEvent({ event: 'form_start', form_id: 'contact_page', form_name: 'Contact Page Form' });
+    }
+  };
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -214,6 +221,13 @@ export default function ContactPage({ onBack }: Props) {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {contactMethods.map((method) => {
               const Icon = method.icon;
+              const ctaMap: Record<string, { type: 'whatsapp' | 'call' | 'email' | 'consultation'; source: string }> = {
+                'Call Us': { type: 'call', source: 'contact_page_card' },
+                'WhatsApp': { type: 'whatsapp', source: 'contact_page_card' },
+                'Email Us': { type: 'email', source: 'contact_page_card' },
+                'Visit Us': { type: 'consultation', source: 'contact_page_card' },
+              };
+              const ctaInfo = ctaMap[method.title];
               // External link rendering
               return (
                 <motion.a
@@ -224,6 +238,7 @@ export default function ContactPage({ onBack }: Props) {
                   className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={() => ctaInfo && track.ctaClick({ cta_type: ctaInfo.type, cta_source: ctaInfo.source, cta_text: method.title, cta_url: method.href })}
                 >
                   <div
                     className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl"
@@ -278,7 +293,7 @@ export default function ContactPage({ onBack }: Props) {
                           required
                           placeholder="Your full name"
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          onChange={(e) => { setFormData({ ...formData, name: e.target.value }); handleFormInteraction(); }}
                           className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus-visible:border-[#002868] focus-visible:ring-[#002868]/20"
                         />
                       </div>
@@ -502,7 +517,9 @@ export default function ContactPage({ onBack }: Props) {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-[#0F172A]">Phone</p>
-                      <a href="tel:+13028935594" className="mt-0.5 block text-sm text-[#002868] hover:underline">
+                      <a href="tel:+13028935594" className="mt-0.5 block text-sm text-[#002868] hover:underline"
+                        onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'contact_office', cta_text: '+1 (302) 893-5594' })}
+                      >
                         +1 (302) 893-5594
                       </a>
                     </div>
@@ -513,7 +530,9 @@ export default function ContactPage({ onBack }: Props) {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-[#0F172A]">Email</p>
-                      <a href="mailto:Info@universalconsultingservices.com" className="mt-0.5 block text-sm text-[#002868] hover:underline">
+                      <a href="mailto:Info@universalconsultingservices.com" className="mt-0.5 block text-sm text-[#002868] hover:underline"
+                        onClick={() => track.ctaClick({ cta_type: 'email', cta_source: 'contact_office', cta_text: 'Info@universalconsultingservices.com' })}
+                      >
                         Info@universalconsultingservices.com
                       </a>
                     </div>

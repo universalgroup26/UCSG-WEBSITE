@@ -483,6 +483,15 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
     track.popupEvent({ event: 'popup_dismiss', popup_trigger: 'fab' });
   }, []);
 
+  // Track first interaction with form
+  const [formStarted, setFormStarted] = useState(false);
+  const handleFormInteraction = useCallback(() => {
+    if (!formStarted) {
+      setFormStarted(true);
+      track.formEvent({ event: 'form_start', form_id: 'contact_popup', form_name: 'Contact Popup Form' });
+    }
+  }, [formStarted]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Verify Turnstile
@@ -625,7 +634,7 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
                       <motion.form key="form" onSubmit={handleSubmit} className="space-y-4"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       >
-                        <FloatingInput label="Full name" required value={formData.name} onChange={(v) => update('name', v)} icon={GraduationCap} />
+                        <FloatingInput label="Full name" required value={formData.name} onChange={(v) => { update('name', v); handleFormInteraction(); }} icon={GraduationCap} />
                         <div className="grid grid-cols-2 gap-3">
                           <FloatingInput label="Email address" type="email" required value={formData.email} onChange={(v) => update('email', v)} />
                           <FloatingInput label="Phone number" type="tel" value={formData.phone} onChange={(v) => update('phone', v)} icon={Phone} />
@@ -666,10 +675,12 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
                       <motion.a href="tel:+13028935594"
                         className="flex items-center gap-1.5 text-[13px] font-medium text-[#002868]/60 transition-colors hover:text-[#002868]"
                         whileHover={{ x: -2 }}
+                        onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'popup_footer', cta_text: 'Call us' })}
                       ><Phone className="h-3.5 w-3.5" />Call us</motion.a>
                       <motion.a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 text-[13px] font-medium text-[#25D366]/60 transition-colors hover:text-[#25D366]"
                         whileHover={{ x: -2 }}
+                        onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'popup_footer', cta_text: 'WhatsApp', cta_url: 'https://wa.me/13028935594' })}
                       ><MessageCircle className="h-3.5 w-3.5" />WhatsApp</motion.a>
                     </div>
                     <motion.button onClick={() => setShowDontAsk(!showDontAsk)}
