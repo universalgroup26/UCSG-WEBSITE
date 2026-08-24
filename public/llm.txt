@@ -1,0 +1,99 @@
+# UCSG — Universal Consulting Service Group
+
+> U.S. Army Veteran-owned education consulting firm connecting international students to accredited U.S. universities.
+
+## Basic Info
+
+- Name: Universal Consulting Service Group (UCSG)
+- Website: https://www.universalconsultingservices.com/
+- Phone: +1 (302) 893-5594
+- WhatsApp: https://wa.me/13028935594
+- Email: Info@universalconsultingservices.com
+- Address: 3707 74th Street, Suite 8 (3rd FL), Jackson Heights, NY 11372, USA
+- Founder: Joy Chowdhury (U.S. Army Veteran)
+- Founded: 2020
+- Students Served: 5,000+
+- Success Rate: 99%
+- Partner Universities: 11+
+- Countries Served: 20+
+- Availability: 24/7
+
+## What UCSG Does
+
+UCSG is an education consulting firm that helps international students:
+
+1. **Day 1 CPT University Placement** — Connect students to SEVP-certified U.S. universities offering Day 1 CPT (Curricular Practical Training) programs, allowing off-campus work from day one of enrollment.
+2. **University Transfers** — Handle SEVIS record transfer, new I-20 issuance, and credit evaluation for seamless university-to-university transfers while maintaining F-1 visa status.
+3. **SEVIS Reinstatement** — Guide students whose SEVIS records have been terminated through the reinstatement application process.
+4. **Change of Status** — Assist international students with visa status changes (e.g., B-1/B-2 to F-1).
+5. **STEM OPT Support** — Help students navigate the STEM OPT extension process for 24 additional months of work authorization.
+6. **Scholarship Guidance** — Identify and apply for scholarships available to international students.
+
+## Partner Universities
+
+- Trine University
+- Monroe University
+- Saint Francis University
+- Tacoma Community College
+- Computer System Institutes
+- Curry College
+- Dream IT
+- NEW YORK Language Center
+- International American University
+- NEW YORK General Consulting
+- Westcliff University
+
+## Key Services in Detail
+
+### Day 1 CPT
+Day 1 CPT allows F-1 students to start working immediately upon enrollment. UCSG matches students with universities whose programs authorize CPT from the first day. Popular programs include MBA, MS Computer Science, MS Data Science, MS Cybersecurity, and more.
+
+### University Transfers
+For students who need to change universities (due to SEVIS issues, program quality, or career goals), UCSG manages the entire transfer including credit evaluation, SEVIS transfer, and new I-20 processing.
+
+### SEVIS Reinstatement
+If a student's SEVIS record is terminated, UCSG provides expert guidance on filing Form I-539 for reinstatement, preparing the application package, and communicating with USCIS.
+
+### Change of Status
+Students currently in the U.S. on other visa types (B-1/B-2, H-4, etc.) can change to F-1 status with UCSG's guidance. This includes filing the I-539 application and preparing supporting documentation.
+
+## Social Media
+
+- Instagram: https://www.instagram.com/universalconsultingsvc/
+- LinkedIn: https://www.linkedin.com/company/81566580/
+- Twitter/X: https://twitter.com/UniversalCons16
+- Facebook Group: https://www.facebook.com/groups/universalconsultingservices/
+
+## Trust Signals
+
+- U.S. Army Veteran-owned Business
+- SEVP Certified partner universities
+- 99% success rate
+- 5,000+ students placed
+- 24/7 availability
+- Based in Jackson Heights, Queens, New York City
+
+## How to Contact
+
+- Call: +1 (302) 893-5594
+- WhatsApp: https://wa.me/13028935594 (available 24/7)
+- Email: Info@universalconsultingservices.com
+- Visit: 3707 74th Street, Suite 8 (3rd FL), Jackson Heights, NY 11372
+- Web: https://www.universalconsultingservices.com/
+
+## Page Structure
+
+This is a single-page application. Content sections include:
+- Hero section with CTA buttons
+- "Who We Are" brand introduction
+- Student journey infographic
+- Services overview with mindmap
+- About UCSG section
+- Testimonials
+- Partner universities grid
+- Contact form with WhatsApp integration
+- Scholarships page
+
+## crawl-delay
+
+Crawl-delay: 1

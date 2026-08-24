@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { universities } from '@/lib/data/universities';
 import { resources } from '@/lib/data/resources';
 
-const SITE_URL = 'https://ucsg-website-hazel.vercel.app';
+const SITE_URL = 'https://www.universalconsultingservices.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString();

@@ -8,7 +8,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://ucsg-website-hazel.vercel.app";
+const SITE_URL = "https://www.universalconsultingservices.com";
 const SITE_NAME = "UCSG — Universal Consulting Service Group";
 const SITE_DESCRIPTION =
   "UCSG connects international students to affordable, accredited U.S. universities offering hybrid programs, Day 1 CPT, OPT, SEVIS reinstatement, and visa guidance. U.S. Army Veteran-owned business in Jackson Heights, New York.";

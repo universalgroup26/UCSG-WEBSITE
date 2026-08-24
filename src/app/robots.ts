@@ -30,6 +30,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://ucsg-website-hazel.vercel.app/sitemap.xml',
+    sitemap: 'https://www.universalconsultingservices.com/sitemap.xml',
   };
 }
