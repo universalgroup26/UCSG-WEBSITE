@@ -21,6 +21,7 @@ import ContactPage from '@/components/pages/ContactPage';
 import ScholarshipsPage from '@/components/pages/ScholarshipsPage';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
+import { track } from '@/lib/analytics';
 
 type ViewType =
   | { type: 'home' }
@@ -38,7 +39,24 @@ const pageVariants = {
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
 
+  // Track page views on view change
+  useEffect(() => {
+    if (view.type === 'home') track.pageView('Home');
+    else if (view.type === 'contact') track.pageView('Contact');
+    else if (view.type === 'scholarships') track.pageView('Scholarships');
+    else if (view.type === 'university') track.universityView(view.university.id, view.university.name);
+    else if (view.type === 'resource') track.resourceView(view.resource.id, view.resource.title);
+  }, [view]);
+
+  // Initial page view
+  useEffect(() => {
+    track.pageView('Home');
+  }, []);
+
   const handleNavigate = useCallback((_view: string, id?: string) => {
+    const navTarget = id ? `${_view}:${id}` : _view;
+    track.navClick({ nav_type: 'header', nav_target: navTarget });
+
     if (_view === 'home') {
       setView({ type: 'home' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -81,6 +99,7 @@ export default function HomePage() {
   }, []);
 
   const handleUniversityClick = useCallback((uni: UniversityData) => {
+    track.navClick({ nav_type: 'body', nav_target: `university:${uni.id}`, nav_text: uni.name });
     setView({ type: 'university', university: uni });
     history.pushState({ universityId: uni.id }, '', `#/university/${uni.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -89,6 +108,7 @@ export default function HomePage() {
   const handleResourceClick = useCallback((resourceId: string) => {
     const res = getResourceById(resourceId);
     if (res) {
+      track.navClick({ nav_type: 'body', nav_target: `resource:${res.id}`, nav_text: res.title });
       setView({ type: 'resource', resource: res });
       history.pushState({ resourceId: res.id }, '', `#/resource/${res.id}`);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,6 +116,7 @@ export default function HomePage() {
   }, []);
 
   const handleApplyClick = useCallback((_universityId?: string) => {
+    track.ctaClick({ cta_type: 'apply', cta_source: _universityId ? `university_page:${_universityId}` : 'body' });
     setView({ type: 'contact' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { track } from '@/lib/analytics';
 import {
   X,
   Send,
@@ -442,11 +443,12 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  const handleOpen = useCallback(() => {
+  const handleOpen = useCallback((trigger: string = 'fab') => {
     setSubmitted(false);
     setFormData({ name: '', email: '', phone: '', service: '', message: '' });
     setTurnstileToken(null);
     setOpen(true);
+    track.popupEvent({ event: 'popup_open', popup_trigger: trigger as 'fab' | 'scroll_50' | 'scroll_90' });
   }, []);
 
   useEffect(() => {
@@ -459,22 +461,26 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
       if (pct >= 0.48 && pct <= 0.55 && !scrollTriggersRef.current.mid && !getSessionFlag(SESSION_SHOWN_MID)) {
         scrollTriggersRef.current.mid = true;
         setSessionFlag(SESSION_SHOWN_MID);
-        handleOpen();
+        handleOpen('scroll_50');
       }
       if (pct >= 0.88 && !scrollTriggersRef.current.end && !getSessionFlag(SESSION_SHOWN_END)) {
         scrollTriggersRef.current.end = true;
         setSessionFlag(SESSION_SHOWN_END);
-        handleOpen();
+        handleOpen('scroll_90');
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [handleOpen]);
 
-  const handleClose = useCallback(() => setOpen(false), []);
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    track.popupEvent({ event: 'popup_close', popup_trigger: 'fab' });
+  }, []);
   const handleDismissForever = useCallback(() => {
     try { localStorage.setItem(STORAGE_KEY, 'true'); } catch { /* noop */ }
     setOpen(false);
+    track.popupEvent({ event: 'popup_dismiss', popup_trigger: 'fab' });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -493,13 +499,20 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
 
     // Submit form data to backend
     try {
+      track.formEvent({ event: 'form_submit', form_id: 'contact_popup', form_name: 'Contact Popup Form' });
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) return;
-    } catch { /* graceful */ }
+      if (!res.ok) {
+        track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: `HTTP ${res.status}` });
+        return;
+      }
+    } catch {
+      track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: 'Network error' });
+      return;
+    }
 
     setSubmitted(true);
   };

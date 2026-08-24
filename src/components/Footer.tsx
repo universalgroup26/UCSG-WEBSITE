@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import Logo from './Logo';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { track } from '@/lib/analytics';
 
 const WHATSAPP_URL = 'https://wa.me/13028935594';
 
@@ -99,7 +100,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                     className="h-12 rounded-full bg-[#25D366] px-8 text-base font-semibold text-white shadow-lg hover:bg-[#1EB954]"
                     asChild
                   >
-                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'footer_hero', cta_text: 'Chat on WhatsApp', cta_url: WHATSAPP_URL })}>
                       <MessageCircle className="mr-2 h-5 w-5" />
                       Chat on WhatsApp
                     </a>
@@ -224,6 +225,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 <li>
                   <a
                     href="tel:+13028935594"
+                    onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'footer', cta_text: '+1 (302) 893-5594' })}
                     className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">
@@ -235,6 +237,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                 <li>
                   <a
                     href="mailto:Info@universalconsultingservices.com"
+                    onClick={() => track.ctaClick({ cta_type: 'email', cta_source: 'footer', cta_text: 'Info@universalconsultingservices.com' })}
                     className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">
@@ -248,6 +251,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'footer_contact', cta_text: 'WhatsApp 24/7', cta_url: WHATSAPP_URL })}
                     className="flex items-center gap-3 text-sm text-[#94A3B8] transition-colors hover:text-[#002868]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0C1A2E]">

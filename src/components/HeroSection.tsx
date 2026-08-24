@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useCallback } from 'react';
 import { FloatingParticles } from '@/components/animations/TextReveal';
+import { track } from '@/lib/analytics';
 
 interface Props {
   onContactClick?: () => void;
@@ -161,15 +162,15 @@ export default function HeroSection({ onContactClick }: Props) {
               animate="visible"
               custom={4}
             >
-              <MagneticButton href="tel:+13028935594" className="h-13 w-full rounded-full bg-white px-8 text-base font-semibold text-[#002868] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:bg-[#EFF6FF] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] sm:w-auto">
+              <MagneticButton href="tel:+13028935594" className="h-13 w-full rounded-full bg-white px-8 text-base font-semibold text-[#002868] shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:bg-[#EFF6FF] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] sm:w-auto" onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'hero', cta_text: 'Call +1 (302) 893-5594' })}>
                 <Phone className="mr-2 h-4 w-4" />
                 Call +1 (302) 893-5594
               </MagneticButton>
-              <MagneticButton href="https://wa.me/13028935594" external className="h-13 w-full rounded-full border-2 border-white bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10 sm:w-auto">
+              <MagneticButton href="https://wa.me/13028935594" external className="h-13 w-full rounded-full border-2 border-white bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10 sm:w-auto" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'hero', cta_text: 'WhatsApp 24/7', cta_url: 'https://wa.me/13028935594' })}>
                 <MessageCircle className="mr-2 h-4 w-4" />
                 WhatsApp 24/7
               </MagneticButton>
-              <MagneticButton className="h-13 w-full rounded-full border-2 border-[#B31942] bg-[#B31942] px-8 text-base font-semibold text-white shadow-[0_0_20px_rgba(179,25,66,0.3)] hover:bg-[#8B122F] hover:shadow-[0_0_30px_rgba(179,25,66,0.5)] sm:w-auto" onClick={onContactClick}>
+              <MagneticButton className="h-13 w-full rounded-full border-2 border-[#B31942] bg-[#B31942] px-8 text-base font-semibold text-white shadow-[0_0_20px_rgba(179,25,66,0.3)] hover:bg-[#8B122F] hover:shadow-[0_0_30px_rgba(179,25,66,0.5)] sm:w-auto" onClick={() => { track.ctaClick({ cta_type: 'consultation', cta_source: 'hero', cta_text: 'Get Free Consultation' }); onContactClick?.(); }}>
                 Get Free Consultation
               </MagneticButton>
             </motion.div>

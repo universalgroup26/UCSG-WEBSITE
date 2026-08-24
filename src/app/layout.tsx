@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import Analytics from "@/components/Analytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -261,6 +262,16 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased bg-white text-foreground`}
       >
+        {/* GTM noscript fallback */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || ''}`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        <Analytics />
         {children}
         {/* Cloudflare Web Analytics */}
         {CF_ANALYTICS_TOKEN && (

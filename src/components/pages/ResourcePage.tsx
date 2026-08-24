@@ -23,6 +23,7 @@ import CPTvsOPTInfographic from '@/components/infographics/CPTvsOPTInfographic';
 import VisaPathwayFlowchart from '@/components/infographics/VisaPathwayFlowchart';
 import SEVISRecoveryFlowchart from '@/components/infographics/SEVISRecoveryFlowchart';
 import ScrollReveal from '@/components/ScrollReveal';
+import { track } from '@/lib/analytics';
 
 const iconComponents: Record<string, React.ElementType> = {
   briefcase: Briefcase,
@@ -109,7 +110,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
             >
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" asChild style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#002868' }}>
-                  <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20{encodeURIComponent(resource.title)}" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20{encodeURIComponent(resource.title)}" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'CTA Button' })} target="_blank" rel="noopener noreferrer">
                     {resource.ctaText}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </a>
@@ -117,7 +118,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               </motion.div>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <Button className="h-12 rounded-full border-2 border-white bg-transparent px-8 font-semibold text-white hover:bg-white/10" asChild>
-                  <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'WhatsApp Chat' })} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="mr-2 h-4 w-4" />
                     WhatsApp 24/7
                   </a>
@@ -308,7 +309,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                   <Button className="h-12 rounded-full bg-[#25D366] px-8 font-semibold text-white shadow-lg hover:bg-[#1EB954]" asChild>
-                    <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'Chat on WhatsApp' })} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="mr-2 h-5 w-5" />
                       Chat on WhatsApp
                     </a>

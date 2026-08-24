@@ -18,6 +18,7 @@ import {
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import ScrollReveal from '@/components/ScrollReveal';
+import { track } from '@/lib/analytics';
 
 const scholarshipPlatforms = [
   {
@@ -419,7 +420,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                     asChild
                     className="w-full rounded-xl bg-[#25D366] px-8 text-white hover:bg-[#1EB954] sm:w-auto"
                   >
-                    <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'scholarships_page', cta_text: 'WhatsApp Chat' })} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="mr-2 h-4 w-4" />
                       WhatsApp Us
                     </a>
@@ -430,7 +431,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                     asChild
                     className="w-full rounded-xl border border-white/20 bg-white/10 px-8 text-white backdrop-blur-sm hover:bg-white/20 sm:w-auto"
                   >
-                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%20need%20help%20with%20scholarships" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%20need%20help%20with%20scholarships" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'scholarships_page', cta_text: 'Get Help with Scholarships' })} target="_blank" rel="noopener noreferrer">
                       <Globe className="mr-2 h-4 w-4" />
                       Contact Us
                     </a>

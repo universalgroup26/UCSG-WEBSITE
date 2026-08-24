@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import Logo from './Logo';
+import { track } from '@/lib/analytics';
 
 const universitiesLinks = [
   { name: 'Trine University', id: 'trine' },
@@ -60,6 +61,11 @@ const navItemVariants = {
 
 export default function Header({ onNavigate }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const toggleMobile = (open: boolean) => {
+    setMobileOpen(open);
+    track.mobileMenu(open ? 'open' : 'close');
+  };
   const [scrolled, setScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState('home');
   const { scrollY } = useScroll();
@@ -166,7 +172,7 @@ export default function Header({ onNavigate }: Props) {
           </nav>
 
           {/* Mobile Menu Trigger */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <Sheet open={mobileOpen} onOpenChange={toggleMobile}>
             <SheetTrigger asChild className="xl:hidden">
               <Button
                 variant="ghost"
@@ -256,6 +262,7 @@ export default function Header({ onNavigate }: Props) {
                 <div className="mt-4 space-y-2 px-2">
                   <a
                     href="tel:+13028935594"
+                    onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'mobile_menu', cta_text: 'Call +1 (302) 893-5594' })}
                     className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#B31942] to-[#002868] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#B31942]/20"
                   >
                     <Phone className="h-4 w-4" />
@@ -263,6 +270,7 @@ export default function Header({ onNavigate }: Props) {
                   </a>
                   <a
                     href="mailto:Info@universalconsultingservices.com"
+                    onClick={() => track.ctaClick({ cta_type: 'email', cta_source: 'mobile_menu', cta_text: 'Email Us' })}
                     className="flex items-center justify-center gap-2 rounded-xl border-2 border-[#002868]/10 px-5 py-3 text-sm font-semibold text-[#002868] transition-colors hover:bg-[#002868]/5"
                   >
                     <Mail className="h-4 w-4" />

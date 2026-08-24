@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { motion } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
 import CloudflareTurnstile from '@/components/CloudflareTurnstile';
+import { track } from '@/lib/analytics';
 
 const contactMethods = [
   {
@@ -113,14 +114,18 @@ export default function ContactPage({ onBack }: Props) {
 
     // Submit form data to backend
     try {
+      track.formEvent({ event: 'form_submit', form_id: 'contact_page', form_name: 'Contact Page Form' });
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: `HTTP ${res.status}` });
+        return;
+      }
     } catch {
-      // Allow on network error
+      track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: 'Network error' });
     }
 
     setSubmitted(true);
@@ -443,7 +448,7 @@ export default function ContactPage({ onBack }: Props) {
                         className="w-full rounded-xl bg-white text-[#002868] hover:bg-gray-100"
                         asChild
                       >
-                        <a href="tel:+13028935594">
+                        <a href="tel:+13028935594" onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'contact_page', cta_text: 'Call +1 (302) 893-5594' })}>
                           <Phone className="mr-2 h-4 w-4" />
                           Call +1 (302) 893-5594
                         </a>
@@ -454,7 +459,7 @@ export default function ContactPage({ onBack }: Props) {
                         className="w-full rounded-xl bg-[#25D366] text-white hover:bg-[#1EB954]"
                         asChild
                       >
-                        <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                        <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'contact_page', cta_text: 'WhatsApp Chat', cta_url: 'https://wa.me/13028935594' })}>
                           <MessageCircle className="mr-2 h-4 w-4" />
                           WhatsApp Chat
                         </a>

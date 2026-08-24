@@ -37,6 +37,7 @@ import { universities } from '@/lib/data/universities';
 import { motion } from 'framer-motion';
 import UniversityMindmap from '@/components/infographics/UniversityMindmap';
 import ScrollReveal from '@/components/ScrollReveal';
+import { track } from '@/lib/analytics';
 
 const iconMap: Record<string, React.ElementType> = {
   calendar: Calendar,
@@ -659,13 +660,13 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                     UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
                   </p>
                   <Button className="mt-5 w-full rounded-full bg-[#25D366] text-white hover:bg-[#1EB954]" asChild>
-                    <a href="https://wa.me/13028935594" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'university_page', cta_text: 'WhatsApp Chat' })} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Chat on WhatsApp
                     </a>
                   </Button>
                   <Button className="mt-3 w-full rounded-full border border-white/20 bg-transparent text-white hover:bg-white/10" asChild>
-                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20applying%20to%20" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20applying%20to%20" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'university_page', cta_text: 'Get Free Consultation' })} target="_blank" rel="noopener noreferrer">
                       Get Free Consultation
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </a>
