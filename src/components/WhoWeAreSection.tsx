@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useInView, motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Star, Globe, ShieldCheck, Shield, Quote } from 'lucide-react';
@@ -42,30 +42,8 @@ function useCounter(target: number, suffix = '', inView: boolean, duration = 160
   return `${count.toLocaleString()}${suffix}`;
 }
 
-/* ─── background slideshow ─── */
-function BackgroundSlideshow() {
-  const [current, setCurrent] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const startSlideshow = useCallback(() => {
-    if (intervalRef.current) return;
-    intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % BG_IMAGES.length);
-    }, SLIDE_INTERVAL);
-  }, []);
-
-  const stopSlideshow = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    startSlideshow();
-    return stopSlideshow;
-  }, [startSlideshow, stopSlideshow]);
-
+/* ─── background slideshow (receives index from parent) ─── */
+function BackgroundSlideshow({ current }: { current: number }) {
   return (
     <div className="absolute inset-0 z-0">
       <AnimatePresence mode="wait">
@@ -156,22 +134,19 @@ export default function WhoWeAreSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
-  // Track current slide for indicators
+  // Single source of truth for slide index (shared by slideshow + indicators)
   const [slideIndex, setSlideIndex] = useState(0);
-  const slideIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (isInView) track.sectionView('who_we_are');
   }, [isInView]);
 
-  // Sync slide index for indicators (mirrors BackgroundSlideshow logic)
+  // Single timer drives both the background images and the indicator dots
   useEffect(() => {
-    slideIntervalRef.current = setInterval(() => {
+    const id = setInterval(() => {
       setSlideIndex((prev) => (prev + 1) % BG_IMAGES.length);
     }, SLIDE_INTERVAL);
-    return () => {
-      if (slideIntervalRef.current) clearInterval(slideIntervalRef.current);
-    };
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -180,8 +155,8 @@ export default function WhoWeAreSection() {
       ref={sectionRef}
       className="relative flex min-h-[90vh] flex-col justify-center overflow-hidden py-16 md:py-24"
     >
-      {/* Background Slideshow */}
-      <BackgroundSlideshow />
+      {/* Background Slideshow — synced via slideIndex prop */}
+      <BackgroundSlideshow current={slideIndex} />
 
       {/* Content over slideshow */}
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -323,7 +298,7 @@ export default function WhoWeAreSection() {
                   </div>
                 </div>
 
-                {/* Veteran-Owned Badge — Only remaining badge */}
+                {/* Veteran-Owned Badge */}
                 <div className="mt-6 pl-6">
                   <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm transition-shadow hover:bg-white/20">
                     <span
@@ -347,7 +322,7 @@ export default function WhoWeAreSection() {
           </div>
         </ScrollReveal>
 
-        {/* ── Slide Indicators ── */}
+        {/* ── Slide Indicators (synced with slideshow) ── */}
         <div className="mt-8">
           <SlideIndicators current={slideIndex} />
         </div>

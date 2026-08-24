@@ -16,7 +16,6 @@ declare global {
     fbq: (...args: unknown[]) => void;
     _fbq: unknown;
     clarity: (...args: unknown[]) => void;
-    __ucsg_api_key?: string;
     goTrackLead?: (data: Record<string, string>) => void;
     _ucsgq?: Record<string, unknown>[];
   }

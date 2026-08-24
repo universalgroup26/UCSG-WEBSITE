@@ -14,12 +14,13 @@ try {
   if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 } catch {
   console.warn('[AI Studio] Database not connected — using mock')
+  let mockId = 1
   const noOp = {
     findMany: async () => [],
     findFirst: async () => null,
     findUnique: async () => null,
-    create: async (d: any) => d?.data ?? {},
-    update: async (d: any) => d?.data ?? {},
+    create: async (d: any) => ({ id: String(mockId++), ...d?.data }),
+    update: async (d: any) => ({ id: d?.where?.id ?? 'mock', ...d?.data }),
     delete: async () => ({}),
     count: async () => 0,
   }

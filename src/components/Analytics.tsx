@@ -4,22 +4,21 @@ import Script from 'next/script';
 import { useEffect } from 'react';
 import { track } from '@/lib/analytics';
 
-const GA_MEASUREMENT_ID = 'G-MHC25XBP3P';
-const GTM_ID = 'GTM-K65M9LJW';
-const META_PIXEL_ID = '2582317282238910';
-const CLARITY_PROJECT_ID = 'y7hrmh5gu4';
-const UCSG_TRACKING_ID = 'tk_b6bec4688bdc473b85ae341de9f730fc';
-const UCSG_API_KEY = 'pit-69ae3778-3aec-4cf3-b494-80b75a454f9f';
+// Analytics tracking IDs (public-facing identifiers, safe to expose in client bundle)
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-MHC25XBP3P';
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-K65M9LJW';
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '2582317282238910';
+const CLARITY_PROJECT_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'y7hrmh5gu4';
+const UCSG_TRACKING_ID = process.env.NEXT_PUBLIC_UCSG_TRACKING_ID || 'tk_b6bec4688bdc473b85ae341de9f730fc';
 
 /**
  * Analytics provider — loads GA4 + GTM + Meta Pixel + Clarity + UCSG Lead Tracking.
  * Place once in layout.tsx. No props needed.
  */
 export default function Analytics() {
-  // Initialize dataLayer and expose UCSG API key
+  // Initialize dataLayer
   useEffect(() => {
     track.init();
-    window.__ucsg_api_key = UCSG_API_KEY;
   }, []);
 
   return (
