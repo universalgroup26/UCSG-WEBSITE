@@ -272,12 +272,12 @@ function navClick(params: Omit<NavClickEvent, 'event'>) {
 }
 
 /** Track form interactions */
-function formEvent(params: Omit<FormEvent, 'event'>) {
+function formEvent(params: FormEvent) {
   push({ event: params.event, form_id: params.form_id, form_name: params.form_name, error_message: params.error_message });
 }
 
 /** Track contact popup events */
-function popupEvent(params: Omit<PopupEvent, 'event'>) {
+function popupEvent(params: PopupEvent) {
   push({ event: params.event, popup_trigger: params.popup_trigger });
 }
 

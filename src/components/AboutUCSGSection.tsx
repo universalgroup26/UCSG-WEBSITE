@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Heart,
   Users,
@@ -213,7 +213,7 @@ function DifferentiatorsSection() {
               <ScrollReveal key={item.title} delay={i * 0.08}>
                 <motion.div
                   className="relative h-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.06)] transition-all duration-200"
-                  whileHover={{ y: -6, shadow: '0 8px 30px -4px rgba(0,40,104,0.15)' }}
+                  whileHover={{ y: -6, boxShadow: '0 8px 30px -4px rgba(0,40,104,0.15)' }}
                   style={{ transformStyle: 'preserve-3d', perspective: '600px' }}
                 >
                   {/* Gradient top border accent */}

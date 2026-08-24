@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
-import { GraduationCap, Star, Globe, ShieldCheck, Shield, Check } from 'lucide-react';
+import Image from 'next/image';
+import { useInView, motion } from 'framer-motion';
+import { GraduationCap, Star, Globe, ShieldCheck, Shield, Check, Quote, Award } from 'lucide-react';
 import ScrollReveal from '@/components/ScrollReveal';
 import { track } from '@/lib/analytics';
 
@@ -52,9 +53,11 @@ function StatCard({
   const display = useCounter(value, suffix, inView);
   return (
     <ScrollReveal delay={delay}>
-      <div className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-shadow hover:shadow-md md:p-6">
+      <div className="group relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 md:p-6">
+        {/* Top accent line */}
+        <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-2xl bg-gradient-to-r from-[#002868] to-[#B31942] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <span
-          className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl"
+          className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
           style={{ backgroundColor: NAVY }}
         >
           <Icon className="h-6 w-6 text-white" />
@@ -86,7 +89,17 @@ export default function WhoWeAreSection() {
   }, [isInView]);
 
   return (
-    <section id="who-we-are" ref={sectionRef} className="relative bg-white py-20 md:py-28">
+    <section id="who-we-are" ref={sectionRef} className="relative overflow-hidden bg-white py-16 md:py-24">
+      {/* Subtle background accents */}
+      <div
+        className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full opacity-[0.03]"
+        style={{ background: `radial-gradient(circle, ${NAVY}, transparent 70%)` }}
+      />
+      <div
+        className="pointer-events-none absolute -left-32 bottom-0 h-80 w-80 rounded-full opacity-[0.03]"
+        style={{ background: `radial-gradient(circle, ${RED}, transparent 70%)` }}
+      />
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* ── Eyebrow ── */}
         <ScrollReveal className="flex items-center justify-center gap-3">
@@ -105,7 +118,7 @@ export default function WhoWeAreSection() {
         </ScrollReveal>
 
         {/* ── Sub-headline ── */}
-        <ScrollReveal delay={0.2} className="mx-auto mt-5 max-w-2xl text-center">
+        <ScrollReveal delay={0.2} className="mx-auto mt-4 max-w-2xl text-center">
           <p className="text-base leading-relaxed text-gray-600 md:text-lg">
             Empowering international students with trusted guidance for U.S. university admissions,{' '}
             <strong className="font-bold" style={{ color: NAVY }}>
@@ -115,71 +128,163 @@ export default function WhoWeAreSection() {
           </p>
         </ScrollReveal>
 
-        {/* ── Trust &amp; Bio Card ── */}
-        <ScrollReveal delay={0.3} className="mt-12">
-          <div className="mx-auto max-w-4xl rounded-2xl border border-gray-100 bg-gray-50 p-6 md:p-8">
-            <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
-              {/* Left: Trust Badges */}
-              <div className="flex flex-row gap-4 md:w-1/3 md:flex-col md:gap-5">
-                {/* Badge 1 — U.S. Army Veteran */}
-                <div className="flex items-center gap-3 rounded-full bg-white px-4 py-2.5 shadow-sm">
-                  <span
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: NAVY }}
-                  >
-                    <Shield className="h-5 w-5 text-white" />
-                  </span>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: RED }}>
-                      Veteran-owned
-                    </span>
-                    <span className="text-sm font-bold" style={{ color: NAVY }}>
-                      U.S. Army Veteran
-                    </span>
-                  </div>
-                </div>
+        {/* ── Founder Card with Image & Message ── */}
+        <ScrollReveal delay={0.25} className="mt-14">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br from-gray-50 to-white shadow-[0_4px_40px_-8px_rgba(0,40,104,0.1)]">
+            {/* Animated shimmer overlay */}
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-10"
+              style={{
+                background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%)',
+              }}
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 4, repeat: Infinity, repeatDelay: 6, ease: 'easeInOut' }}
+            />
 
-                {/* Badge 2 — Certified & Verified */}
-                <div className="flex items-center gap-3 rounded-full bg-white px-4 py-2.5 shadow-sm">
-                  <span
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: NAVY }}
-                  >
-                    <Check className="h-5 w-5 text-white" />
+            <div className="relative z-0 flex flex-col gap-8 p-6 md:flex-row md:items-center md:gap-10 md:p-10">
+              {/* Left — Founder Image */}
+              <div className="relative mx-auto w-full max-w-[240px] shrink-0 md:mx-0 md:max-w-[260px]">
+                {/* Rotating border ring */}
+                <motion.div
+                  className="absolute -inset-[3px] rounded-2xl"
+                  style={{
+                    background: `conic-gradient(from 0deg, ${NAVY}, ${RED}, ${NAVY}, ${RED}, ${NAVY})`,
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                />
+                <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-gray-200 md:h-72">
+                  <Image
+                    src="/images/founder.jpg"
+                    alt="Joy Chowdhury — Founder & CEO, Universal Consulting Service Group"
+                    fill
+                    className="object-cover object-top"
+                    sizes="260px"
+                    priority
+                  />
+                </div>
+                {/* Name badge below image */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-1.5 shadow-lg ring-1 ring-gray-100">
+                  <span className="text-sm font-extrabold" style={{ color: NAVY }}>
+                    Joy Chowdhury
                   </span>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: RED }}>
-                      Trusted
-                    </span>
-                    <span className="text-sm font-bold" style={{ color: NAVY }}>
-                      Certified &amp; Verified
-                    </span>
-                  </div>
                 </div>
               </div>
 
-              {/* Vertical divider (desktop) */}
-              <div className="hidden w-px self-stretch bg-gray-200 md:block" />
+              {/* Right — Founder Message */}
+              <div className="flex-1 pt-4 md:pt-0">
+                {/* Quote icon + Founder tag */}
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ backgroundColor: `${NAVY}12` }}>
+                    <Quote className="h-5 w-5" style={{ color: NAVY }} />
+                  </div>
+                  <div>
+                    <span
+                      className="inline-block rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest"
+                      style={{ backgroundColor: RED, color: 'white' }}
+                    >
+                      Message from Our Founder
+                    </span>
+                  </div>
+                </div>
 
-              {/* Right: Founder Bio */}
-              <div className="flex-1">
-                <span
-                  className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-                  style={{ backgroundColor: RED, color: 'white' }}
-                >
-                  Our Founder
-                </span>
-                <p className="mt-4 text-base leading-relaxed text-gray-700">
-                  Founded and led by{' '}
-                  <strong className="font-bold" style={{ color: NAVY }}>
-                    Joy Chowdhury
-                  </strong>
-                  , a U.S. Army veteran committed to serving international students with{' '}
-                  <strong className="font-bold" style={{ color: NAVY }}>
-                    integrity, honor, and dedication
-                  </strong>
-                  .
-                </p>
+                {/* The Message */}
+                <div className="relative">
+                  <span className="absolute -left-2 -top-3 text-6xl leading-none font-serif" style={{ color: `${NAVY}15` }}>
+                    &ldquo;
+                  </span>
+                  <p className="relative pl-6 text-base leading-[1.85] text-gray-700 md:text-[17px]">
+                    <strong className="font-bold" style={{ color: NAVY }}>
+                      When I served in the United States Army, I learned that true leadership means
+                      standing beside those you lead — not above them.
+                    </strong>{' '}
+                    That lesson became the foundation of UCSG. Every student who walks through our
+                    doors carries a dream — and I take that dream as seriously as I took my oath of
+                    service.
+                  </p>
+                </div>
+
+                <div className="relative mt-5 pl-6">
+                  <p className="text-base leading-[1.85] text-gray-700 md:text-[17px]">
+                    We are not just consultants. We are your advocates, your strategists, and your
+                    partners in building a future in the United States. From your very first Day 1 CPT
+                    opportunity to the moment you land your dream career —{' '}
+                    <strong className="font-bold" style={{ color: NAVY }}>
+                      we will be there, every single step of the way.
+                    </strong>
+                  </p>
+                </div>
+
+                <div className="relative mt-5 pl-6">
+                  <p className="text-base leading-[1.85] text-gray-700 md:text-[17px]">
+                    With integrity as our compass and your success as our mission,{' '}
+                    <strong className="font-bold" style={{ color: NAVY }}>
+                      I personally promise you this: at UCSG, your American dream is in the safest
+                      hands possible.
+                    </strong>
+                  </p>
+                </div>
+
+                {/* Closing quotation + signature */}
+                <div className="mt-6 flex items-end justify-between gap-4 pl-6">
+                  <span className="text-5xl leading-none font-serif" style={{ color: `${NAVY}15` }}>
+                    &rdquo;
+                  </span>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold" style={{ color: NAVY }}>
+                      Joy Chowdhury
+                    </p>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      Founder & CEO, UCSG
+                    </p>
+                    <p className="mt-0.5 text-xs font-medium" style={{ color: RED }}>
+                      U.S. Army Veteran
+                    </p>
+                  </div>
+                </div>
+
+                {/* Trust Badges Row */}
+                <div className="mt-6 flex flex-wrap gap-3 pl-6">
+                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
+                      <Shield className="h-4 w-4 text-white" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
+                        Veteran-owned
+                      </span>
+                      <span className="text-xs font-bold" style={{ color: NAVY }}>
+                        U.S. Army Veteran
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
+                      <Check className="h-4 w-4 text-white" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
+                        Trusted
+                      </span>
+                      <span className="text-xs font-bold" style={{ color: NAVY }}>
+                        Certified & Verified
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-full border border-gray-100 bg-white px-3.5 py-2 shadow-sm transition-shadow hover:shadow-md">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: NAVY }}>
+                      <Award className="h-4 w-4 text-white" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: RED }}>
+                        Excellence
+                      </span>
+                      <span className="text-xs font-bold" style={{ color: NAVY }}>
+                        SEVP Certified
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

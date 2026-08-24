@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useInView, Variants } from 'framer-motion';
-import { Send, MapPin, GraduationCap } from 'lucide-react';
+import { Send, MapPin } from 'lucide-react';
 import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
 import CampusVisual from '@/components/CampusVisual';

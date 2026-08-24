@@ -143,7 +143,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                 initial={{ opacity: 0, y: 16, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -2, shadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
               >
                 <p className="text-2xl font-bold sm:text-3xl" style={{ color: fact.color }}>
                   {fact.value}
