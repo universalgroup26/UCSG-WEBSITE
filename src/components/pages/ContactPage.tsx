@@ -66,6 +66,8 @@ const officeHours = [
   { day: 'Emergency Support', hours: '24/7 via Phone & WhatsApp' },
 ];
 
+const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 const services = [
   'Day 1 CPT University Admission',
   'University Transfers (Emergency)',
@@ -104,7 +106,8 @@ export default function ContactPage({ onBack }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verify Turnstile
+    // Verify Turnstile (required when site key is configured)
+    if (TURNSTILE_CONFIGURED && !turnstileToken) return;
     if (turnstileToken) {
       try {
         const res = await fetch('/api/turnstile/verify', {

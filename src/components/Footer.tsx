@@ -65,20 +65,19 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
           <FooterReveal>
             <div className="mx-auto max-w-2xl text-center">
-              <motion.h3
-                className="text-2xl font-bold text-white sm:text-3xl"
+              <motion.span
+                className="text-2xl font-bold text-white sm:text-3xl underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-all cursor-pointer"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                role="button"
+                tabIndex={0}
+                onClick={() => { track.ctaClick({ cta_type: 'consultation', cta_source: 'footer_hero', cta_text: 'Get Free Consultation' }); onContactClick?.(); onNavigate?.('contact'); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); track.ctaClick({ cta_type: 'consultation', cta_source: 'footer_hero', cta_text: 'Get Free Consultation' }); onContactClick?.(); onNavigate?.('contact'); } }}
               >
-                <button
-                  onClick={() => { track.ctaClick({ cta_type: 'consultation', cta_source: 'footer_hero', cta_text: 'Get Free Consultation' }); onContactClick?.(); onNavigate?.('contact'); }}
-                  className="text-2xl font-bold text-white sm:text-3xl underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-all"
-                >
-                  Get Free Consultation
-                </button>
-              </motion.h3>
+                Get Free Consultation
+              </motion.span>
               <motion.p
                 className="mt-3 text-base text-[#94A3B8]"
                 initial={{ opacity: 0 }}

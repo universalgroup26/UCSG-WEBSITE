@@ -34,6 +34,7 @@ const services = [
 const STORAGE_KEY = 'ucsg-popup-dismissed';
 const SESSION_SHOWN_MID = 'ucsg-popup-mid-shown';
 const SESSION_SHOWN_END = 'ucsg-popup-end-shown';
+const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 /* ------------------------------------------------------------------ */
 /*  Animation Variants                                                  */
@@ -494,7 +495,8 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Verify Turnstile
+    // Verify Turnstile (required when site key is configured)
+    if (TURNSTILE_CONFIGURED && !turnstileToken) return;
     if (turnstileToken) {
       try {
         const res = await fetch('/api/turnstile/verify', {

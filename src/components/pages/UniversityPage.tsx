@@ -35,6 +35,7 @@ import { Badge } from '@/components/ui/badge';
 import type { UniversityData } from '@/lib/data/universities';
 import { universities } from '@/lib/data/universities';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 import UniversityMindmap from '@/components/infographics/UniversityMindmap';
 import ScrollReveal from '@/components/ScrollReveal';
 import { track } from '@/lib/analytics';
@@ -122,10 +123,13 @@ interface Props {
 }
 
 export default function UniversityPage({ university, onBack, onApplyClick }: Props) {
-  const compareSuggestions = universities
-    .filter((u) => u.id !== university.id)
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 3);
+  const compareSuggestions = useMemo(
+    () => universities
+      .filter((u) => u.id !== university.id)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3),
+    [university.id]
+  );
 
   return (
     <div className="min-h-screen bg-white">

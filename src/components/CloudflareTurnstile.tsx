@@ -39,6 +39,14 @@ export default function CloudflareTurnstile({
   const [error, setError] = useState<string | null>(null);
   const isKeyConfigured = !!TURNSTILE_SITE_KEY;
 
+  // Use refs for callbacks to prevent widget re-creation on parent re-renders
+  const onVerifyRef = useRef(onVerify);
+  const onErrorRef = useRef(onError);
+  const onExpireRef = useRef(onExpire);
+  useEffect(() => { onVerifyRef.current = onVerify; }, [onVerify]);
+  useEffect(() => { onErrorRef.current = onError; }, [onError]);
+  useEffect(() => { onExpireRef.current = onExpire; }, [onExpire]);
+
   // Load Turnstile script
   useEffect(() => {
     if (!isKeyConfigured || loaded) return;
@@ -85,18 +93,18 @@ export default function CloudflareTurnstile({
       size,
       callback: (token: string) => {
         setError(null);
-        onVerify?.(token);
+        onVerifyRef.current?.(token);
       },
       'error-callback': () => {
         setError('Verification failed. Please try again.');
-        onError?.();
+        onErrorRef.current?.();
       },
       'expired-callback': () => {
         setError('Verification expired. Please complete again.');
-        onExpire?.();
+        onExpireRef.current?.();
       },
     });
-  }, [loaded, theme, size, onVerify, onError, onExpire, isKeyConfigured]);
+  }, [loaded, theme, size, isKeyConfigured]);
 
   const reset = useCallback(() => {
     if (widgetIdRef.current && window.turnstile) {

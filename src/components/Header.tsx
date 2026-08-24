@@ -184,7 +184,7 @@ export default function Header({ onNavigate }: Props) {
                 }
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{mobileOpen ? 'Close menu' : 'Open menu'}</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[340px] overflow-y-auto p-0">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 /* ───────────────────────────────────────────────────────────────────────
@@ -91,7 +91,7 @@ export function SectionDivider({
   to?: string;
   variant?: 'wave' | 'curve' | 'zigzag';
 }) {
-  const gradId = `divGrad_${variant}_${Math.random().toString(36).slice(2, 8)}`;
+  const gradId = useMemo(() => `divGrad_${variant}_${Math.random().toString(36).slice(2, 8)}`, [variant]);
 
   if (variant === 'curve') {
     return (
