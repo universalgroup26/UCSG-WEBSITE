@@ -3,10 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * UCSG Brand System
+ * Heading font: Manrope (loaded via next/font/google in layout.tsx)
+ * Body font: Inter (loaded via next/font/google in layout.tsx)
+ */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  --font-heading: var(--font-manrope);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -45,37 +52,44 @@
 
 :root {
   --radius: 0.625rem;
+  /* Brand colors */
+  --primary: #061846;
+  --primary-foreground: #FFFFFF;
+  --ring: #0874F9;
+  --secondary: #EDF5FF;
+  --secondary-foreground: #061846;
+  --accent: #EDF5FF;
+  --accent-foreground: #061846;
+  --ucsg-gold: #D6A84B;
+  /* Neutral / background */
   --background: #FFFFFF;
   --foreground: #0F172A;
   --card: #F8FAFC;
   --card-foreground: #0F172A;
   --popover: #FFFFFF;
   --popover-foreground: #0F172A;
-  --primary: #002868;
-  --primary-foreground: #FFFFFF;
-  --secondary: #EFF6FF;
-  --secondary-foreground: #0F172A;
-  --muted: #EFF6FF;
+  --muted: #EDF5FF;
   --muted-foreground: #6B7280;
-  --accent: #EFF6FF;
-  --accent-foreground: #0F172A;
+  /* Destructive (errors) */
   --destructive: oklch(0.577 0.245 27.325);
+  /* Borders & inputs */
   --border: #BFDBFE;
   --input: #BFDBFE;
-  --ring: #002868;
+  /* Charts */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  /* Sidebar */
   --sidebar: #FFFFFF;
   --sidebar-foreground: #0F172A;
-  --sidebar-primary: #002868;
+  --sidebar-primary: #061846;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EFF6FF;
-  --sidebar-accent-foreground: #0F172A;
+  --sidebar-accent: #EDF5FF;
+  --sidebar-accent-foreground: #061846;
   --sidebar-border: #BFDBFE;
-  --sidebar-ring: #002868;
+  --sidebar-ring: #0874F9;
 }
 
 @layer base {
@@ -103,17 +117,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #0874F9;
   border-radius: 100px;
+  opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #061846;
+  opacity: 0.8;
 }
 
-/* Selection color */
+/* Selection color — uses brand midnight navy */
 ::selection {
-  background: rgba(0, 40, 104, 0.15);
+  background: rgba(6, 24, 70, 0.15);
   color: #0F172A;
 }
 
@@ -123,15 +139,70 @@
 }
 
 .university-scroll::-webkit-scrollbar-track {
-  background: #EFF6FF;
+  background: #EDF5FF;
   border-radius: 3px;
 }
 
 .university-scroll::-webkit-scrollbar-thumb {
-  background: #94A3B8;
+  background: #0874F9;
   border-radius: 3px;
+  opacity: 0.5;
 }
 
 .university-scroll::-webkit-scrollbar-thumb:hover {
-  background: #002868;
+  background: #061846;
+}
+
+/* ------------------------------------------------------------------
+ * UCSG Brand Utility Classes
+ * ------------------------------------------------------------------ */
+
+/* Subtle orbit-line decorative borders used behind hero / feature sections */
+.ucsg-orbit-lines {
+  position: relative;
+}
+
+.ucsg-orbit-lines::before,
+.ucsg-orbit-lines::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(8, 116, 249, 0.08);
+  pointer-events: none;
+}
+
+.ucsg-orbit-lines::before {
+  width: 60%;
+  height: 160%;
+  top: -30%;
+  right: -15%;
+}
+
+.ucsg-orbit-lines::after {
+  width: 80%;
+  height: 120%;
+  top: -10%;
+  left: -20%;
+}
+
+/* Faint watermark / background decoration — 4 % opacity, blend-multiply */
+.ucsg-watermark {
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+ * Reduced-motion accessibility
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

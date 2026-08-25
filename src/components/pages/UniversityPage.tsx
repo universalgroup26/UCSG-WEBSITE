@@ -663,7 +663,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                 <div className="rounded-2xl bg-[#0F172A] p-6 text-white">
                   <h3 className="text-lg font-bold">Interested in {university.shortName}?</h3>
                   <p className="mt-2 text-sm text-[#94A3B8]">
-                    UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Call us 24/7.
+                    UCSG provides free consultation on admission requirements, CPT authorization, and enrollment timelines. Reach us by phone, WhatsApp, or email during business hours.
                   </p>
                   <Button className="mt-5 w-full rounded-full bg-[#25D366] text-white hover:bg-[#1EB954]" asChild>
                     <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'university_page', cta_text: 'WhatsApp Chat' })} target="_blank" rel="noopener noreferrer">

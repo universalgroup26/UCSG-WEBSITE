@@ -1,25 +1,22 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
-import ScrollProgress from '@/components/ScrollProgress';
 import HeroSection from '@/components/HeroSection';
-import FutureUSASection from '@/components/FutureUSASection';
-import WhoWeAreSection from '@/components/WhoWeAreSection';
-import StudentJourneyInfographic from '@/components/infographics/StudentJourneyInfographic';
-import ServicesSection from '@/components/ServicesSection';
-import ServicesMindmap from '@/components/infographics/ServicesMindmap';
+import SituationSelector from '@/components/SituationSelector';
+import PersonalizedGuidance from '@/components/PersonalizedGuidance';
+import ProgramExplorer from '@/components/ProgramExplorer';
+import HowUCSGHelps from '@/components/HowUCSGHelps';
+import F1ResourceCenter from '@/components/F1ResourceCenter';
 import AboutUCSGSection from '@/components/AboutUCSGSection';
+import WhatStudentsExpect from '@/components/WhatStudentsExpect';
 import UniversitiesSection from '@/components/UniversitiesSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
-import ContactPopup from '@/components/ContactPopup';
-import { SectionDivider, MarqueeBanner } from '@/components/animations/TextReveal';
+import AssessmentPopup from '@/components/AssessmentPopup';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
 import ContactPage from '@/components/pages/ContactPage';
-import ScholarshipsPage from '@/components/pages/ScholarshipsPage';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
 import { track } from '@/lib/analytics';
@@ -28,8 +25,7 @@ type ViewType =
   | { type: 'home' }
   | { type: 'university'; university: UniversityData }
   | { type: 'resource'; resource: ResourceData }
-  | { type: 'contact' }
-  | { type: 'scholarships' };
+  | { type: 'contact' };
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -37,14 +33,20 @@ const pageVariants = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.25 } },
 };
 
+// Section IDs for scroll-to navigation
+const SECTION_IDS = {
+  programs: 'program-explorer',
+  resources: 'f1-resource-center',
+  about: 'about-ucsg',
+} as const;
+
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
+  const homeRef = useRef<HTMLDivElement>(null);
 
-  // Track page views on view change (covers initial + SPA navigation)
   useEffect(() => {
     if (view.type === 'home') track.pageView('Home');
     else if (view.type === 'contact') track.pageView('Contact');
-    else if (view.type === 'scholarships') track.pageView('Scholarships');
     else if (view.type === 'university') track.universityView(view.university.id, view.university.name);
     else if (view.type === 'resource') track.resourceView(view.resource.id, view.resource.title);
   }, [view]);
@@ -54,17 +56,21 @@ export default function HomePage() {
     track.navClick({ nav_type: 'header', nav_target: navTarget });
 
     if (_view === 'home') {
-      setView({ type: 'home' });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (id && id in SECTION_IDS) {
+        // Scroll to specific section on home page
+        setView({ type: 'home' });
+        setTimeout(() => {
+          const el = document.getElementById(SECTION_IDS[id as keyof typeof SECTION_IDS]);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        setView({ type: 'home' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       return;
     }
     if (_view === 'contact') {
       setView({ type: 'contact' });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    if (_view === 'scholarships') {
-      setView({ type: 'scholarships' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -136,39 +142,65 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <ScrollProgress />
       <Header onNavigate={handleNavigate} />
       <main className="flex-1">
         <AnimatePresence mode="wait">
           {view.type === 'home' && (
-            <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div key="home" ref={homeRef} variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              {/* 1. Hero */}
               <HeroSection onContactClick={goContact} />
-              <FutureUSASection />
-              <WhoWeAreSection />
-              <StudentJourneyInfographic />
-              <MarqueeBanner
-                items={['Day 1 CPT', 'SEVP Certified', '24/7 Support', 'University Transfer', 'SEVIS Reinstatement', 'Change of Status', 'STEM OPT', '99% Success Rate', '5,000+ Students']}
-                speed={30}
-                className="py-5 bg-white"
-              />
-              <ServicesSection onResourceClick={handleResourceClick} />
-              <SectionDivider from="white" to="white" variant="zigzag" />
-              <ServicesMindmap />
-              <AboutUCSGSection />
-              <SectionDivider from="#0F172A" to="#F8FAFC" variant="wave" />
-              <TestimonialsSection />
-              <SectionDivider from="#F8FAFC" to="white" variant="curve" />
-              <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
+
+              {/* 2. Situation Selector */}
+              <section id="situation-selector">
+                <SituationSelector />
+              </section>
+
+              {/* 3. Personalized Guidance */}
+              <section id="personalized-guidance">
+                <PersonalizedGuidance />
+              </section>
+
+              {/* 4. How UCSG Helps */}
+              <section id="how-ucsg-helps">
+                <HowUCSGHelps />
+              </section>
+
+              {/* 5. Program Explorer */}
+              <section id="program-explorer">
+                <ProgramExplorer />
+              </section>
+
+              {/* 6. F-1 Resource Center */}
+              <section id="f1-resource-center">
+                <F1ResourceCenter />
+              </section>
+
+              {/* 7. About UCSG */}
+              <section id="about-ucsg">
+                <AboutUCSGSection />
+              </section>
+
+              {/* 8. What Students Can Expect */}
+              <section id="what-students-expect">
+                <WhatStudentsExpect />
+              </section>
+
+              {/* 9. Universities */}
+              <section id="universities">
+                <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
+              </section>
+
+              {/* 10. Compliance Disclaimer */}
+              <div className="mx-auto max-w-[1200px] px-4 py-12 text-center sm:px-6 lg:px-8">
+                <p className="text-sm leading-relaxed text-gray-500">
+                  UCSG provides educational information and student-support services. Admission, scholarships, visa status, SEVIS transfer, CPT/OPT authorization and employment outcomes are not guaranteed. Students should confirm employment authorization with their Designated School Official and seek advice from a qualified immigration attorney when necessary.
+                </p>
+              </div>
             </motion.div>
           )}
           {view.type === 'contact' && (
             <motion.div key="contact" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <ContactPage onBack={goHome} />
-            </motion.div>
-          )}
-          {view.type === 'scholarships' && (
-            <motion.div key="scholarships" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <ScholarshipsPage onBack={goHome} />
             </motion.div>
           )}
           {view.type === 'university' && (
@@ -184,7 +216,7 @@ export default function HomePage() {
         </AnimatePresence>
       </main>
       <Footer onNavigate={handleNavigate} onContactClick={goContact} />
-      <ContactPopup currentView={view.type} />
+      <AssessmentPopup currentView={view.type} />
     </div>
   );
 }

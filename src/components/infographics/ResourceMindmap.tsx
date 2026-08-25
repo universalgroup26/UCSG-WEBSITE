@@ -153,10 +153,10 @@ const mindmapConfigs: Record<string, MindmapConfig> = {
         bg: '#D1FAE5',
         border: '#6EE7B7',
         nodes: [
-          { label: '99%+ Success Rate', icon: TrendingUp },
+          { label: 'Strong Track Record', icon: TrendingUp },
           { label: 'No Gap in Status', icon: Shield },
           { label: 'Immediate CPT Access', icon: Zap },
-          { label: '11+ Institution Options', icon: GraduationCap },
+          { label: 'Multiple Institution Options', icon: GraduationCap },
         ],
       },
     ],

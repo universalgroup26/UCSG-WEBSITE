@@ -100,7 +100,7 @@ export default function UniversitiesSection({ onUniversityClick, onApplyClick }:
                   onClick={(e) => { e.stopPropagation(); onApplyClick?.(uni.id); }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full rounded-lg bg-gradient-to-r from-[#B31942] to-[#002868] px-3 py-2 text-xs font-bold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-110 sm:text-sm"
+                  className="w-full rounded-lg bg-gradient-to-r from-[#0874F9] to-[#061846] px-3 py-2 text-xs font-bold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-110 sm:text-sm"
                 >
                   <Send className="mr-1 inline h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   Apply Now

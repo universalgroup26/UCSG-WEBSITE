@@ -149,7 +149,7 @@ interface PageViewEvent {
 
 interface CtaClickEvent {
   event: 'cta_click';
-  cta_type: 'whatsapp' | 'call' | 'consultation' | 'email' | 'apply';
+  cta_type: 'whatsapp' | 'call' | 'consultation' | 'email' | 'apply' | 'situation_card' | 'program_details_requested' | 'assessment_fab';
   cta_source: string; // where the click happened: hero, footer, popup, mobile_menu, contact_page, university_page, etc.
   cta_text?: string; // button label text
   cta_url?: string; // href destination
@@ -171,7 +171,7 @@ interface FormEvent {
 
 interface PopupEvent {
   event: 'popup_open' | 'popup_close' | 'popup_dismiss';
-  popup_trigger: 'scroll_50' | 'scroll_90' | 'fab' | 'timeout';
+  popup_trigger: 'scroll_50' | 'scroll_90' | 'fab' | 'timeout' | 'scroll_60' | 'exit_intent';
 }
 
 interface MobileMenuEvent {
@@ -414,6 +414,11 @@ function leadConversion(params: {
   }
 }
 
+/** Track a custom/generic event to dataLayer and GA4 */
+function customEvent(eventName: string, params?: Record<string, unknown>) {
+  push({ event: eventName, ...params });
+}
+
 export const track = {
   init,
   pageView,
@@ -428,4 +433,5 @@ export const track = {
   socialClick,
   externalLink,
   leadConversion,
+  customEvent,
 };

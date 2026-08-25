@@ -27,7 +27,7 @@ const contactMethods = [
     icon: Phone,
     title: 'Call Us',
     value: '+1 (302) 893-5594',
-    subtitle: 'Available 24/7',
+    subtitle: 'Reach Us Anytime',
     href: 'tel:+13028935594',
     color: '#002868',
   },
@@ -35,7 +35,7 @@ const contactMethods = [
     icon: MessageCircle,
     title: 'WhatsApp',
     value: 'Chat on WhatsApp',
-    subtitle: 'Instant reply, 24/7',
+    subtitle: 'Quick Response During Business Hours',
     href: 'https://wa.me/13028935594',
     external: true,
     color: '#25D366',
@@ -63,7 +63,7 @@ const officeHours = [
   { day: 'Monday – Friday', hours: '9:00 AM – 9:00 PM EST' },
   { day: 'Saturday', hours: '10:00 AM – 6:00 PM EST' },
   { day: 'Sunday', hours: '12:00 PM – 6:00 PM EST' },
-  { day: 'Emergency Support', hours: '24/7 via Phone & WhatsApp' },
+  { day: 'Emergency Support', hours: 'Phone, WhatsApp & Email Support' },
 ];
 
 const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -221,7 +221,7 @@ export default function ContactPage({ onBack }: Props) {
               transition={{ delay: 0.45, duration: 0.5 }}
             >
               <Clock className="h-4 w-4" />
-              Available 24/7 · Free Consultation
+              Educational Guidance · Free Consultation
             </motion.div>
           </div>
         </div>

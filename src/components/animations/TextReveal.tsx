@@ -56,7 +56,7 @@ export function AnimatedHeading({
         {title}
       </motion.h2>
       <motion.div
-        className={`mt-5 h-1 w-[60px] rounded-full bg-gradient-to-r from-[#002868] to-[#B31942] ${align === 'center' ? 'mx-auto' : ''}`}
+        className={`mt-5 h-1 w-[60px] rounded-full bg-gradient-to-r from-[#0874F9] to-[#D6A84B] ${align === 'center' ? 'mx-auto' : ''}`}
         initial={{ scaleX: 0, opacity: 0 }}
         animate={isInView ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
         transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -122,10 +122,10 @@ export function SectionDivider({
           />
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="1440" y2="0">
-              <stop offset="0%" stopColor="#002868" stopOpacity="0" />
-              <stop offset="30%" stopColor="#002868" stopOpacity="1" />
-              <stop offset="70%" stopColor="#B31942" stopOpacity="1" />
-              <stop offset="100%" stopColor="#B31942" stopOpacity="0" />
+              <stop offset="0%" stopColor="#0874F9" stopOpacity="0" />
+              <stop offset="30%" stopColor="#0874F9" stopOpacity="1" />
+              <stop offset="70%" stopColor="#D6A84B" stopOpacity="1" />
+              <stop offset="100%" stopColor="#D6A84B" stopOpacity="0" />
             </linearGradient>
           </defs>
         </svg>
@@ -176,8 +176,8 @@ export function SectionDivider({
           <linearGradient id={gradId} x1="0" y1="0" x2="1440" y2="0">
             <stop offset="0%" stopColor="#002868" stopOpacity="0" />
             <stop offset="25%" stopColor="#002868" stopOpacity="1" />
-            <stop offset="75%" stopColor="#B31942" stopOpacity="1" />
-            <stop offset="100%" stopColor="#B31942" stopOpacity="0" />
+            <stop offset="75%" stopColor="#D6A84B" stopOpacity="1" />
+            <stop offset="100%" stopColor="#D6A84B" stopOpacity="0" />
           </linearGradient>
         </defs>
       </svg>
@@ -222,7 +222,7 @@ export function MarqueeBanner({
             key={`${item}-${i}`}
             className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[#002868]/25 sm:text-base"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#B31942]/30" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D6A84B]/30" />
             {item}
           </span>
         ))}

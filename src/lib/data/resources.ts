@@ -95,7 +95,7 @@ export const resources: ResourceData[] = [
       },
       {
         question: 'Which universities offer Day 1 CPT?',
-        answer: 'We work with 11+ SEVP-certified universities and training institutes across the USA that offer Day 1 CPT programs. Contact us to find the best fit for your situation.',
+        answer: 'We work with multiple SEVP-certified universities and training institutes across the USA that offer CPT programs. Contact us to find the best fit for your situation.',
       },
     ],
     benefits: [
@@ -113,7 +113,7 @@ export const resources: ResourceData[] = [
     title: 'University Transfers',
     subtitle: 'Seamless Transfer to a Day 1 CPT University',
     description:
-      'Whether your SEVIS has been terminated or you simply need a better university fit, we can connect you with SEVP-approved universities within 24-48 hours. Our fast-track transfer process ensures minimal disruption to your academic journey.',
+      'Whether your SEVIS has been terminated or you simply need a better university fit, we can connect you with SEVP-approved universities. Our transfer process is designed to minimize disruption to your academic journey.',
     icon: 'graduation-cap',
     heroGradient: 'from-[#059669] to-[#047857]',
     heroBgImage: '/images/bg-transfers.png',
@@ -146,15 +146,15 @@ export const resources: ResourceData[] = [
       },
     ],
     keyFacts: [
-      { label: 'Transfer Timeline', value: '24-48 Hours', color: '#059669' },
-      { label: 'Success Rate', value: '99%+', color: '#002868' },
-      { label: 'Partner Institutions', value: '11+', color: '#D97706' },
-      { label: 'SEVIS Termination Support', value: '24/7', color: '#DC2626' },
+      { label: 'Transfer Timeline', value: '1–2 Weeks', color: '#059669' },
+      { label: 'Support Type', value: 'End-to-End', color: '#002868' },
+      { label: 'Partner Institutions', value: 'Multiple', color: '#D97706' },
+      { label: 'SEVIS Termination Support', value: 'Available', color: '#DC2626' },
     ],
     faqs: [
       {
         question: 'How fast can I transfer?',
-        answer: 'In emergency situations, we can connect you with a university and initiate the SEVIS transfer within 24-48 hours. Standard transfers typically take 1-2 weeks.',
+        answer: 'Timelines vary by situation and university. We work to connect you with a university and initiate the SEVIS transfer as quickly as possible. Standard transfers typically take 1-2 weeks.',
       },
       {
         question: 'Can I transfer with a terminated SEVIS record?',
@@ -170,7 +170,7 @@ export const resources: ResourceData[] = [
       },
     ],
     benefits: [
-      'Emergency 24-48 hour transfer available',
+      'Fast-track transfer support available',
       'SEVIS termination recovery support',
       'Credit evaluation and transfer assistance',
       'Day 1 CPT at new university',
@@ -218,9 +218,9 @@ export const resources: ResourceData[] = [
     ],
     keyFacts: [
       { label: 'Eligible From', value: 'B1/B2, F2, H4, J1/J2', color: '#7C3AED' },
-      { label: 'Processing Time', value: '3-6 Months', color: '#002868' },
+      { label: 'Processing Time', value: '3–6 Months', color: '#002868' },
       { label: 'Form Required', value: 'I-539', color: '#059669' },
-      { label: 'Success Rate', value: '95%+', color: '#D97706' },
+      { label: 'Approval Depends On', value: 'Evidence Quality', color: '#D97706' },
     ],
     faqs: [
       {

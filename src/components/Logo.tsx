@@ -48,7 +48,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
           className={`text-2xl font-black tracking-tight sm:text-3xl ${
             variant === 'light'
               ? 'bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent'
-              : 'bg-gradient-to-r from-[#002868] via-[#1E40AF] to-[#B31942] bg-clip-text text-transparent'
+              : 'bg-gradient-to-r from-[#061846] via-[#0874F9] to-[#D6A84B] bg-clip-text text-transparent'
           }`}
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
@@ -67,7 +67,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
           </span>
           {showBadge && (
             <span
-              className={`mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-[#B31942]/25 bg-[#B31942]/[0.06] px-1.5 py-px font-bold tracking-wide text-[#B31942] ${sizes[size].badge}`}
+              className={`mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-[#D6A84B]/25 bg-[#D6A84B]/[0.06] px-1.5 py-px font-bold tracking-wide text-[#D6A84B] ${sizes[size].badge}`}
             >
               <ShieldCheck className="h-2.5 w-2.5" />
               U.S. Army Veteran-owned

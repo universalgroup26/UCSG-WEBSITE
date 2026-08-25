@@ -120,7 +120,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                 <Button className="h-12 rounded-full border-2 border-white bg-transparent px-8 font-semibold text-white hover:bg-white/10" asChild>
                   <a href="https://wa.me/13028935594" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'WhatsApp Chat' })} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    WhatsApp 24/7
+                    WhatsApp Support
                   </a>
                 </Button>
               </motion.div>
@@ -304,7 +304,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
             <div className="mx-auto max-w-2xl text-center">
               <h3 className="text-2xl font-bold text-white sm:text-3xl">Ready to Get Started?</h3>
               <p className="mt-3 text-[#94A3B8]">
-                Expert guidance from UCSG — Available 24/7
+                Expert guidance from UCSG — Reach us by phone, WhatsApp, or email
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
