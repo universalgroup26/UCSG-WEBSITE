@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import {
-  Star,
   X,
   Menu,
   ChevronRight,
@@ -57,7 +56,6 @@ interface ResourceMenuItem {
 const FACEBOOK_URL =
   'https://www.facebook.com/universalconsultingservicesgroup';
 const WHATSAPP_URL = 'https://wa.me/13028935594';
-const ANNOUNCEMENT_KEY = 'ucsg-announcement-dismissed';
 
 const UNIVERSITY_COLUMN_1_IDS: string[] = [
   'trine',
@@ -161,15 +159,6 @@ function UniRow({ uni }: { uni: UniversityData }) {
 
 export default function Header({ onNavigate }: Props) {
   // State
-  const [announcementDismissed, setAnnouncementDismissed] =
-    useState(() => {
-      if (typeof window === 'undefined') return false;
-      try {
-        return sessionStorage.getItem(ANNOUNCEMENT_KEY) === '1';
-      } catch {
-        return false;
-      }
-    });
   const [scrolled, setScrolled] = useState(false);
   const [activeMega, setActiveMega] = useState<MegaMenuId>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -260,46 +249,8 @@ export default function Header({ onNavigate }: Props) {
     track.socialClick(platform, name, url);
   };
 
-  // Dismiss announcement
-  const dismissAnnouncement = () => {
-    setAnnouncementDismissed(true);
-    try {
-      sessionStorage.setItem(ANNOUNCEMENT_KEY, '1');
-    } catch {
-      // storage unavailable
-    }
-  };
-
   return (
     <header className="sticky top-0 z-50" role="banner">
-      {/* Announcement Bar */}
-      {!announcementDismissed && (
-        <div className="relative bg-[#061846] px-4 py-1.5 text-center">
-          <p className="flex items-center justify-center gap-2 text-xs font-medium text-white sm:text-[13px]">
-            <Star
-              className="h-3 w-3 shrink-0 text-[#D6A84B]"
-              fill="currentColor"
-            />
-            <span>
-              <span className="font-semibold text-white">
-                U.S. Army Veteran-Owned
-              </span>{' '}
-              <span className="text-white/60">{'\u2022'}</span>{' '}
-              <span className="text-[#D6A84B]">
-                Student-First Guidance from Jackson Heights, New York
-              </span>
-            </span>
-          </p>
-          <button
-            onClick={dismissAnnouncement}
-            aria-label="Dismiss announcement"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-white/50 transition-colors hover:text-white"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      )}
-
       {/* Main Header */}
       <div
         className={
