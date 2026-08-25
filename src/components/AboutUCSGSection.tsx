@@ -281,20 +281,21 @@ export default function AboutUCSGSection() {
             viewport={{ once: true, amount: 0.15 }}
           >
             <div className="relative">
-              {/* Main portrait */}
+              {/* Main portrait - Full Size */}
               <div
-                className="relative h-[420px] w-[340px] overflow-hidden rounded-2xl sm:h-[480px] sm:w-[380px] lg:h-[520px] lg:w-[400px]"
+                className="relative w-full overflow-hidden rounded-2xl"
                 style={{
                   boxShadow:
                     '0 20px 60px -12px rgba(6, 24, 70, 0.15), 0 8px 24px -8px rgba(6, 24, 70, 0.1)',
                 }}
               >
                 <Image
-                  src="/images/founder.jpg"
+                  src="/images/founder-full.png"
                   alt="Joy Chowdhury, Founder and CEO of UCSG"
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 1024px) 85vw, 400px"
+                  width={1672}
+                  height={941}
+                  className="h-auto w-full object-contain"
+                  sizes="(max-width: 1024px) 90vw, 50vw"
                   priority
                 />
               </div>

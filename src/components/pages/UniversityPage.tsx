@@ -136,7 +136,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
       {/* Back Bar */}
       <div className="border-b border-gray-100 bg-gray-50/50">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
             <button
               onClick={onBack}
               className="flex items-center gap-1.5 text-sm font-medium text-[#6B7280] transition-colors hover:text-[#002868]"
@@ -167,7 +167,12 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8">
             {/* Logo / Shield */}
             {university.logoPath ? (
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/30 bg-white shadow-lg sm:h-28 sm:w-28">
+              <motion.div
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/30 bg-white shadow-lg sm:h-28 sm:w-28"
+              >
                 <Image
                   src={university.logoPath}
                   alt={`${university.name} logo`}
@@ -176,20 +181,42 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   className="h-full w-full object-contain p-2"
                   unoptimized
                 />
-              </div>
+              </motion.div>
             ) : (
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl" style={{ color: university.color }}>
+              <motion.div
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl"
+                style={{ color: university.color }}
+              >
                 {university.initials}
-              </div>
+              </motion.div>
             )}
             <div className="flex-1">
-              <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
-                SEVP Certified
-              </Badge>
-              <h1 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
+                  SEVP Certified
+                </Badge>
+              </motion.div>
+              <motion.h1
+                className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
                 {university.name}
-              </h1>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-teal-100">
+              </motion.h1>
+              <motion.div
+                className="mt-3 flex flex-wrap items-center gap-4 text-teal-100"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
                   {university.location}
@@ -202,10 +229,16 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   <Building className="h-4 w-4" />
                   {university.type}
                 </span>
-              </div>
+              </motion.div>
             </div>
-            <div className="shrink-0">
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+            <motion.div
+              className="shrink-0"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
                 <Button
                   className="h-12 rounded-full bg-white px-6 font-semibold shadow-lg transition-all hover:scale-105"
                   style={{ color: university.color }}
@@ -215,7 +248,6 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   Apply Now
                 </Button>
               </motion.div>
-            </div>
           </div>
         </div>
         {/* Wave bottom */}
@@ -228,12 +260,16 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
       <section className="-mt-2">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {university.keyFacts.map((fact) => {
+            {university.keyFacts.map((fact, i) => {
               const Icon = iconMap[fact.icon] || CheckCircle;
               return (
-                <div
+                <motion.div
                   key={fact.label}
                   className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                  initial={{ opacity: 0, scale: 0.95, y: 16 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -2 }}
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${university.color}15`, color: university.color }}>
                     <Icon className="h-5 w-5" />
@@ -242,7 +278,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                     <p className="text-xs text-[#6B7280]">{fact.label}</p>
                     <p className="text-sm font-semibold text-[#0F172A]">{fact.value}</p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -630,7 +666,14 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#6B7280]">Website</span>
-                    <span className="text-sm font-medium text-[#002868]">{university.website}</span>
+                    <a
+                      href={university.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-[#002868] underline decoration-[#002868]/30 underline-offset-2 transition-colors hover:text-[#0874F9] hover:decoration-[#0874F9]"
+                    >
+                      {university.website.replace('https://www.', '').replace('https://', '')}
+                    </a>
                   </div>
                 </div>
               </div>

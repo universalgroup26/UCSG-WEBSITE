@@ -6,7 +6,6 @@ import {
   X,
   Menu,
   ChevronRight,
-  Facebook,
   MessageCircle,
   ArrowRight,
   BookOpen,
@@ -251,12 +250,26 @@ export default function Header({ onNavigate }: Props) {
 
   return (
     <header className="sticky top-0 z-50" role="banner">
-      {/* Top Company Name Bar */}
+      {/* Top University Links Bar */}
       <div className="bg-[#061846] py-1.5">
-        <div className="mx-auto flex h-full max-w-[1240px] items-center justify-center px-4 sm:px-6">
-          <p className="text-center text-[11px] font-medium tracking-widest text-white/80 sm:text-xs">
-            Universal Consulting Service Group
-          </p>
+        <div className="mx-auto flex h-full max-w-[1240px] items-center justify-center gap-4 overflow-x-auto px-4 sm:gap-6 sm:px-6">
+          {[
+            { name: 'Seattle Colleges', url: 'https://www.seattlecolleges.edu/' },
+            { name: 'Touro University', url: 'https://www.touro.edu/' },
+            { name: 'Blue Data ESL', url: 'https://www.bluedataesl.com/' },
+            { name: 'UCA', url: 'https://uca.edu/' },
+            { name: 'The Windsor School', url: 'https://www.thewindsorschool.com/' },
+          ].map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 text-[11px] font-medium tracking-wide text-white/70 transition-colors hover:text-white sm:text-xs"
+            >
+              {link.name}
+            </a>
+          ))}
         </div>
       </div>
       {/* Main Header */}
@@ -576,32 +589,7 @@ export default function Header({ onNavigate }: Props) {
               Contact
             </button>
 
-            {/* Facebook icon */}
-            <a
-              href={FACEBOOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="UCSG on Facebook"
-              onClick={() =>
-                handleSocial('facebook', FACEBOOK_URL, 'UCSG Facebook')
-              }
-              className="ml-1.5 flex h-9 w-9 items-center justify-center rounded-lg text-[#94A3B8] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
-            >
-              <Facebook className="h-4 w-4" />
-            </a>
           </nav>
-
-          {/* Desktop CTA */}
-          <div className="hidden lg:block">
-            <Button
-              onClick={() => openAssessment('header_desktop')}
-              size="sm"
-              className="h-9 gap-2 rounded-lg bg-[#0874F9] px-5 text-[13px] font-bold text-white shadow-sm shadow-[#0874F9]/25 transition-all hover:bg-[#0657CC] hover:shadow-md hover:shadow-[#0874F9]/30"
-            >
-              Start Free Student Assessment
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          </div>
 
           {/* Mobile: WhatsApp + Menu trigger */}
           <div className="flex items-center gap-1 lg:hidden">
@@ -895,22 +883,6 @@ export default function Header({ onNavigate }: Props) {
                 {/* Footer with social links */}
                 <div className="border-t border-gray-100 px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <a
-                      href={FACEBOOK_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="UCSG on Facebook"
-                      onClick={() =>
-                        handleSocial(
-                          'facebook',
-                          FACEBOOK_URL,
-                          'UCSG Facebook (mobile menu)'
-                        )
-                      }
-                      className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#EDF5FF] text-[#0874F9] transition-colors hover:bg-[#0874F9] hover:text-white"
-                    >
-                      <Facebook className="h-4 w-4" />
-                    </a>
                     <a
                       href={WHATSAPP_URL}
                       target="_blank"

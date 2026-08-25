@@ -11,7 +11,7 @@ interface FeaturedUniversitiesProps {
   onUniversityClick?: (uni: UniversityData) => void;
 }
 
-const CARD_WIDTH = 172;
+const CARD_WIDTH = 196;
 const CARD_GAP = 16;
 const SCROLL_SPEED = 0.5;
 
@@ -60,30 +60,31 @@ function UniversityCard({
     <motion.button
       type="button"
       variants={itemVariants}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.25, ease: 'easeOut' } }}
+      whileTap={{ scale: 0.98 }}
       onClick={handleClick}
       aria-label={`View ${uni.name} in ${uni.location}`}
       className={
-        'flex-shrink-0 w-[168px] rounded-xl border border-[#061846]/10 bg-white p-4 ' +
-        'shadow-sm transition-shadow duration-200 hover:shadow-md ' +
+        'flex-shrink-0 w-[180px] h-[140px] rounded-xl border border-[#061846]/10 bg-white p-4 ' +
+        'shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#0874F9]/30 ' +
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 ' +
-        'text-left cursor-pointer'
+        'text-left cursor-pointer flex flex-col items-center justify-center gap-2'
       }
     >
-      <div className="flex h-12 w-full items-center justify-center">
+      <div className="flex h-14 w-full items-center justify-center">
         <Image
           src={uni.logoPath}
           alt={`${uni.shortName} logo`}
-          width={120}
-          height={48}
-          className="h-12 w-auto object-contain"
+          width={100}
+          height={40}
+          className="max-h-10 max-w-[100px] object-contain"
           loading="lazy"
         />
       </div>
-      <p className="mt-3 text-sm font-semibold leading-tight text-[#061846] line-clamp-2">
+      <p className="text-[13px] font-semibold leading-tight text-[#061846] line-clamp-2 text-center">
         {uni.name}
       </p>
-      <p className="mt-1 text-xs text-[#061846]/50 leading-snug">
+      <p className="text-[11px] text-[#061846]/50 leading-snug">
         {uni.location}
       </p>
     </motion.button>
