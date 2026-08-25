@@ -54,8 +54,6 @@ interface ResourceMenuItem {
 
 /* ===== CONSTANTS ====================================================== */
 
-const FACEBOOK_URL =
-  'https://www.facebook.com/universalconsultingservicesgroup';
 const WHATSAPP_URL = 'https://wa.me/13028935594';
 
 const UNIVERSITY_COLUMN_1_IDS: string[] = [
@@ -730,9 +728,6 @@ export default function Header({ onNavigate }: Props) {
                       </span>
                     </SheetTitle>
                   </SheetHeader>
-                  <p className="mt-1 text-xs font-medium tracking-wide text-white/60">
-                    Universal Consulting Service Group
-                  </p>
                 </div>
 
                 {/* Nav links with accordions */}

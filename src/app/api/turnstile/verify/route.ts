@@ -3,6 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || '';
 const CLOUDFLARE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
+/**
+ * Extract the real client IP address.
+ * When behind Cloudflare proxy, use CF-Connecting-IP (most reliable).
+ * Falls back to X-Forwarded-For, then to the remote address.
+ */
+function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    ''
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -24,11 +37,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Verify token with Cloudflare
+    // Verify token with Cloudflare using the real client IP
     const formData = new URLSearchParams({
       secret: TURNSTILE_SECRET_KEY,
       response: token,
-      remoteip: request.headers.get('x-forwarded-for') || '',
+      remoteip: getClientIp(request),
     });
 
     const response = await fetch(CLOUDFLARE_VERIFY_URL, {

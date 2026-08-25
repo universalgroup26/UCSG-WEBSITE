@@ -1,25 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  /* config options here */
+  // NOTE: Do NOT set output: "standalone" — Vercel uses its own build system.
+  // standalone is only for Docker / self-hosted deployments.
   reactStrictMode: true,
-  // Allow preview panel cross-origin access
+  // Allow preview panel cross-origin access (dev only, no effect in prod)
   allowedDevOrigins: ["https://space-z.ai"],
-  // Security headers (complement Cloudflare edge security)
-  async headers() {
-    return [
-      {
-        source: "/((?!api|_next/static|_next/image|favicon.ico|universities|images|logo.svg|robots.txt).*)",
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'X-XSS-Protection', value: '1; mode=block' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        ],
-      },
-    ];
-  },
+  // Skip static generation during dev for faster startup in sandboxed env
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;

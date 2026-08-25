@@ -420,16 +420,6 @@ export default function HeroSection({ onContactClick }: Props) {
         <div className="relative z-10 flex min-h-[720px] md:min-h-[680px] lg:min-h-[760px] items-center">
           <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="max-w-[60%] flex flex-col items-start">
-              {/* Company Name */}
-              <div className="mb-6">
-                <h2 className="font-heading text-xl font-black tracking-tight text-white sm:text-2xl lg:text-[1.7rem]">
-                  <span className="bg-gradient-to-r from-white via-blue-100 to-[#D6A84B] bg-clip-text text-transparent">
-                    Universal Consulting Service Group
-                  </span>
-                </h2>
-                <div className="mt-2 h-[2px] w-16 rounded-full bg-gradient-to-r from-[#D6A84B] to-transparent" />
-              </div>
-
               <p className="mb-4 text-sm font-medium uppercase tracking-widest text-[#D6A84B] sm:text-base">
                 {slide.eyebrow}
               </p>
@@ -546,25 +536,6 @@ export default function HeroSection({ onContactClick }: Props) {
               animate="animate"
               className="max-w-[60%] flex flex-col items-start"
             >
-              {/* Company Name */}
-              <motion.div
-                className="mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: 0.05,
-                }}
-              >
-                <h2 className="font-heading text-xl font-black tracking-tight text-white sm:text-2xl lg:text-[1.7rem]">
-                  <span className="bg-gradient-to-r from-white via-blue-100 to-[#D6A84B] bg-clip-text text-transparent">
-                    Universal Consulting Service Group
-                  </span>
-                </h2>
-                <div className="mt-2 h-[2px] w-16 rounded-full bg-gradient-to-r from-[#D6A84B] to-transparent" />
-              </motion.div>
-
               {/* Eyebrow */}
               <motion.p
                 className="mb-4 text-sm font-medium uppercase tracking-widest text-[#D6A84B] sm:text-base"
