@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import Script from "next/script";
 import Analytics from "@/components/Analytics";
+import ConsentBanner from "@/components/ConsentBanner";
 import "./globals.css";
 
 const inter = Inter({
@@ -284,15 +285,6 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} font-sans antialiased bg-white text-foreground`}
       >
-        {/* GTM noscript fallback */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-K65M9LJW"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
         <Analytics />
         {children}
         {/* Cloudflare Web Analytics */}
@@ -303,6 +295,7 @@ export default function RootLayout({
             data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
           />
         )}
+        <ConsentBanner />
       </body>
     </html>
   );

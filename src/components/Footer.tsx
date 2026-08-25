@@ -230,10 +230,18 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
       <div className="bg-[#040E28]">
         <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-3 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
-            <p className="text-sm text-white/60">
-              &copy; {currentYear} Universal Consulting Service Group. All rights
-              reserved.
-            </p>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm text-white/60">
+                &copy; {currentYear} Universal Consulting Service Group. All rights
+                reserved.
+              </p>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('ucsg-consent-preferences'))}
+                className="text-xs text-white/40 transition-colors hover:text-white/60"
+              >
+                Privacy &amp; Cookie Settings
+              </button>
+            </div>
             <p className="max-w-2xl text-sm leading-relaxed text-white/40">
               UCSG provides educational information and student-support services.
               Admission, scholarships, visa status, SEVIS transfer, CPT/OPT

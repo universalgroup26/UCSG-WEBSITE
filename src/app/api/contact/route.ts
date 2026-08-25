@@ -354,6 +354,29 @@ function buildIntentTags(service: string, message: string): string[] {
   return tags;
 }
 
+// ─── Idempotency Protection ──────────────────────────────────────────
+
+/** Simple in-memory rate limiter: one submission per email per 60 seconds */
+const submissionTimestamps = new Map<string, number>();
+const IDEMPOTENCY_WINDOW_MS = 60_000;
+
+function isDuplicateSubmission(email: string): boolean {
+  const now = Date.now();
+  const last = submissionTimestamps.get(email.toLowerCase().trim());
+  if (last && now - last < IDEMPOTENCY_WINDOW_MS) {
+    return true;
+  }
+  submissionTimestamps.set(email.toLowerCase().trim(), now);
+  // Clean old entries every 100 submissions
+  if (submissionTimestamps.size > 100) {
+    const cutoff = now - IDEMPOTENCY_WINDOW_MS;
+    for (const [key, ts] of submissionTimestamps.entries()) {
+      if (ts < cutoff) submissionTimestamps.delete(key);
+    }
+  }
+  return false;
+}
+
 // ─── Main Handler ──────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -378,6 +401,11 @@ export async function POST(req: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email format.' }, { status: 400 });
+    }
+
+    // Idempotency: reject rapid duplicate submissions
+    if (isDuplicateSubmission(email)) {
+      return NextResponse.json({ success: true, id: 'duplicate', message: 'Submission already received.' });
     }
 
     const trimmedName = name.trim();
