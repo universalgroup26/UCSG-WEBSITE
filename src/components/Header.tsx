@@ -63,6 +63,8 @@ const UNIVERSITY_COLUMN_1_IDS: string[] = [
   'curry',
   'westcliff',
   'international-american-university',
+  'touro',
+  'uca',
 ];
 
 const UNIVERSITY_COLUMN_2_IDS: string[] = [
@@ -71,6 +73,9 @@ const UNIVERSITY_COLUMN_2_IDS: string[] = [
   'dream-it',
   'ny-language-center',
   'ny-general-consulting',
+  'seattle-colleges',
+  'bluedata-esl',
+  'windsor-school',
 ];
 
 const PROGRAM_LINKS: ProgramLink[] = [
@@ -250,28 +255,6 @@ export default function Header({ onNavigate }: Props) {
 
   return (
     <header className="sticky top-0 z-50" role="banner">
-      {/* Top University Links Bar */}
-      <div className="bg-[#061846] py-1.5">
-        <div className="mx-auto flex h-full max-w-[1240px] items-center justify-center gap-4 overflow-x-auto px-4 sm:gap-6 sm:px-6">
-          {[
-            { name: 'Seattle Colleges', url: 'https://www.seattlecolleges.edu/' },
-            { name: 'Touro University', url: 'https://www.touro.edu/' },
-            { name: 'Blue Data ESL', url: 'https://www.bluedataesl.com/' },
-            { name: 'UCA', url: 'https://uca.edu/' },
-            { name: 'The Windsor School', url: 'https://www.thewindsorschool.com/' },
-          ].map((link) => (
-            <a
-              key={link.url}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-[11px] font-medium tracking-wide text-white/70 transition-colors hover:text-white sm:text-xs"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-      </div>
       {/* Main Header */}
       <div
         className={
