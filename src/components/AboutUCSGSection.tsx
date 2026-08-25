@@ -2,41 +2,41 @@
 
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Star, Phone, UserCheck, Shield, Eye, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  Star,
+  Phone,
+  UserCheck,
+  Shield,
+  Eye,
+  Heart,
+  ArrowRight,
+} from 'lucide-react';
 import { track } from '@/lib/analytics';
 
 /* ------------------------------------------------------------------ */
 /*  Animation helpers                                                  */
 /* ------------------------------------------------------------------ */
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 24 },
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
-const portraitReveal = {
-  hidden: { clipPath: 'inset(0 100% 0 0)' },
-  visible: {
-    clipPath: 'inset(0)',
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const badgeEnter = {
-  hidden: { opacity: 0, scale: 0.85 },
+const slideInRight = {
+  hidden: { opacity: 0, x: 40 },
   visible: {
     opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    x: 0,
+    transition: { duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 /* ------------------------------------------------------------------ */
-/*  Value chips data                                                   */
+/*  Data                                                               */
 /* ------------------------------------------------------------------ */
 const valueChips = [
   { icon: UserCheck, label: 'Service' },
@@ -64,14 +64,6 @@ function VeteranBadge({ className = '' }: { className?: string }) {
 /* ------------------------------------------------------------------ */
 export default function AboutUCSGSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-
-  /* Parallax — desktop only, limited to 30px */
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0px', '30px']);
 
   /* Section view tracking */
   useEffect(() => {
@@ -84,7 +76,7 @@ export default function AboutUCSGSection() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -95,191 +87,108 @@ export default function AboutUCSGSection() {
       id="about-ucsg"
       ref={sectionRef}
       aria-label="Founder Message and About UCSG"
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-white py-16 sm:py-20 lg:py-28"
     >
-      {/* ---------- Background image + overlay ---------- */}
-      <div className="absolute inset-0 md:hidden">
-        <Image
-          src="/images/ucsg-founder-veteran-bg.png"
-          alt=""
-          fill
-          className="object-cover"
-          unoptimized
-          aria-hidden="true"
-        />
-      </div>
-      <div className="absolute inset-0 hidden md:block">
-        <motion.div
-          ref={bgRef}
-          style={{ y: bgY }}
-          className="absolute inset-[-30px]"
-        >
-          <Image
-            src="/images/ucsg-founder-veteran-bg.png"
-            alt=""
-            fill
-            className="object-cover"
-            unoptimized
-            aria-hidden="true"
-          />
-        </motion.div>
-      </div>
+      {/* Subtle background pattern — very faint navy watermark */}
       <div
-        className="absolute inset-0"
-        style={{ backgroundColor: 'rgba(6, 24, 70, 0.88)' }}
+        className="pointer-events-none absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 80% 20%, #061846 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
         aria-hidden="true"
       />
 
-      {/* ---------- Content ---------- */}
-      <div className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24 lg:px-8">
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* ============ LEFT: Founder Portrait ============ */}
-          <motion.div
-            className="order-2 flex flex-col items-center lg:order-1 lg:items-start"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            custom={0}
-          >
-            <motion.div
-              className="relative h-72 w-full max-w-sm overflow-hidden rounded-2xl shadow-xl sm:h-80 lg:h-[440px]"
-              style={{
-                border: '1px solid rgba(214, 168, 75, 0.3)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(214,168,75,0.15)',
-              }}
-              variants={portraitReveal}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <Image
-                src="/images/founder.jpg"
-                alt="Joy Chowdhury, Founder and CEO of UCSG"
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              {/* Floating veteran badge on portrait */}
-              <motion.div
-                className="absolute bottom-4 left-4"
-                variants={badgeEnter}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-              >
-                <VeteranBadge />
-              </motion.div>
-            </motion.div>
+      {/* Decorative blue swoosh/curve behind the image area */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full w-1/2"
+        aria-hidden="true"
+      >
+        <svg
+          className="absolute right-0 top-0 h-full w-full text-[#0874F9]/[0.04]"
+          viewBox="0 0 600 800"
+          preserveAspectRatio="none"
+          fill="currentColor"
+        >
+          <path d="M600 0 C400 100 350 300 380 500 C410 700 500 800 600 800 Z" />
+        </svg>
+      </div>
 
-            {/* Portrait label */}
+      {/* Content */}
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* ============ LEFT: Text Content ============ */}
+          <div className="flex flex-col gap-5 lg:gap-6">
+            {/* Veteran badge */}
             <motion.div
-              className="mt-4 text-center lg:text-left"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              custom={0.4}
-            >
-              <p className="text-lg font-semibold text-white">Joy Chowdhury</p>
-              <p className="text-sm font-medium" style={{ color: '#D6A84B' }}>
-                Founder and CEO, UCSG
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* ============ RIGHT: Message + About ============ */}
-          <div className="order-1 flex flex-col gap-6 lg:order-2">
-            {/* Eyebrow */}
-            <motion.p
-              className="text-xs font-semibold uppercase tracking-widest"
-              style={{ color: '#D6A84B' }}
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               custom={0}
             >
-              U.S. Army Veteran-Owned Business
-            </motion.p>
+              <VeteranBadge />
+            </motion.div>
 
             {/* Heading */}
             <motion.h2
-              className="font-heading text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl"
+              className="font-heading text-2xl font-bold leading-tight tracking-tight text-[#061846] sm:text-3xl lg:text-[2.5rem] lg:leading-[1.15]"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              custom={0.08}
+              custom={1}
             >
-              Service, Integrity and Student-First Guidance
+              Service, Integrity and{' '}
+              <span className="text-[#0874F9]">Student-First</span>{' '}
+              Guidance
             </motion.h2>
 
             {/* Gold accent line */}
             <motion.div
-              className="h-1 rounded-full bg-[#D6A84B]"
+              className="h-1 w-16 rounded-full bg-[#D6A84B]"
               initial={{ width: 0 }}
               whileInView={{ width: 64 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             />
 
-            {/* Quote text — split into paragraphs for staggered fade-up */}
-            <motion.p
-              className="text-base leading-relaxed sm:text-lg"
-              style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+            {/* Quote / Founder message */}
+            <motion.blockquote
+              className="relative border-l-2 border-[#0874F9]/30 pl-5"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              custom={0.16}
+              custom={2}
             >
-              When I served in the United States Army, I learned that leadership
-              begins with responsibility, discipline and standing beside the people
-              who depend on you. I built UCSG on those same values. Every student
-              deserves clear information, honest guidance and a team that respects
-              the importance of their educational journey.
-            </motion.p>
-
-            {/* Signature block */}
-            <motion.div
-              className="flex flex-col gap-1.5"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              custom={0.24}
-            >
-              <p className="text-base font-bold text-white">Joy Chowdhury</p>
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                Founder and CEO, UCSG
+              <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+                &ldquo;When I served in the United States Army, I learned that
+                leadership begins with responsibility, discipline and standing
+                beside the people who depend on you. I built UCSG on those same
+                values. Every student deserves clear information, honest guidance
+                and a team that respects the importance of their educational
+                journey.&rdquo;
               </p>
-              <VeteranBadge className="mt-1 w-fit" />
-            </motion.div>
+              <footer className="mt-4 flex flex-col gap-1">
+                <p className="text-base font-bold text-[#061846]">
+                  Joy Chowdhury
+                </p>
+                <p className="text-sm font-medium text-slate-500">
+                  Founder and CEO, UCSG
+                </p>
+              </footer>
+            </motion.blockquote>
 
-            {/* Pending approval note */}
+            {/* About UCSG description */}
             <motion.p
-              className="text-[11px] leading-snug italic"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
+              className="text-base leading-relaxed text-slate-500"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              custom={0.32}
-            >
-              (This statement is pending final approval from Joy Chowdhury before
-              publication.)
-            </motion.p>
-
-            {/* About UCSG copy */}
-            <motion.p
-              className="text-sm leading-relaxed sm:text-base"
-              style={{ color: 'rgba(255,255,255,0.7)' }}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              custom={0.36}
+              custom={3}
             >
               Based in Jackson Heights, New York, UCSG provides educational
               guidance, program research, application coordination and student
@@ -289,7 +198,7 @@ export default function AboutUCSGSection() {
 
             {/* Value chips */}
             <motion.div
-              className="mt-2 flex flex-wrap gap-3"
+              className="flex flex-wrap gap-2.5"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
@@ -299,13 +208,12 @@ export default function AboutUCSGSection() {
                 return (
                   <motion.span
                     key={chip.label}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#D6A84B]/40 bg-[#D6A84B]/10 px-4 py-2 text-sm font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-full border border-[#061846]/10 bg-[#EDF5FF] px-4 py-2 text-sm font-medium text-[#061846]"
                     variants={fadeUp}
-                    custom={0.44 + i * 0.08}
+                    custom={4 + i * 0.08}
                   >
                     <Icon
-                      className="h-4 w-4"
-                      style={{ color: '#D6A84B' }}
+                      className="h-4 w-4 text-[#0874F9]"
                       aria-hidden="true"
                     />
                     {chip.label}
@@ -316,46 +224,32 @@ export default function AboutUCSGSection() {
 
             {/* CTA Buttons */}
             <motion.div
-              className="mt-4 flex flex-wrap gap-3"
+              className="mt-2 flex flex-wrap gap-3"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              custom={0.8}
+              custom={5}
             >
               <button
                 type="button"
-                className="rounded-lg bg-[#0874F9] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#0662d6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0874F9]"
-                onClick={() => {
-                  track.ctaClick('founder_meet_ucsg');
-                  window.dispatchEvent(
-                    new CustomEvent('ucsg-navigate', {
-                      detail: { view: 'home', id: 'about' },
-                    })
-                  );
-                }}
-              >
-                Meet UCSG
-              </button>
-
-              <button
-                type="button"
-                className="rounded-lg border border-[#D6A84B]/60 bg-transparent px-6 py-3 text-sm font-semibold text-[#D6A84B] transition-colors duration-200 hover:bg-[#D6A84B]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6A84B]"
+                className="inline-flex items-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3 text-sm font-semibold text-white shadow-md shadow-[#0874F9]/20 transition-all duration-200 hover:bg-[#0660D4] hover:shadow-lg hover:shadow-[#0874F9]/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0874F9]"
                 onClick={() => {
                   track.ctaClick('founder_start_assessment');
                   window.dispatchEvent(
                     new CustomEvent('ucsg-assessment', {
                       detail: { open: 'assessment' },
-                    })
+                    }),
                   );
                 }}
               >
                 Start Free Assessment
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
 
               <a
                 href="tel:+13028935594"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-transparent px-6 py-3 text-sm font-semibold text-white/80 transition-colors duration-200 hover:border-white/40 hover:bg-white/5 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="inline-flex items-center gap-2 rounded-lg border border-[#061846]/15 bg-transparent px-6 py-3 text-sm font-semibold text-[#061846] transition-all duration-200 hover:border-[#061846]/30 hover:bg-[#EDF5FF] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#061846]"
                 onClick={() => track.ctaClick('founder_talk_team')}
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
@@ -365,19 +259,70 @@ export default function AboutUCSGSection() {
 
             {/* Disclaimer */}
             <motion.p
-              className="mt-6 max-w-lg text-[11px] leading-snug"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
+              className="mt-4 max-w-lg text-[11px] leading-snug text-slate-400"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              custom={0.88}
+              custom={6}
             >
               UCSG is not a law firm and does not provide legal advice. For
               immigration-related decisions, students should consult with a
               qualified immigration attorney.
             </motion.p>
           </div>
+
+          {/* ============ RIGHT: Founder Portrait ============ */}
+          <motion.div
+            className="relative flex justify-center lg:justify-end"
+            variants={slideInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+          >
+            <div className="relative">
+              {/* Main portrait */}
+              <div
+                className="relative h-[420px] w-[340px] overflow-hidden rounded-2xl sm:h-[480px] sm:w-[380px] lg:h-[520px] lg:w-[400px]"
+                style={{
+                  boxShadow:
+                    '0 20px 60px -12px rgba(6, 24, 70, 0.15), 0 8px 24px -8px rgba(6, 24, 70, 0.1)',
+                }}
+              >
+                <Image
+                  src="/images/founder.jpg"
+                  alt="Joy Chowdhury, Founder and CEO of UCSG"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 85vw, 400px"
+                  priority
+                />
+              </div>
+
+              {/* Decorative accent bar behind portrait */}
+              <div
+                className="absolute -bottom-3 -right-3 -z-10 h-full w-full rounded-2xl bg-[#0874F9]/10"
+                aria-hidden="true"
+              />
+
+              {/* Gold corner accent */}
+              <div
+                className="absolute -top-2 -left-2 h-16 w-16 rounded-tl-2xl border-l-2 border-t-2 border-[#D6A84B]"
+                aria-hidden="true"
+              />
+
+              {/* Floating veteran badge on portrait */}
+              <motion.div
+                className="absolute bottom-5 right-5"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: 0.6, duration: 0.4 }}
+              >
+                <VeteranBadge />
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
