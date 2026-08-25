@@ -1,0 +1,26 @@
+{
+  "name": "@ucsg/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Universal Consulting Service Group - F-1 student guidance, university programs, CPT/OPT resources",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ucsg",
+    "f1-visa",
+    "cpt",
+    "opt",
+    "international-students",
+    "day1-cpt"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

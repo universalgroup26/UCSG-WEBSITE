@@ -3,10 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  reactStrictMode: false,
+  reactStrictMode: true,
   // Allow preview panel cross-origin access
   allowedDevOrigins: ["https://space-z.ai"],
   // Security headers (complement Cloudflare edge security)

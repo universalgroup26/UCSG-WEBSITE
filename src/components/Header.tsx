@@ -225,7 +225,6 @@ export default function Header({ onNavigate }: Props) {
         detail: { view, id },
       })
     );
-    onNavigate?.(view, id);
   };
 
   // Assessment handler
@@ -250,10 +249,6 @@ export default function Header({ onNavigate }: Props) {
     track.mobileMenu(open ? 'open' : 'close');
   };
 
-  // Social handler
-  const handleSocial = (platform: string, url: string, name: string) => {
-    track.socialClick(platform, name, url);
-  };
 
   return (
     <header className="sticky top-0 z-50" role="banner">

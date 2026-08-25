@@ -110,7 +110,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
             >
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <Button className="h-12 rounded-full bg-white px-8 font-semibold shadow-lg" asChild style={{ color: resource.heroGradient.includes('#7C3AED') ? '#7C3AED' : resource.heroGradient.includes('#059669') ? '#059669' : resource.heroGradient.includes('#DC2626') ? '#DC2626' : '#002868' }}>
-                  <a href="https://wa.me/13028935594?text=Hi%20UCSG%2C%20I%27m%20interested%20in%20{encodeURIComponent(resource.title)}" onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'CTA Button' })} target="_blank" rel="noopener noreferrer">
+                  <a href={`https://wa.me/13028935594?text=${encodeURIComponent(`Hi UCSG, I'm interested in ${resource.title}`)}`} onClick={() => track.ctaClick({ cta_type: 'whatsapp', cta_source: 'resource_page', cta_text: 'CTA Button' })} target="_blank" rel="noopener noreferrer">
                     {resource.ctaText}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </a>

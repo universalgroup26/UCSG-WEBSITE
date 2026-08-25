@@ -36,7 +36,7 @@ const quickLinks = [
   { label: 'Transfer Support', view: 'contact' as const, id: undefined },
   { label: 'Programs', view: 'home' as const, id: 'programs' },
   { label: 'F-1 Resources', view: 'home' as const, id: 'resources' },
-  { label: 'About UCSG', view: 'home' as const, id: 'about' },
+  { label: 'About UCSG', view: 'about' as const, id: undefined },
   { label: 'Contact Us', view: 'contact' as const, id: undefined },
 ];
 
@@ -48,7 +48,6 @@ const socialIconMap: Record<string, React.ReactNode> = {
 };
 
 interface Props {
-  onNavigate?: (view: string, id?: string) => void;
   onContactClick?: () => void;
 }
 
@@ -86,6 +85,7 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={social.name}
                     title={social.name}
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
                     onClick={() =>
@@ -114,7 +114,6 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                           nav_text: link.label,
                         });
                         handleNavigate(link.view, link.id);
-                        onNavigate?.(link.view, link.id);
                       }}
                       className="text-base text-white/70 transition-colors hover:text-white"
                     >
@@ -143,7 +142,6 @@ export default function Footer({ onNavigate, onContactClick }: Props) {
                           nav_text: link.label,
                         });
                         handleNavigate(link.view, link.id);
-                        onNavigate?.(link.view, link.id);
                       }}
                       className="text-base text-white/70 transition-colors hover:text-white"
                     >

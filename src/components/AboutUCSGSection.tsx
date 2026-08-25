@@ -235,7 +235,7 @@ export default function AboutUCSGSection() {
                 type="button"
                 className="inline-flex items-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3 text-sm font-semibold text-white shadow-md shadow-[#0874F9]/20 transition-all duration-200 hover:bg-[#0660D4] hover:shadow-lg hover:shadow-[#0874F9]/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0874F9]"
                 onClick={() => {
-                  track.ctaClick('founder_start_assessment');
+                  track.ctaClick({ cta_type: 'assessment', cta_source: 'founder_section', cta_text: 'Start Free Assessment' });
                   window.dispatchEvent(
                     new CustomEvent('ucsg-assessment', {
                       detail: { open: 'assessment' },
@@ -250,7 +250,7 @@ export default function AboutUCSGSection() {
               <a
                 href="tel:+13028935594"
                 className="inline-flex items-center gap-2 rounded-lg border border-[#061846]/15 bg-transparent px-6 py-3 text-sm font-semibold text-[#061846] transition-all duration-200 hover:border-[#061846]/30 hover:bg-[#EDF5FF] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#061846]"
-                onClick={() => track.ctaClick('founder_talk_team')}
+                onClick={() => track.ctaClick({ cta_type: 'call', cta_source: 'founder_section', cta_text: 'Talk With Our Team' })}
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
                 Talk With Our Team

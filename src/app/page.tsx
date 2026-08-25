@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
-import ScrollProgress from '@/components/ScrollProgress';
 import HeroSection from '@/components/HeroSection';
 import AboutUCSGSection from '@/components/AboutUCSGSection';
 import SituationSelector from '@/components/SituationSelector';
@@ -190,8 +189,7 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
-      <ScrollProgress />
-      <Header onNavigate={handleNavigate} />
+      <Header />
       <main className="flex-1">
         <AnimatePresence mode="wait">
           {view.type === 'home' && (
@@ -291,7 +289,7 @@ export default function HomePage() {
           )}
         </AnimatePresence>
       </main>
-      <Footer onNavigate={handleNavigate} onContactClick={goContact} />
+      <Footer onContactClick={goContact} />
       <AssessmentPopup currentView={view.type} />
       {view.type === 'home' && <SectionNavigation />}
     </div>

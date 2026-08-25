@@ -115,7 +115,7 @@ export default function SectionNavigation() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-6 right-6 z-40 hidden md:block"
+          className="fixed bottom-6 right-20 z-40 hidden md:block"
         >
           {/* Expanded panel */}
           <AnimatePresence>
