@@ -70,3 +70,5 @@ vlm-*.json
 
 # Allow PNGs in public folder
 !public/**/*.png
+upload/ChatGPT Image Aug 25, 2026, 04_28_45 AM (1).png
+screenshot-*.png

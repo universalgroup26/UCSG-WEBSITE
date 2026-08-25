@@ -58,9 +58,10 @@ const slides: Slide[] = [
       tel: '+13028935594',
     },
     image: {
-      src: '/images/ucsg-hero-students.webp',
-      alt: 'Students on a university campus pursuing graduate studies in the United States',
+      src: '/images/ucsg-hero-slide1.png',
+      alt: 'UCSG - Universal Consulting Service Group helping F-1 students find the right U.S. graduate program',
       priority: true,
+      unoptimized: true,
     },
   },
   {

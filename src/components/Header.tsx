@@ -251,6 +251,14 @@ export default function Header({ onNavigate }: Props) {
 
   return (
     <header className="sticky top-0 z-50" role="banner">
+      {/* Top Company Name Bar */}
+      <div className="bg-[#061846] py-1.5">
+        <div className="mx-auto flex h-full max-w-[1240px] items-center justify-center px-4 sm:px-6">
+          <p className="text-center text-[11px] font-medium tracking-widest text-white/80 sm:text-xs">
+            Universal Consulting Service Group
+          </p>
+        </div>
+      </div>
       {/* Main Header */}
       <div
         className={
