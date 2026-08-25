@@ -70,8 +70,7 @@ const slides: Slide[] = [
       'Understand program options, transfer requirements, estimated costs and the questions you should confirm with your current and prospective schools.',
     primaryCta: {
       label: 'Explore Transfer Support',
-      type: 'navigate',
-      navigateView: 'contact',
+      type: 'assessment',
     },
     secondaryCta: {
       label: 'Request a Program Comparison',

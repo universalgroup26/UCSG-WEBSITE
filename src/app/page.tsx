@@ -15,7 +15,7 @@ import F1ResourceCenter from '@/components/F1ResourceCenter';
 import WhatStudentsExpect from '@/components/WhatStudentsExpect';
 import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
-import AssessmentPopup from '@/components/AssessmentPopup';
+import ContactPopup from '@/components/ContactPopup';
 import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -57,6 +57,14 @@ export default function HomePage() {
   }, [view]);
 
   const handleNavigate = useCallback((_view: string, id?: string) => {
+    // Intercept all 'contact' navigations to open the popup instead
+    if (_view === 'contact') {
+      window.dispatchEvent(
+        new CustomEvent('ucsg-assessment', { detail: { open: 'assessment' } }),
+      );
+      return;
+    }
+
     const navTarget = id ? `${_view}:${id}` : _view;
     track.navClick({ nav_type: 'header', nav_target: navTarget });
 
@@ -100,8 +108,9 @@ export default function HomePage() {
   }, []);
 
   const goContact = useCallback(() => {
-    setView({ type: 'contact' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.dispatchEvent(
+      new CustomEvent('ucsg-assessment', { detail: { open: 'assessment' } }),
+    );
   }, []);
 
   const handleUniversityClick = useCallback((uni: UniversityData) => {
@@ -228,7 +237,7 @@ export default function HomePage() {
         </AnimatePresence>
       </main>
       <Footer onNavigate={handleNavigate} onContactClick={goContact} />
-      <AssessmentPopup currentView={view.type} />
+      <ContactPopup />
       {view.type === 'home' && <SectionNavigation />}
     </div>
   );

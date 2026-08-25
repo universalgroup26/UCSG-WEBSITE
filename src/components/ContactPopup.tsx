@@ -32,8 +32,12 @@ const services = [
 ];
 
 const STORAGE_KEY = 'ucsg-popup-dismissed';
+const SESSION_SHOWN_FIRST_VISIT = 'ucsg-popup-first-visit-shown';
 const SESSION_SHOWN_MID = 'ucsg-popup-mid-shown';
 const SESSION_SHOWN_END = 'ucsg-popup-end-shown';
+const COOLDOWN_KEY = 'ucsg-popup-cooldown-ts';
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const FIRST_VISIT_DELAY_MS = 5000;
 const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 /* ------------------------------------------------------------------ */
@@ -75,6 +79,16 @@ function setSessionFlag(key: string) {
 }
 function isPermanentlyDismissed(): boolean {
   try { return localStorage.getItem(STORAGE_KEY) === 'true'; } catch { return false; }
+}
+function isWithinCooldown(): boolean {
+  try {
+    const ts = localStorage.getItem(COOLDOWN_KEY);
+    if (!ts) return false;
+    return Date.now() - parseInt(ts, 10) < SEVEN_DAYS_MS;
+  } catch { return false; }
+}
+function markCooldown(): void {
+  try { localStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch { /* noop */ }
 }
 
 /* ------------------------------------------------------------------ */
@@ -430,9 +444,7 @@ function SuccessParticles() {
 /* ------------------------------------------------------------------ */
 /*  Main Contact Popup                                                 */
 /* ------------------------------------------------------------------ */
-interface ContactPopupProps { currentView?: string; }
-
-export default function ContactPopup({ currentView = 'home' }: ContactPopupProps) {
+export default function ContactPopup() {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showDontAsk, setShowDontAsk] = useState(false);
@@ -449,9 +461,22 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
     setFormData({ name: '', email: '', phone: '', service: '', message: '' });
     setTurnstileToken(null);
     setOpen(true);
-    track.popupEvent({ event: 'popup_open', popup_trigger: trigger as 'fab' | 'scroll_50' | 'scroll_90' });
+    track.popupEvent({ event: 'popup_open', popup_trigger: trigger as 'fab' | 'scroll_50' | 'scroll_90' | 'first_visit' | 'cta' });
   }, []);
 
+  // --- First visit trigger: show after 5s, once per session, 7-day cooldown ---
+  useEffect(() => {
+    if (isPermanentlyDismissed() || isWithinCooldown()) return;
+    if (getSessionFlag(SESSION_SHOWN_FIRST_VISIT)) return;
+
+    const timer = setTimeout(() => {
+      setSessionFlag(SESSION_SHOWN_FIRST_VISIT);
+      handleOpen('first_visit');
+    }, FIRST_VISIT_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [handleOpen]);
+
+  // --- Scroll triggers: mid (50%) and end (90%) ---
   useEffect(() => {
     if (isPermanentlyDismissed()) return;
     const onScroll = () => {
@@ -474,12 +499,25 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
     return () => window.removeEventListener('scroll', onScroll);
   }, [handleOpen]);
 
+  // --- Listen for programmatic open (from CTAs, header, etc.) ---
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.open === 'assessment') {
+        handleOpen('cta');
+      }
+    };
+    window.addEventListener('ucsg-assessment', handler);
+    return () => window.removeEventListener('ucsg-assessment', handler);
+  }, [handleOpen]);
+
   const handleClose = useCallback(() => {
     setOpen(false);
     track.popupEvent({ event: 'popup_close', popup_trigger: 'fab' });
   }, []);
   const handleDismissForever = useCallback(() => {
     try { localStorage.setItem(STORAGE_KEY, 'true'); } catch { /* noop */ }
+    markCooldown();
     setOpen(false);
     track.popupEvent({ event: 'popup_dismiss', popup_trigger: 'fab' });
   }, []);
@@ -537,7 +575,7 @@ export default function ContactPopup({ currentView = 'home' }: ContactPopupProps
     setSubmitted(true);
   };
 
-  if (isPermanentlyDismissed() || currentView === 'contact') return null;
+  if (isPermanentlyDismissed()) return null;
 
   return (
     <>
