@@ -193,6 +193,17 @@
   pointer-events: none;
 }
 
+/* Scroll margin for anchored sections — accounts for sticky header */
+[id] {
+  scroll-margin-top: 82px;
+}
+
+@media (max-width: 1023px) {
+  [id] {
+    scroll-margin-top: 66px;
+  }
+}
+
 /* ------------------------------------------------------------------
  * Reduced-motion accessibility
  * ------------------------------------------------------------------ */

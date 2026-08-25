@@ -104,7 +104,7 @@ export default function AssessmentPopup({ currentView }: Props) {
     // Create a sentinel element at 60% of the document height
     const sentinel = document.createElement('div');
     sentinel.style.position = 'absolute';
-    sentinel.style.top = '60%';
+    sentinel.style.top = '70%';
     sentinel.style.width = '1px';
     sentinel.style.height = '1px';
     sentinel.style.pointerEvents = 'none';
@@ -114,7 +114,7 @@ export default function AssessmentPopup({ currentView }: Props) {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-          openPopup('scroll_60');
+          openPopup('scroll_70');
           observer.disconnect();
           sentinel.remove();
         }

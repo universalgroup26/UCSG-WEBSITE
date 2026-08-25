@@ -16,12 +16,42 @@ const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const EMAIL_TO = process.env.EMAIL_TO || SMTP_USER;
 
+// ─── UTM Parameter Extraction ────────────────────────────────────────
+
+/** Extract UTM params from request URL and Referer header */
+function extractUTM(req: NextRequest): Record<string, string> {
+  const utm: Record<string, string> = {};
+  const url = new URL(req.url);
+  const referer = req.headers.get('referer') || '';
+
+  // From request URL query params
+  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id', 'gclid', 'fbclid'];
+  for (const key of utmKeys) {
+    const val = url.searchParams.get(key);
+    if (val) utm[key] = val;
+  }
+
+  // From referer URL if not already captured
+  if (referer && Object.keys(utm).length === 0) {
+    try {
+      const refUrl = new URL(referer);
+      for (const key of utmKeys) {
+        const val = refUrl.searchParams.get(key);
+        if (val) utm[key] = val;
+      }
+    } catch {
+      // ignore invalid referer
+    }
+  }
+
+  return utm;
+}
+
 // ─── GoHighLevel Direct API Integration ────────────────────────────────
 
 /**
  * Create or update a contact in GoHighLevel via the official API.
- * Requires GHL_API_KEY + GHL_LOCATION_ID.
- * Optionally adds the contact to a pipeline stage.
+ * Includes UTM parameters as custom fields and intent/program tags.
  */
 async function pushToGoHighLevel(data: {
   firstName: string;
@@ -30,6 +60,7 @@ async function pushToGoHighLevel(data: {
   phone?: string;
   tags: string[];
   customFields: { id: string; value: string }[];
+  utm: Record<string, string>;
 }) {
   if (!GHL_API_KEY || !GHL_LOCATION_ID) {
     console.log('[GHL] Skipping direct API: API key or location ID not configured');
@@ -54,7 +85,17 @@ async function pushToGoHighLevel(data: {
           email: data.email,
           phone: data.phone || undefined,
           tags: data.tags,
-          customFields: data.customFields.filter(f => f.value),
+          customFields: [
+            ...data.customFields.filter(f => f.value),
+            // Add UTM params as custom fields
+            ...(data.utm.utm_source ? [{ id: 'utm_source', value: data.utm.utm_source }] : []),
+            ...(data.utm.utm_medium ? [{ id: 'utm_medium', value: data.utm.utm_medium }] : []),
+            ...(data.utm.utm_campaign ? [{ id: 'utm_campaign', value: data.utm.utm_campaign }] : []),
+            ...(data.utm.utm_term ? [{ id: 'utm_term', value: data.utm.utm_term }] : []),
+            ...(data.utm.utm_content ? [{ id: 'utm_content', value: data.utm.utm_content }] : []),
+            ...(data.utm.gclid ? [{ id: 'gclid', value: data.utm.gclid }] : []),
+            ...(data.utm.fbclid ? [{ id: 'fbclid', value: data.utm.fbclid }] : []),
+          ],
         }),
       },
     );
@@ -105,14 +146,6 @@ async function pushToGoHighLevel(data: {
 
 // ─── UCSG Lead Tracking System ────────────────────────────────────────
 
-/**
- * Push lead data to UCSG external tracking system at
- * lead.universalconsultingservices.com. This is the GoHighLevel-powered
- * lead capture endpoint that feeds directly into the GHL CRM.
- *
- * Uses the UCSG tracking ID (from the external-tracking.js script)
- * and API key for authentication.
- */
 async function pushToUCSGTracking(leadData: {
   name: string;
   email: string;
@@ -120,6 +153,7 @@ async function pushToUCSGTracking(leadData: {
   service: string;
   message: string;
   source: string;
+  utm: Record<string, string>;
 }) {
   if (!UCSG_API_KEY || !UCSG_TRACKING_ID) {
     console.log('[UCSG-Track] Skipping: API key or tracking ID not configured');
@@ -137,6 +171,7 @@ async function pushToUCSGTracking(leadData: {
       message: leadData.message,
       source: leadData.source,
       submitted_at: new Date().toISOString(),
+      utm: leadData.utm,
     },
   };
 
@@ -192,10 +227,6 @@ async function pushToUCSGTracking(leadData: {
 
 // ─── Email Notification ──────────────────────────────────────────────
 
-/**
- * Send email notification via Gmail SMTP.
- * Requires SMTP_PASS (Gmail App Password) to be configured in .env
- */
 async function sendEmailNotification(data: {
   name: string;
   email: string;
@@ -205,6 +236,7 @@ async function sendEmailNotification(data: {
   source: string;
   whatsapp?: string;
   nationality?: string;
+  utm: Record<string, string>;
 }) {
   if (!SMTP_USER || !SMTP_PASS) {
     console.log('[Email] Skipping: SMTP credentials not configured');
@@ -218,6 +250,10 @@ async function sendEmailNotification(data: {
       secure: SMTP_PORT === 465,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
     });
+
+  const utmInfo = Object.keys(data.utm).length > 0
+    ? `<p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">UTM Data</p><p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; color: #334155;">${Object.entries(data.utm).map(([k, v]) => `${k}: ${v}`).join('<br>')}</p>`
+    : '';
 
     const subject = `New Lead from ${data.name} — ${data.service || 'General Inquiry'}`;
 
@@ -248,6 +284,7 @@ async function sendEmailNotification(data: {
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Source</td>
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.source}</td>
             </tr>
+            ${utmInfo}
             <tr>
               <td style="padding: 10px 0; color: #64748b; font-weight: 500; vertical-align: top;">Message</td>
               <td style="padding: 10px 0; font-weight: 500; color: #334155; line-height: 1.6;">${data.message.replace(/\n/g, '<br>')}</td>
@@ -274,12 +311,63 @@ async function sendEmailNotification(data: {
   }
 }
 
+// ─── Intent-based tag builder ────────────────────────────────────────
+
+/** Build GHL tags based on the lead's intent and program interest */
+function buildIntentTags(service: string, message: string): string[] {
+  const tags: string[] = [];
+  const lowerMsg = message.toLowerCase();
+  const lowerService = (service || '').toLowerCase();
+
+  // Intent tags from service field
+  if (lowerService.includes('transfer')) tags.push('Intent: University Transfer');
+  if (lowerService.includes('cpt')) tags.push('Intent: CPT Information');
+  if (lowerService.includes('opt')) tags.push('Intent: OPT/STEM OPT');
+  if (lowerService.includes('change of status') || lowerService.includes('cos')) tags.push('Intent: Change of Status');
+  if (lowerService.includes('sevis') || lowerService.includes('reinstatement')) tags.push('Intent: SEVIS Reinstatement');
+  if (lowerService.includes('assessment')) tags.push('Intent: Free Assessment');
+  if (lowerService.includes('master')) tags.push('Program: Masters');
+  if (lowerService.includes('phd') || lowerService.includes('doctoral')) tags.push('Program: PhD/Doctoral');
+  if (lowerService.includes('dba')) tags.push('Program: DBA');
+  if (lowerService.includes('stem')) tags.push('Interest: STEM Programs');
+  if (lowerService.includes('hybrid')) tags.push('Interest: Hybrid Format');
+  if (lowerService.includes('online')) tags.push('Interest: Online Format');
+
+  // Extract intent from message body (for assessment form submissions)
+  if (lowerMsg.includes('situation:')) {
+    const situationMatch = lowerMsg.match(/f-1 situation:\s*(.+)/i);
+    if (situationMatch) tags.push(`F1: ${situationMatch[1].trim()}`);
+  }
+  if (lowerMsg.includes('degree level:')) {
+    const degreeMatch = lowerMsg.match(/degree level:\s*(.+)/i);
+    if (degreeMatch) tags.push(`Degree: ${degreeMatch[1].trim()}`);
+  }
+  if (lowerMsg.includes('field of study:')) {
+    const fieldMatch = lowerMsg.match(/field of study:\s*(.+)/i);
+    if (fieldMatch) tags.push(`Field: ${fieldMatch[1].trim()}`);
+  }
+  if (lowerMsg.includes('budget range:')) {
+    const budgetMatch = lowerMsg.match(/budget range:\s*(.+)/i);
+    if (budgetMatch) tags.push(`Budget: ${budgetMatch[1].trim()}`);
+  }
+
+  return tags;
+}
+
 // ─── Main Handler ──────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone, message, service, whatsapp, nationality, englishLevel, source } = body;
+    const {
+      name, email, phone, message, service, whatsapp, nationality,
+      englishLevel, source, situation, degreeLevel, fieldOfStudy,
+      preferredLocation, preferredFormat, budgetRange, optEndDate,
+      targetIntake, currentUniversity,
+    } = body;
+
+    // Extract UTM parameters
+    const utm = extractUTM(req);
 
     // Basic validation
     if (!name || !name.trim() || !email || !email.trim() || !message || !message.trim()) {
@@ -304,11 +392,17 @@ export async function POST(req: NextRequest) {
     const firstName = nameParts[0];
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 
-    // Build tags
+    // Build tags — base + intent + UTM source
     const tags: string[] = ['UCSG Website Lead', 'Contact Form'];
     if (trimmedService) tags.push(trimmedService);
     if (formSource && formSource !== 'UCSG Website') tags.push(`Source: ${formSource}`);
     if (nationality?.trim()) tags.push(`Nationality: ${nationality.trim()}`);
+    if (utm.utm_source) tags.push(`UTM: ${utm.utm_source}`);
+    if (utm.utm_campaign) tags.push(`Campaign: ${utm.utm_campaign}`);
+
+    // Add intent-based tags
+    const intentTags = buildIntentTags(trimmedService, trimmedMessage);
+    tags.push(...intentTags);
 
     // Build custom fields for GHL
     const customFields: { id: string; value: string }[] = [
@@ -319,6 +413,16 @@ export async function POST(req: NextRequest) {
       { id: 'message', value: trimmedMessage },
       { id: 'last_name', value: lastName },
       { id: 'source', value: formSource },
+      // Assessment-specific fields
+      { id: 'f1_situation', value: situation?.trim() || '' },
+      { id: 'degree_level', value: degreeLevel?.trim() || '' },
+      { id: 'field_of_study', value: fieldOfStudy?.trim() || '' },
+      { id: 'preferred_location', value: preferredLocation?.trim() || preferredLocation?.trim() || '' },
+      { id: 'preferred_format', value: preferredFormat?.trim() || '' },
+      { id: 'budget_range', value: budgetRange?.trim() || '' },
+      { id: 'opt_end_date', value: optEndDate?.trim() || '' },
+      { id: 'target_intake', value: targetIntake?.trim() || '' },
+      { id: 'current_university', value: currentUniversity?.trim() || '' },
     ];
 
     // ─── Push to all lead destinations (non-blocking, fire-and-forget) ───
@@ -331,6 +435,7 @@ export async function POST(req: NextRequest) {
       phone: trimmedPhone || undefined,
       tags,
       customFields,
+      utm,
     }).catch(() => {});
 
     // 2. UCSG External Lead Tracking System
@@ -341,6 +446,7 @@ export async function POST(req: NextRequest) {
       service: trimmedService,
       message: trimmedMessage,
       source: formSource,
+      utm,
     }).catch(() => {});
 
     // 3. Email notification to ucsgassist@gmail.com
@@ -353,9 +459,10 @@ export async function POST(req: NextRequest) {
       source: formSource,
       whatsapp: whatsapp?.trim() || undefined,
       nationality: nationality?.trim() || undefined,
+      utm,
     }).catch(() => {});
 
-    // 4. Store in local database (synchronous — always succeeds independently)
+    // 4. Store in local database
     const submission = await db.contactSubmission.create({
       data: {
         name: trimmedName,

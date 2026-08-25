@@ -171,7 +171,7 @@ interface FormEvent {
 
 interface PopupEvent {
   event: 'popup_open' | 'popup_close' | 'popup_dismiss';
-  popup_trigger: 'scroll_50' | 'scroll_90' | 'fab' | 'timeout' | 'scroll_60' | 'exit_intent';
+  popup_trigger: 'scroll_50' | 'scroll_90' | 'fab' | 'timeout' | 'scroll_60' | 'scroll_70' | 'exit_intent';
 }
 
 interface MobileMenuEvent {

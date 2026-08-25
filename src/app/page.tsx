@@ -5,14 +5,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import ScrollProgress from '@/components/ScrollProgress';
 import HeroSection from '@/components/HeroSection';
+import AboutUCSGSection from '@/components/AboutUCSGSection';
 import SituationSelector from '@/components/SituationSelector';
 import PersonalizedGuidance from '@/components/PersonalizedGuidance';
-import ProgramExplorer from '@/components/ProgramExplorer';
 import HowUCSGHelps from '@/components/HowUCSGHelps';
+import FeaturedUniversities from '@/components/FeaturedUniversities';
+import ProgramExplorer from '@/components/ProgramExplorer';
 import F1ResourceCenter from '@/components/F1ResourceCenter';
-import AboutUCSGSection from '@/components/AboutUCSGSection';
 import WhatStudentsExpect from '@/components/WhatStudentsExpect';
-import UniversitiesSection from '@/components/UniversitiesSection';
+import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
 import AssessmentPopup from '@/components/AssessmentPopup';
 import UniversityPage from '@/components/pages/UniversityPage';
@@ -39,6 +40,8 @@ const SECTION_IDS = {
   programs: 'program-explorer',
   resources: 'f1-resource-center',
   about: 'about-ucsg',
+  universities: 'featured-universities',
+  transfer: 'situation-selector',
 } as const;
 
 export default function HomePage() {
@@ -58,7 +61,6 @@ export default function HomePage() {
 
     if (_view === 'home') {
       if (id && id in SECTION_IDS) {
-        // Scroll to specific section on home page
         setView({ type: 'home' });
         setTimeout(() => {
           const el = document.getElementById(SECTION_IDS[id as keyof typeof SECTION_IDS]);
@@ -149,50 +151,49 @@ export default function HomePage() {
         <AnimatePresence mode="wait">
           {view.type === 'home' && (
             <motion.div key="home" ref={homeRef} variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              {/* 1. Hero */}
+              {/* 1. Animated Hero Slideshow */}
               <HeroSection onContactClick={goContact} />
 
-              {/* 2. Situation Selector */}
-              <section id="situation-selector">
-                <SituationSelector />
-              </section>
-
-              {/* 3. Personalized Guidance */}
-              <section id="personalized-guidance">
-                <PersonalizedGuidance />
-              </section>
-
-              {/* 4. How UCSG Helps */}
-              <section id="how-ucsg-helps">
-                <HowUCSGHelps />
-              </section>
-
-              {/* 5. Program Explorer */}
-              <section id="program-explorer">
-                <ProgramExplorer />
-              </section>
-
-              {/* 6. F-1 Resource Center */}
-              <section id="f1-resource-center">
-                <F1ResourceCenter />
-              </section>
-
-              {/* 7. About UCSG */}
+              {/* 2. Founder Message and About UCSG */}
               <section id="about-ucsg">
                 <AboutUCSGSection />
               </section>
 
-              {/* 8. What Students Can Expect */}
+              {/* 3. Situation Selector */}
+              <section id="situation-selector">
+                <SituationSelector />
+              </section>
+
+              {/* 4. Personalized Guidance */}
+              <section id="personalized-guidance">
+                <PersonalizedGuidance />
+              </section>
+
+              {/* 5. How UCSG Helps */}
+              <section id="how-ucsg-helps">
+                <HowUCSGHelps />
+              </section>
+
+              {/* 6. Featured Universities (Logo Rail) */}
+              <FeaturedUniversities onUniversityClick={handleUniversityClick} />
+
+              {/* 7. Program Explorer */}
+              <section id="program-explorer">
+                <ProgramExplorer />
+              </section>
+
+              {/* 8. F-1 Resource Center */}
+              <F1ResourceCenter />
+
+              {/* 9. What Students Can Expect */}
               <section id="what-students-expect">
                 <WhatStudentsExpect />
               </section>
 
-              {/* 9. Universities */}
-              <section id="universities">
-                <UniversitiesSection onUniversityClick={handleUniversityClick} onApplyClick={handleApplyClick} />
-              </section>
+              {/* 10. Final Assessment CTA */}
+              <FinalAssessmentCTA />
 
-              {/* 10. Compliance Disclaimer */}
+              {/* Compliance Disclaimer */}
               <div className="mx-auto max-w-[1200px] px-4 py-12 text-center sm:px-6 lg:px-8">
                 <p className="text-sm leading-relaxed text-gray-500">
                   UCSG provides educational information and student-support services. Admission, scholarships, visa status, SEVIS transfer, CPT/OPT authorization and employment outcomes are not guaranteed. Students should confirm employment authorization with their Designated School Official and seek advice from a qualified immigration attorney when necessary.

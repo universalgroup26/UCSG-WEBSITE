@@ -32,8 +32,10 @@ const resourceLinks = [
 
 const quickLinks = [
   { label: 'Home', view: 'home' as const, id: undefined },
+  { label: 'Universities', view: 'home' as const, id: 'universities' },
   { label: 'Transfer Support', view: 'contact' as const, id: undefined },
   { label: 'Programs', view: 'home' as const, id: 'programs' },
+  { label: 'F-1 Resources', view: 'home' as const, id: 'resources' },
   { label: 'About UCSG', view: 'home' as const, id: 'about' },
   { label: 'Contact Us', view: 'contact' as const, id: undefined },
 ];
