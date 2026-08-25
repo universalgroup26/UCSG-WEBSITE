@@ -67,7 +67,7 @@ export default function CPTvsOPTInfographic() {
           className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {} }
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <span className="inline-block rounded-full bg-[#FEF3C7] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#D97706]">
             Comparison

@@ -170,7 +170,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
               <motion.div
                 initial={{ scale: 0, rotate: -30 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                 className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/30 bg-white shadow-lg sm:h-28 sm:w-28"
               >
                 <Image
@@ -186,7 +186,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
               <motion.div
                 initial={{ scale: 0, rotate: -30 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                 className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl font-bold shadow-lg sm:h-28 sm:w-28 sm:text-3xl"
                 style={{ color: university.color }}
               >
@@ -197,7 +197,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
               >
                 <Badge className="mb-3 border-white/30 bg-white/20 text-white backdrop-blur-sm">
                   SEVP Certified
@@ -207,7 +207,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
               >
                 {university.name}
               </motion.h1>
@@ -215,7 +215,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                 className="mt-3 flex flex-wrap items-center gap-4 text-teal-100"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
               >
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
@@ -235,7 +235,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
               className="shrink-0"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -268,7 +268,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                   className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
                   initial={{ opacity: 0, scale: 0.95, y: 16 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -2 }}
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${university.color}15`, color: university.color }}>
@@ -289,8 +289,8 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
       <UniversityMindmap
         universityName={university.name}
         color={university.color}
-        cptAvailable={university.cptAvailable}
-        programs={university.programs}
+        cptAvailable={!!university.cptInfo}
+        programs={university.programs.map(p => ({ name: p.name, icon: p.level === 'Doctoral' ? '🎓' : p.stem ? '🔬' : '📚' }))}
         location={university.location}
         tuitionRange={university.tuitionRange}
         onlineAvailable={university.onlinePrograms}

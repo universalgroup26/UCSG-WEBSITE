@@ -157,7 +157,7 @@ export default function ConsentBanner() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] as const }}
           className="fixed bottom-0 left-0 right-0 z-[80] p-3 sm:p-4"
           role="dialog"
           aria-label="Cookie consent"

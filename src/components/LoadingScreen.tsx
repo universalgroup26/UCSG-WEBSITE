@@ -191,16 +191,21 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Non-null references for use in closures (null-checked above)
+    const c = canvas as HTMLCanvasElement;
+    const ct = container as HTMLElement;
+    const cx = ctx as CanvasRenderingContext2D;
+
     let dpr = window.devicePixelRatio || 1;
 
     function resize() {
-      const rect = container.getBoundingClientRect();
+      const rect = ct.getBoundingClientRect();
       dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = rect.width + 'px';
-      canvas.style.height = rect.height + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.width = rect.width * dpr;
+      c.height = rect.height * dpr;
+      c.style.width = rect.width + 'px';
+      c.style.height = rect.height + 'px';
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resize();
     window.addEventListener('resize', resize);
@@ -210,11 +215,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
     function loop(now: number) {
       const elapsed = (now - startTimeRef.current) / 1000;
-      const rect = container.getBoundingClientRect();
+      const rect = ct.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
 
-      ctx.clearRect(0, 0, w, h);
+      cx.clearRect(0, 0, w, h);
 
       /* Floating particles */
       const particleAlpha = clamp01(elapsed / 1.0);
@@ -225,13 +230,13 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           if (p.x < 0 || p.x > 1) p.vx *= -1;
           if (p.y < 0 || p.y > 1) p.vy *= -1;
           const flicker = 0.5 + 0.5 * Math.sin(elapsed * 2 + p.phase);
-          ctx.beginPath();
-          ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
-          ctx.fillStyle =
+          cx.beginPath();
+          cx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
+          cx.fillStyle =
             'rgba(214,168,75,' +
             (p.alpha * flicker * particleAlpha * 0.4).toFixed(3) +
             ')';
-          ctx.fill();
+          cx.fill();
         }
       }
 
@@ -244,18 +249,18 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         const py = city.y * h;
         const baseR = 1.5 + (w / 1000) * 0.8;
 
-        const grad = ctx.createRadialGradient(px, py, 0, px, py, baseR * 4);
+        const grad = cx.createRadialGradient(px, py, 0, px, py, baseR * 4);
         grad.addColorStop(0, 'rgba(214,168,75,' + (eased * 0.35).toFixed(3) + ')');
         grad.addColorStop(1, 'rgba(214,168,75,0)');
-        ctx.beginPath();
-        ctx.arc(px, py, baseR * 4, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
+        cx.beginPath();
+        cx.arc(px, py, baseR * 4, 0, Math.PI * 2);
+        cx.fillStyle = grad;
+        cx.fill();
 
-        ctx.beginPath();
-        ctx.arc(px, py, baseR * eased, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(214,168,75,' + (eased * 0.9).toFixed(3) + ')';
-        ctx.fill();
+        cx.beginPath();
+        cx.arc(px, py, baseR * eased, 0, Math.PI * 2);
+        cx.fillStyle = 'rgba(214,168,75,' + (eased * 0.9).toFixed(3) + ')';
+        cx.fill();
       }
 
       /* Connection arcs */
@@ -275,34 +280,34 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         const easedT = easeInOutQuad(arcT);
         const steps = Math.floor(easedT * 40);
 
-        ctx.beginPath();
-        ctx.moveTo(pa.x, pa.y);
+        cx.beginPath();
+        cx.moveTo(pa.x, pa.y);
         for (let s = 1; s <= steps; s++) {
           const pt = quadBezier(pa, cp, pb, s / 40);
-          ctx.lineTo(pt.x, pt.y);
+          cx.lineTo(pt.x, pt.y);
         }
-        ctx.strokeStyle = 'rgba(214,168,75,' + (easedT * 0.35).toFixed(3) + ')';
-        ctx.lineWidth = 0.8 + (w / 2000) * 0.5;
-        ctx.stroke();
+        cx.strokeStyle = 'rgba(214,168,75,' + (easedT * 0.35).toFixed(3) + ')';
+        cx.lineWidth = 0.8 + (w / 2000) * 0.5;
+        cx.stroke();
 
         /* Traveling particle along the arc */
         const travelStart = arcStart + 0.2;
         const travelT = clamp01((elapsed - travelStart) / 1.2);
         if (travelT > 0 && travelT < 1) {
           const pt = quadBezier(pa, cp, pb, easeInOutQuad(travelT));
-          const glow = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, 6);
+          const glow = cx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, 6);
           glow.addColorStop(0, 'rgba(214,168,75,0.8)');
           glow.addColorStop(0.5, 'rgba(214,168,75,0.2)');
           glow.addColorStop(1, 'rgba(214,168,75,0)');
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 6, 0, Math.PI * 2);
-          ctx.fillStyle = glow;
-          ctx.fill();
+          cx.beginPath();
+          cx.arc(pt.x, pt.y, 6, 0, Math.PI * 2);
+          cx.fillStyle = glow;
+          cx.fill();
 
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255,225,150,0.95)';
-          ctx.fill();
+          cx.beginPath();
+          cx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+          cx.fillStyle = 'rgba(255,225,150,0.95)';
+          cx.fill();
         }
       });
 
@@ -344,7 +349,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
     },
   };
 
@@ -386,7 +391,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           transition={{
             duration: 1.0,
             delay: 1.5,
-            ease: [0.22, 1, 0.36, 1],
+            ease: [0.22, 1, 0.36, 1] as const,
           }}
         >
           {/* Gold glow behind UCSG */}
@@ -430,7 +435,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
               transition={{
                 duration: 0.6,
                 delay: 2.5 + i * 0.18,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.22, 1, 0.36, 1] as const,
               }}
             >
               <span
@@ -467,7 +472,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
               transition={{
                 duration: 0.55,
                 delay: 3.5 + i * 0.35,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.22, 1, 0.36, 1] as const,
               }}
               className="relative text-[9px] font-medium uppercase tracking-[0.35em] sm:text-[10px] md:text-xs"
               style={{ color: 'rgba(214,168,75,0.7)' }}
@@ -496,7 +501,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           transition={{
             duration: 0.9,
             delay: 4.4,
-            ease: [0.22, 1, 0.36, 1],
+            ease: [0.22, 1, 0.36, 1] as const,
           }}
         >
           YOUR PARTNER FOR A BETTER TOMORROW.

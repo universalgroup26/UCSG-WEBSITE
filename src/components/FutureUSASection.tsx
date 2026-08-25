@@ -50,7 +50,7 @@ export default function FutureUSASection() {
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <Image
             src={slides[current].image}
@@ -76,7 +76,7 @@ export default function FutureUSASection() {
           initial={{ width: 0, opacity: 0 }}
           whileInView={{ width: 80, opacity: 1 }}
           viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
         />
 
         {/* Main Heading */}
@@ -85,7 +85,7 @@ export default function FutureUSASection() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] as const }}
         >
           Your Future in the USA Starts with the
           <span className="mt-2 block bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
@@ -99,7 +99,7 @@ export default function FutureUSASection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
         >
           We connect international students to affordable, accredited American universities
           offering hybrid programs, Day 1 CPT/OPT, and the real-world experience you need to succeed.
@@ -111,7 +111,7 @@ export default function FutureUSASection() {
           initial={{ width: 0, opacity: 0 }}
           whileInView={{ width: 80, opacity: 1 }}
           viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] as const }}
         />
       </div>
 

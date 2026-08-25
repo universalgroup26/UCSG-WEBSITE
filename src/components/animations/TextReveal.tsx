@@ -38,7 +38,7 @@ export function AnimatedHeading({
               ? { opacity: 1, y: 0, filter: 'blur(0px)' }
               : { opacity: 0, y: 12, filter: 'blur(4px)' }
           }
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         >
           {badge}
         </motion.span>
@@ -51,7 +51,7 @@ export function AnimatedHeading({
             ? { opacity: 1, y: 0, filter: 'blur(0px)' }
             : { opacity: 0, y: 20, filter: 'blur(6px)' }
         }
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] as const }}
       >
         {title}
       </motion.h2>
@@ -59,7 +59,7 @@ export function AnimatedHeading({
         className={`mt-5 h-1 w-[60px] rounded-full bg-gradient-to-r from-[#0874F9] to-[#D6A84B] ${align === 'center' ? 'mx-auto' : ''}`}
         initial={{ scaleX: 0, opacity: 0 }}
         animate={isInView ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
       />
       {description && (
         <motion.p
@@ -70,7 +70,7 @@ export function AnimatedHeading({
               ? { opacity: 1, y: 0, filter: 'blur(0px)' }
               : { opacity: 0, y: 16, filter: 'blur(4px)' }
           }
-          transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
         >
           {description}
         </motion.p>
@@ -108,7 +108,7 @@ export function SectionDivider({
             initial={{ pathLength: 0, opacity: 0 }}
             whileInView={{ pathLength: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as const }}
           />
           <motion.path
             d="M0,32 C360,64 720,0 1080,32 C1260,48 1380,24 1440,32"
@@ -118,7 +118,7 @@ export function SectionDivider({
             initial={{ pathLength: 0, opacity: 0 }}
             whileInView={{ pathLength: 1, opacity: 0.4 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
           />
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="1440" y2="0">
@@ -143,7 +143,7 @@ export function SectionDivider({
             initial={{ pathLength: 0, opacity: 0 }}
             whileInView={{ pathLength: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] as const }}
           />
         </svg>
       </div>
@@ -160,7 +160,7 @@ export function SectionDivider({
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as const }}
         />
         <motion.path
           d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40"
@@ -170,7 +170,7 @@ export function SectionDivider({
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 0.3 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] as const }}
         />
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="1440" y2="0">
@@ -289,7 +289,7 @@ export function ClipPathReveal({
           ? { clipPath: 'inset(0% 0% 0% 0%)' }
           : { clipPath: 'inset(100% 0% 0% 0%)' }
       }
-      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] as const }}
     >
       {children}
     </motion.div>

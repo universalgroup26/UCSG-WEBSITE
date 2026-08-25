@@ -94,7 +94,7 @@ function TestimonialCard({
         hidden: { opacity: 0, y: 40, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1 },
       }}
-      transition={{ duration: 0.6, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] as const }}
       whileHover={{ y: -8, rotateY: 3, rotateX: 2 }}
       style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
     >

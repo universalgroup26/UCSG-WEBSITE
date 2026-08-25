@@ -194,7 +194,7 @@ export default function ContactPage({ onBack }: Props) {
               className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm"
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <Globe className="h-8 w-8 text-white" />
             </motion.div>
@@ -202,7 +202,7 @@ export default function ContactPage({ onBack }: Props) {
               className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               Contact Us
             </motion.h1>

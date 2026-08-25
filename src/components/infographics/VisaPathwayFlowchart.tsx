@@ -64,7 +64,7 @@ export default function VisaPathwayFlowchart() {
           className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <span className="inline-block rounded-full bg-[#EDE9FE] px-4 py-1 text-xs font-semibold uppercase tracking-wider text-[#7C3AED]">
             Pathway Map
@@ -86,7 +86,7 @@ export default function VisaPathwayFlowchart() {
                 key={path.from}
                 initial={{ opacity: 0, x: -20 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.15 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.15 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                 className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
               >
                 {/* Pathway Header */}

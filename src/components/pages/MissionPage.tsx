@@ -31,7 +31,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -218,7 +218,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
               className="mb-6 flex items-center justify-center gap-2"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
@@ -231,7 +231,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
               className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               Empowering International Students{' '}
               <span className="text-[#D6A84B]">with Clarity and Confidence</span>
@@ -258,7 +258,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
             initial={{ opacity: 0, y: 24, filter: 'blur(4px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           >
             <div className="absolute -left-4 top-0 text-6xl leading-none text-[#D6A84B]/20 sm:-left-8 sm:text-8xl">
               &ldquo;
@@ -294,7 +294,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -4 }}
                 >
                   <Card
@@ -346,7 +346,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   >
                     {/* Step circle */}
                     <div className="relative z-10 mb-4">
@@ -401,7 +401,7 @@ export default function MissionPage({ onBack }: MissionPageProps) {
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -4, scale: 1.02 }}
                 >
                   <div className="relative overflow-hidden rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg">

@@ -59,7 +59,7 @@ function handleNavigate(view: string, id?: string) {
   );
 }
 
-export default function Footer({ onNavigate, onContactClick }: Props) {
+export default function Footer({ onContactClick }: Props) {
   const currentYear = new Date().getFullYear();
 
   return (

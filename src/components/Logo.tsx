@@ -52,7 +52,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
           }`}
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
           whileHover={{ scale: 1.02 }}
         >
           UCSG

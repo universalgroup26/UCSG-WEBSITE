@@ -162,7 +162,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
               className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm"
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <Globe className="h-8 w-8 text-white" />
             </motion.div>
@@ -170,7 +170,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
               className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               Scholarships &amp; Opportunities
             </motion.h1>
@@ -211,7 +211,7 @@ export default function ScholarshipsPage({ onBack }: Props) {
                 className="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm sm:p-5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
                 whileHover={{ y: -2, boxShadow: '0 8px 25px -5px rgba(0,0,0,0.1)' }}
               >
                 <p className="text-2xl font-bold text-[#002868] sm:text-3xl">{stat.value}</p>

@@ -45,28 +45,28 @@ const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 /* ------------------------------------------------------------------ */
 const overlayVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.35, ease: 'easeOut' } },
-  exit: { opacity: 0, transition: { duration: 0.25, ease: 'easeIn' } },
-};
+  visible: { opacity: 1, transition: { duration: 0.35, ease: 'easeOut' as const } },
+  exit: { opacity: 0, transition: { duration: 0.25, ease: 'easeIn' as const } },
+} as const;
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.8, y: 60 },
   visible: {
     opacity: 1, scale: 1, y: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 24, staggerChildren: 0.055, delayChildren: 0.12 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 24, staggerChildren: 0.055, delayChildren: 0.12 },
   },
-  exit: { opacity: 0, scale: 0.94, y: 24, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } },
-};
+  exit: { opacity: 0, scale: 0.94, y: 24, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] as const } },
+} as const;
 
 const headerChild = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 350, damping: 22 } },
-};
+  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 350, damping: 22 } },
+} as const;
 
 const fieldReveal = {
   hidden: { opacity: 0, y: 14, filter: 'blur(6px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring', stiffness: 380, damping: 26 } },
-};
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring' as const, stiffness: 380, damping: 26 } },
+} as const;
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -261,7 +261,7 @@ function FloatingSelect({ value, onChange }: { value: string; onChange: (v: stri
             initial={{ opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] as const }}
             className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-2xl border border-slate-100 bg-white py-1.5 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15),0_8px_16px_-8px_rgba(0,0,0,0.08)]"
           >
             {services.map((s, i) => (
@@ -760,7 +760,7 @@ export default function ContactPopup() {
                   <AnimatePresence>
                     {showDontAsk && (
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden"
+                        exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] as const }} className="overflow-hidden"
                       >
                         <div className="mt-2.5 flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
                           <span className="text-[13px] text-slate-500">Stop showing this popup?</span>

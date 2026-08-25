@@ -51,7 +51,7 @@ export default function UniversityMindmap({
           className="mx-auto mb-10 max-w-2xl text-center sm:mb-14"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <span className="inline-block rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-wider text-white" style={{ backgroundColor: color }}>
             University Profile
@@ -238,7 +238,7 @@ export default function UniversityMindmap({
                 style={{ borderColor: section.border, backgroundColor: section.bg }}
                 initial={{ opacity: 0, x: -16 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.15 + i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.15 + i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
               >
                 <div className="mb-2.5 flex items-center gap-2">
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: section.color }}>
@@ -289,7 +289,7 @@ function MindmapCard({
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.97 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ delay: 0.2 + index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: 0.2 + index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       whileHover={{ y: -3 }}
     >
       <div className="rounded-2xl border p-5 sm:p-6" style={{ borderColor: border, backgroundColor: bg }}>

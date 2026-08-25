@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { Phone, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { track } from '@/lib/analytics';
 
 /* ------------------------------------------------------------------
@@ -372,18 +372,18 @@ export default function HeroSection({ onContactClick }: Props) {
     animate: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.15 },
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const, delay: 0.15 },
     },
   };
 
-  const bgVariants = prefersReducedMotion
+  const bgVariants: Variants = prefersReducedMotion
     ? {}
     : {
         initial: { scale: 1.04, x: -4 },
         animate: {
           scale: 1,
           x: 0,
-          transition: { duration: 7, ease: 'linear' },
+          transition: { duration: 7, ease: 'linear' as const },
         },
       };
 
@@ -543,7 +543,7 @@ export default function HeroSection({ onContactClick }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                   delay: 0.15,
                 }}
               >
@@ -557,7 +557,7 @@ export default function HeroSection({ onContactClick }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                   delay: 0.25,
                 }}
               >
@@ -571,7 +571,7 @@ export default function HeroSection({ onContactClick }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                   delay: 0.35,
                 }}
               >
@@ -585,7 +585,7 @@ export default function HeroSection({ onContactClick }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                   delay: 0.45,
                 }}
               >
@@ -617,7 +617,7 @@ export default function HeroSection({ onContactClick }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                   delay: 0.55,
                 }}
               >

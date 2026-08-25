@@ -10,7 +10,7 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -141,7 +141,7 @@ export default function HowUCSGHelps() {
               animate={connectorInView ? { scaleX: 1 } : { scaleX: 0 }}
               transition={{
                 duration: 1.2,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.22, 1, 0.36, 1] as const,
                 delay: 0.4,
               }}
             />

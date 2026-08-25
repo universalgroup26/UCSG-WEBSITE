@@ -138,7 +138,7 @@ export default function StudentJourneyInfographic() {
                     className="relative flex flex-col items-center text-center"
                     initial={{ opacity: 0, y: 30, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                    transition={{ delay: 0.2 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ delay: 0.2 + i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   >
                     {/* Circle node */}
                     <div className="relative mb-4">
@@ -203,7 +203,7 @@ export default function StudentJourneyInfographic() {
                   key={step.title}
                   initial={{ opacity: 0, x: isEven ? -20 : 20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.15 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.15 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                   <div className={`flex items-center gap-4 py-4 ${isEven ? 'flex-row' : 'flex-row-reverse sm:flex-row'}`}>
                     <div
@@ -257,7 +257,7 @@ export default function StudentJourneyInfographic() {
               whileHover={{ y: -4, scale: 1.03, boxShadow: `0 8px 25px ${stat.color}15` }}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 1 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 1 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               {/* Shine sweep overlay */}
               <motion.div

@@ -24,7 +24,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -121,7 +121,7 @@ function AnimatedProgressBar({
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
       className="space-y-2"
     >
       <div className="flex items-center justify-between">
@@ -143,7 +143,7 @@ function AnimatedProgressBar({
           initial={{ width: 0 }}
           whileInView={{ width: `${percentage}%` }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
         />
       </div>
     </motion.div>
@@ -216,7 +216,7 @@ export default function VisionPage({ onBack }: VisionPageProps) {
               className="mb-6 flex items-center justify-center gap-2"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
@@ -229,7 +229,7 @@ export default function VisionPage({ onBack }: VisionPageProps) {
               className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               Shaping the Future of{' '}
               <span className="text-[#D6A84B]">International Education</span>
@@ -257,7 +257,7 @@ export default function VisionPage({ onBack }: VisionPageProps) {
             initial={{ opacity: 0, y: 24, filter: 'blur(4px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           >
             <Sparkles className="mx-auto mb-4 h-8 w-8 text-[#D6A84B]" />
             <p className="font-heading text-xl font-medium leading-relaxed text-[#061846] sm:text-2xl lg:text-3xl">
@@ -289,7 +289,7 @@ export default function VisionPage({ onBack }: VisionPageProps) {
                   initial={{ opacity: 0, y: 24, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -6, scale: 1.02 }}
                 >
                   <Card className="group h-full border-transparent bg-white shadow-sm transition-all duration-300 hover:shadow-xl">
@@ -335,7 +335,7 @@ export default function VisionPage({ onBack }: VisionPageProps) {
                   initial={{ opacity: 0, x: -24 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                   {/* Year marker (desktop) */}
                   <div className="hidden shrink-0 lg:flex lg:w-16 lg:flex-col lg:items-center">

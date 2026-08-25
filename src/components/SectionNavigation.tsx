@@ -114,7 +114,7 @@ export default function SectionNavigation() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
           className="fixed bottom-6 right-20 z-40 hidden md:block"
         >
           {/* Expanded panel */}
@@ -124,7 +124,7 @@ export default function SectionNavigation() {
                 initial={{ opacity: 0, y: 8, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
                 className="mb-3 w-56 overflow-hidden rounded-xl border border-[#061846]/10 bg-white p-2 shadow-xl shadow-[#061846]/10"
               >
                 <div className="mb-1.5 px-2 pt-1">

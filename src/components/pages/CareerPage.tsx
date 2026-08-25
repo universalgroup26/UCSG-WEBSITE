@@ -30,7 +30,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -210,7 +210,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
               className="mb-6 flex items-center justify-center gap-2"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
@@ -223,7 +223,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
               className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               Join Our Team of{' '}
               <span className="text-[#D6A84B]">Education Advocates</span>
@@ -261,7 +261,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -4 }}
                 >
                   <Card className="group h-full border-transparent bg-white shadow-sm transition-all duration-300 hover:shadow-lg">
@@ -303,7 +303,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
               >
                 <Card className="overflow-hidden border-transparent bg-white shadow-sm transition-all duration-300 hover:shadow-lg">
                   <CardContent className="p-6 sm:p-8">
@@ -418,7 +418,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                 >
                   <div className="flex items-start gap-4 rounded-xl border border-transparent p-5 transition-all duration-300 hover:border-[#D6A84B]/20 hover:bg-[#F8FAFC]">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#061846]">

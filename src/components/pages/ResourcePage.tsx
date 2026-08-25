@@ -82,7 +82,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm"
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <HeroIcon className="h-8 w-8 text-white" />
             </motion.div>
@@ -90,7 +90,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
               className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               {resource.title}
             </motion.h1>
@@ -142,7 +142,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                 className="flex flex-col items-center rounded-xl border border-gray-100 bg-white p-5 text-center shadow-sm"
                 initial={{ opacity: 0, y: 16, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
                 whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
               >
                 <p className="text-2xl font-bold sm:text-3xl" style={{ color: fact.color }}>
@@ -281,7 +281,7 @@ export default function ResourcePage({ resource, onBack }: Props) {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
                         className="overflow-hidden"
                       >
                         <div className="border-t border-gray-50 px-6 pb-5 pt-3">

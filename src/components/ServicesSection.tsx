@@ -65,7 +65,7 @@ export default function ServicesSection({ onResourceClick }: Props) {
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_12px_40px_-4px_rgba(0,40,104,0.2)] sm:p-8"
                   initial={{ opacity: 0, y: 40, rotateX: 8 }}
                   animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-                  transition={{ delay: 0.1 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -10, scale: 1.03, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
                   style={{ transformStyle: 'preserve-3d', perspective: '800px' }}
                 >
@@ -112,7 +112,7 @@ export default function ServicesSection({ onResourceClick }: Props) {
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,40,104,0.08)] transition-all duration-300 hover:border-[#002868]/20 hover:shadow-[0_12px_40px_-4px_rgba(0,40,104,0.2)] sm:p-8"
                   initial={{ opacity: 0, y: 40, rotateX: 8 }}
                   animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-                  transition={{ delay: 0.1 + (i + 3) * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.1 + (i + 3) * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
                   whileHover={{ y: -10, scale: 1.03, rotateX: 2, rotateY: -2, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
                   style={{ transformStyle: 'preserve-3d', perspective: '800px' }}
                 >

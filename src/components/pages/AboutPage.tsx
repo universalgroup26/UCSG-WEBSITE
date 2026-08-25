@@ -35,7 +35,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -52,7 +52,7 @@ const staggerItem = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
 };
 
@@ -311,7 +311,7 @@ function MindmapBranch({
       className="relative"
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ delay: 0.3 + index * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: 0.3 + index * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       whileHover={{ y: -4, scale: 1.02 }}
     >
       <div
@@ -427,7 +427,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
               className="mb-6 flex items-center justify-center gap-2"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
@@ -440,7 +440,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
               className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               About Universal Consulting{' '}
               <span className="text-[#D6A84B]">Service Group</span>
@@ -482,7 +482,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="relative w-full">
                 <div
@@ -564,7 +564,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                 initial={{ width: 0 }}
                 whileInView={{ width: 64 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.6, delay: 0.25, ease: [0.22, 1, 0.36, 1] as const }}
               />
 
               {/* Founder Quote */}
@@ -689,7 +689,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                     key={branch.title}
                     initial={{ opacity: 0, x: -20 }}
                     animate={isMindmapInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.2 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ delay: 0.2 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                   >
                     <div
                       className="rounded-xl border p-4 sm:p-5"
