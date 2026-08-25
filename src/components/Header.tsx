@@ -10,6 +10,8 @@ import {
   ArrowRight,
   BookOpen,
   GraduationCap,
+  Star,
+  Building2,
 } from 'lucide-react';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -39,7 +41,7 @@ interface Props {
   onNavigate?: (view: string, id?: string) => void;
 }
 
-type MegaMenuId = 'universities' | 'resources' | null;
+type MegaMenuId = 'universities' | 'resources' | 'about' | null;
 
 interface ProgramLink {
   label: string;
@@ -548,20 +550,124 @@ export default function Header({ onNavigate }: Props) {
               </div>
             </div>
 
+            {/* About Us mega menu trigger */}
+            <div
+              className="relative"
+              onMouseEnter={() => openMega('about')}
+              onMouseLeave={closeMega}
+            >
+              <button
+                onClick={() =>
+                  setActiveMega((prev) =>
+                    prev === 'about' ? null : 'about'
+                  )
+                }
+                onFocus={() => openMega('about')}
+                aria-expanded={activeMega === 'about'}
+                aria-controls="mega-about"
+                className={
+                  'flex items-center gap-1 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-colors ' +
+                  (activeMega === 'about'
+                    ? 'bg-[#EDF5FF] text-[#0874F9]'
+                    : 'text-[#0F172A] hover:bg-[#EDF5FF] hover:text-[#0874F9]')
+                }
+              >
+                About Us
+                <ChevronRight className="h-3 w-3 rotate-90" />
+              </button>
+
+              {/* About Us Mega Menu Panel */}
+              <div
+                id="mega-about"
+                role="menu"
+                aria-label="About Us menu"
+                onMouseEnter={cancelMegaClose}
+                onMouseLeave={closeMega}
+                className={
+                  'absolute right-0 top-full pt-2 transition-all duration-200 ' +
+                  (activeMega === 'about'
+                    ? 'pointer-events-auto visible translate-y-0 opacity-100'
+                    : 'pointer-events-none invisible -translate-y-2 opacity-0')
+                }
+              >
+                <div className="w-[360px] rounded-2xl border border-gray-200/80 bg-white p-6 shadow-2xl shadow-[#061846]/[0.08]">
+                  {/* Main About link */}
+                  <button
+                    onClick={() => navigate('about', undefined, 'About Us', 'about')}
+                    className="group flex w-full items-center gap-3 rounded-xl bg-gradient-to-r from-[#061846] to-[#092B68] p-4 text-left transition-all hover:shadow-lg hover:shadow-[#061846]/20"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#D6A84B]/20">
+                      <BookOpen className="h-5 w-5 text-[#D6A84B]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-white">About UCSG</p>
+                      <p className="text-[11px] text-white/60">Our story, founder, and values</p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
+                  </button>
+
+                  {/* Sub-items */}
+                  <div className="mt-3 space-y-1">
+                    <button
+                      onClick={() => navigate('about-mission', undefined, 'Mission', 'about:mission')}
+                      className="group flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-[#EDF5FF]"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0874F9]/10">
+                        <GraduationCap className="h-4 w-4 text-[#0874F9]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Mission</p>
+                        <p className="text-[11px] text-[#64748B]">Empowering students with clarity</p>
+                      </div>
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
+                    </button>
+
+                    <button
+                      onClick={() => navigate('about-vision', undefined, 'Vision', 'about:vision')}
+                      className="group flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-[#EDF5FF]"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#D6A84B]/10">
+                        <Star className="h-4 w-4 text-[#D6A84B]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Vision</p>
+                        <p className="text-[11px] text-[#64748B]">Shaping the future of education</p>
+                      </div>
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
+                    </button>
+
+                    <button
+                      onClick={() => navigate('about-career', undefined, 'Career', 'about:career')}
+                      className="group flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-[#EDF5FF]"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+                        <Building2 className="h-4 w-4 text-emerald-600" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Careers</p>
+                        <p className="text-[11px] text-[#64748B]">Join our team of advocates</p>
+                      </div>
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
+                    </button>
+                  </div>
+
+                  {/* Bottom accent */}
+                  <div className="mt-4 flex items-center gap-2 rounded-lg bg-[#EDF5FF] px-4 py-3">
+                    <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
+                    <p className="text-[11px] font-medium text-[#061846]/70">
+                      Veteran-led • Student-first • Trusted by thousands
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Transfer Support */}
             <button
               onClick={() => navigate('contact', undefined, 'Transfer Support', 'contact')}
               className="rounded-lg px-3.5 py-2 text-[13px] font-semibold text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
             >
               Transfer Support
-            </button>
-
-            {/* About */}
-            <button
-              onClick={() => navigate('home', 'about', 'About', 'home:about')}
-              className="rounded-lg px-3.5 py-2 text-[13px] font-semibold text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
-            >
-              About
             </button>
 
             {/* Contact */}
@@ -826,20 +932,56 @@ export default function Header({ onNavigate }: Props) {
                     </AccordionItem>
                   </Accordion>
 
+                  {/* About Us Accordion */}
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="about" className="border-b-0">
+                      <AccordionTrigger className="min-h-[44px] py-3 text-sm font-semibold text-[#334155] hover:no-underline hover:text-[#0874F9]">
+                        About Us
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 pb-2 pl-2">
+                          <button
+                            onClick={() => navigate('about', undefined, 'About Us', 'about')}
+                            className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]"
+                          >
+                            <BookOpen className="h-4 w-4 shrink-0 text-[#D6A84B]" />
+                            <div className="min-w-0 flex-1">
+                              <span className="block truncate text-[13px] font-semibold text-[#0F172A]">About UCSG</span>
+                              <span className="block truncate text-[11px] text-[#64748B]">Our story, founder, and values</span>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => navigate('about-mission', undefined, 'Mission', 'about:mission')}
+                            className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]"
+                          >
+                            <GraduationCap className="h-4 w-4 shrink-0 text-[#0874F9]" />
+                            <span className="text-[13px] font-medium text-[#334155]">Mission</span>
+                          </button>
+                          <button
+                            onClick={() => navigate('about-vision', undefined, 'Vision', 'about:vision')}
+                            className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]"
+                          >
+                            <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
+                            <span className="text-[13px] font-medium text-[#334155]">Vision</span>
+                          </button>
+                          <button
+                            onClick={() => navigate('about-career', undefined, 'Career', 'about:career')}
+                            className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]"
+                          >
+                            <Building2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                            <span className="text-[13px] font-medium text-[#334155]">Careers</span>
+                          </button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
                   {/* Transfer Support */}
                   <button
                     onClick={() => navigate('contact', undefined, 'Transfer Support', 'contact')}
                     className="min-h-[44px] rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#334155] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
                   >
                     Transfer Support
-                  </button>
-
-                  {/* About */}
-                  <button
-                    onClick={() => navigate('home', 'about', 'About', 'home:about')}
-                    className="min-h-[44px] rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#334155] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
-                  >
-                    About
                   </button>
 
                   {/* Contact */}

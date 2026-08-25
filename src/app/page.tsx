@@ -20,6 +20,11 @@ import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
 import ContactPage from '@/components/pages/ContactPage';
+import AboutPage from '@/components/pages/AboutPage';
+import MissionPage from '@/components/pages/MissionPage';
+import VisionPage from '@/components/pages/VisionPage';
+import CareerPage from '@/components/pages/CareerPage';
+import LoadingScreen from '@/components/LoadingScreen';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
 import { track } from '@/lib/analytics';
@@ -28,7 +33,11 @@ type ViewType =
   | { type: 'home' }
   | { type: 'university'; university: UniversityData }
   | { type: 'resource'; resource: ResourceData }
-  | { type: 'contact' };
+  | { type: 'contact' }
+  | { type: 'about' }
+  | { type: 'about-mission' }
+  | { type: 'about-vision' }
+  | { type: 'about-career' };
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -45,15 +54,30 @@ const SECTION_IDS = {
   transfer: 'situation-selector',
 } as const;
 
+const ABOUT_VIEWS = ['about', 'about-mission', 'about-vision', 'about-career'] as const;
+
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
   const homeRef = useRef<HTMLDivElement>(null);
+  const [showLoading, setShowLoading] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !sessionStorage.getItem('ucsg-loading-seen');
+  });
+
+  const handleLoadingComplete = useCallback(() => {
+    setShowLoading(false);
+    sessionStorage.setItem('ucsg-loading-seen', '1');
+  }, []);
 
   useEffect(() => {
     if (view.type === 'home') track.pageView('Home');
     else if (view.type === 'contact') track.pageView('Contact');
     else if (view.type === 'university') track.universityView(view.university.id, view.university.name);
     else if (view.type === 'resource') track.resourceView(view.resource.id, view.resource.title);
+    else if (view.type === 'about') track.pageView('About');
+    else if (view.type === 'about-mission') track.pageView('Mission');
+    else if (view.type === 'about-vision') track.pageView('Vision');
+    else if (view.type === 'about-career') track.pageView('Career');
   }, [view]);
 
   const handleNavigate = useCallback((_view: string, id?: string) => {
@@ -81,6 +105,14 @@ export default function HomePage() {
       }
       return;
     }
+
+    // About Us pages
+    if ((ABOUT_VIEWS as readonly string[]).includes(_view)) {
+      setView({ type: _view as ViewType['type'] } as ViewType);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (_view === 'university' && id) {
       const uni = getUniversityById(id);
       if (uni) {
@@ -151,6 +183,13 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
+      {/* Loading Screen */}
+      <AnimatePresence>
+        {showLoading && (
+          <LoadingScreen onComplete={handleLoadingComplete} />
+        )}
+      </AnimatePresence>
+
       <ScrollProgress />
       <Header onNavigate={handleNavigate} />
       <main className="flex-1">
@@ -228,6 +267,26 @@ export default function HomePage() {
           {view.type === 'resource' && (
             <motion.div key={view.resource.id} variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <ResourcePage resource={view.resource} onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'about' && (
+            <motion.div key="about" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <AboutPage onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'about-mission' && (
+            <motion.div key="about-mission" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <MissionPage onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'about-vision' && (
+            <motion.div key="about-vision" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <VisionPage onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'about-career' && (
+            <motion.div key="about-career" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <CareerPage onBack={goHome} />
             </motion.div>
           )}
         </AnimatePresence>
