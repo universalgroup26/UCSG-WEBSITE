@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { track } from '@/lib/analytics';
 
 const fadeUp = {
@@ -43,6 +43,8 @@ const steps = [
 
 export default function HowUCSGHelps() {
   const sectionRef = useRef<HTMLElement>(null);
+  const connectorRef = useRef<HTMLDivElement>(null);
+  const connectorInView = useInView(connectorRef, { once: true, amount: 0.3 });
 
   // Section view tracking
   useEffect(() => {
@@ -66,12 +68,30 @@ export default function HowUCSGHelps() {
     <section
       ref={sectionRef}
       aria-label="How UCSG helps"
-      className="bg-[#EDF5FF] py-16 sm:py-20 lg:py-24"
+      className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+      {/* ── Full-section background image ── */}
+      <Image
+        src="/images/bg-how-ucsg-helps.png"
+        alt=""
+        role="presentation"
+        fill
+        className="pointer-events-none object-cover"
+        aria-hidden="true"
+      />
+
+      {/* ── Light ice-blue overlay (88 % opacity) ── */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ backgroundColor: 'rgba(237, 245, 255, 0.88)' }}
+        aria-hidden="true"
+      />
+
+      {/* ── Content ── */}
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
         <motion.div
-          className="mb-12 text-center sm:mb-16"
+          className="mb-10 text-center sm:mb-14"
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
@@ -86,16 +106,16 @@ export default function HowUCSGHelps() {
           </h2>
         </motion.div>
 
-        {/* Decorative image banner */}
+        {/* Decorative image banner — slightly smaller, more integrated */}
         <motion.div
-          className="mb-12 sm:mb-16"
+          className="mb-10 sm:mb-14"
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           custom={1}
         >
-          <div className="relative mx-auto max-w-3xl overflow-hidden rounded-2xl shadow-lg shadow-[#061846]/10">
+          <div className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl shadow-lg shadow-[#061846]/10">
             <Image
               src="/images/ucsg-guided-path.webp"
               alt="Illustration of a student's guided path through university transfer"
@@ -109,11 +129,23 @@ export default function HowUCSGHelps() {
 
         {/* Steps — horizontal on desktop, vertical on mobile */}
         <div className="relative">
-          {/* Desktop horizontal connector line (behind circles) */}
+          {/* Desktop animated horizontal connector line (behind circles) */}
           <div
-            className="absolute top-6 left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] hidden h-0.5 bg-[#0874F9]/20 lg:block"
+            ref={connectorRef}
+            className="absolute top-6 left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] hidden h-0.5 origin-left lg:block"
             aria-hidden="true"
-          />
+          >
+            <motion.div
+              className="h-full w-full rounded-full bg-gradient-to-r from-[#0874F9]/40 via-[#0874F9]/25 to-[#0874F9]/40"
+              initial={{ scaleX: 0 }}
+              animate={connectorInView ? { scaleX: 1 } : { scaleX: 0 }}
+              transition={{
+                duration: 1.2,
+                ease: [0.22, 1, 0.36, 1],
+                delay: 0.4,
+              }}
+            />
+          </div>
 
           <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-4 lg:gap-6">
             {steps.map((step, index) => (

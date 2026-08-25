@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { ArrowRight, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { track } from '@/lib/analytics';
@@ -60,12 +61,32 @@ export default function FinalAssessmentCTA() {
       aria-label="Final call to action"
       className="relative w-full overflow-hidden bg-gradient-to-b from-[#061846] to-[#092B68] py-16 sm:py-20 lg:py-24"
     >
+      {/* Full-section background image */}
+      <Image
+        src="/images/bg-final-cta.png"
+        alt=""
+        role="presentation"
+        fill
+        sizes="100vw"
+        unoptimized
+        className="absolute inset-0 z-0 object-cover"
+      />
+
+      {/* Dark overlay — ~70% opacity navy gradient */}
+      <div
+        className="absolute inset-0 z-[1] bg-gradient-to-b from-[#061846]/70 to-[#092B68]/70"
+        aria-hidden="true"
+      />
+
       {/* Decorative orbit lines */}
-      <div className="ucsg-orbit-lines pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="ucsg-orbit-lines pointer-events-none absolute inset-0 z-[2]"
+        aria-hidden="true"
+      />
 
       {/* Subtle glow effect */}
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0874F9]/[0.07] blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[3] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0874F9]/[0.07] blur-3xl"
         aria-hidden="true"
       />
 

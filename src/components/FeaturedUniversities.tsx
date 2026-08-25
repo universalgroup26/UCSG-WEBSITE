@@ -269,9 +269,26 @@ export default function FeaturedUniversities({
     <section
       id="featured-universities"
       ref={sectionRef}
-      className="w-full bg-white py-16 md:py-20"
+      className="relative w-full overflow-hidden py-16 md:py-20"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Full-section background image */}
+      <Image
+        src="/images/bg-universities.png"
+        alt=""
+        role="presentation"
+        fill
+        className="object-cover"
+        aria-hidden="true"
+      />
+
+      {/* White overlay (~90% opacity) */}
+      <div
+        className="absolute inset-0 bg-white/[0.90]"
+        aria-hidden="true"
+      />
+
+      {/* Content layer above background */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}

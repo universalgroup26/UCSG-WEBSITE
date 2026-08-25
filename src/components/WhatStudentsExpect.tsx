@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MessageSquare, FileText, Phone, ArrowRight } from 'lucide-react';
 import { track } from '@/lib/analytics';
@@ -73,10 +74,29 @@ export default function WhatStudentsExpect() {
     <section
       ref={sectionRef}
       aria-labelledby="expect-heading"
-      className="w-full py-16 md:py-24"
+      className="ucsg-orbit-lines relative w-full overflow-hidden py-16 md:py-24"
       style={{ backgroundColor: '#061846' }}
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+      {/* Full-section background image */}
+      <Image
+        src="/images/bg-what-expect.png"
+        alt=""
+        role="presentation"
+        fill
+        sizes="100vw"
+        unoptimized
+        className="pointer-events-none absolute inset-0 z-0 object-cover"
+      />
+
+      {/* Dark navy overlay — 85% opacity so white text remains readable */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{ backgroundColor: 'rgba(6, 24, 70, 0.85)' }}
+        aria-hidden="true"
+      />
+
+      {/* Content layer */}
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="mb-12 text-center">
           <motion.p

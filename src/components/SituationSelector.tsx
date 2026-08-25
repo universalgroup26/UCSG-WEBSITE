@@ -1,8 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import { ArrowLeftRight, Clock, GraduationCap, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { track } from '@/lib/analytics';
+import { useEffect, useRef } from 'react';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -60,9 +62,51 @@ function handleCardClick(id: SituationId, title: string) {
 }
 
 export default function SituationSelector() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          track.sectionView('situation_selector');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="bg-white py-16 sm:py-20 lg:py-24" aria-label="Situation selector">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
+      aria-label="Situation selector"
+    >
+      {/* Background image */}
+      <Image
+        src="/images/bg-situation-selector.png"
+        alt=""
+        fill
+        sizes="100vw"
+        className="pointer-events-none select-none object-cover"
+        aria-hidden="true"
+      />
+
+      {/* White overlay — ~92% opacity */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ backgroundColor: 'rgba(255, 255, 255, 0.92)' }}
+        aria-hidden="true"
+      />
+
+      {/* Content layer */}
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
         <motion.div
           className="mb-12 text-center sm:mb-16"
@@ -78,6 +122,12 @@ export default function SituationSelector() {
           <h2 className="font-heading text-2xl font-bold tracking-tight text-[#061846] sm:text-3xl lg:text-4xl">
             Tell Us Your Situation
           </h2>
+          {/* Gold decorative line */}
+          <div
+            className="mx-auto mt-4 h-[2px] w-16 rounded-full"
+            style={{ backgroundColor: '#D6A84B' }}
+            aria-hidden="true"
+          />
         </motion.div>
 
         {/* Cards grid */}
@@ -88,7 +138,7 @@ export default function SituationSelector() {
               <motion.button
                 key={situation.id}
                 type="button"
-                className="group flex flex-col items-start rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#0874F9] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2"
+                className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-slate-200/80 bg-white/80 p-6 text-left shadow-sm backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-[#0874F9]/40 hover:shadow-lg hover:shadow-[#0874F9]/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
@@ -96,7 +146,12 @@ export default function SituationSelector() {
                 custom={index + 1}
                 onClick={() => handleCardClick(situation.id, situation.title)}
               >
-                <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0874F9]">
+                {/* Subtle top accent bar on hover */}
+                <span
+                  className="absolute left-0 top-0 h-[3px] w-0 rounded-b-full bg-[#D6A84B] transition-all duration-300 ease-out group-hover:w-full"
+                  aria-hidden="true"
+                />
+                <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0874F9] shadow-md shadow-[#0874F9]/20 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-[#0874F9]/30">
                   <Icon className="h-5 w-5 text-white" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-lg font-semibold leading-snug text-[#061846]">

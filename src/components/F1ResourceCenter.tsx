@@ -261,8 +261,20 @@ export default function F1ResourceCenter() {
       </div>
 
       {/* Resource cards section */}
-      <div className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden bg-white py-16 sm:py-20 lg:py-24">
+        {/* Subtle background texture */}
+        <div className="absolute inset-0" aria-hidden="true">
+          <Image
+            src="/images/bg-sevis.png"
+            alt=""
+            fill
+            className="object-cover"
+            sizes="100vw"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-white/92" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
           {/* Category filter tabs */}
           <div
             className="mb-10 flex flex-wrap items-center gap-2"

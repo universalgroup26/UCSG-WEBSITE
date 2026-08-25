@@ -16,6 +16,7 @@ import WhatStudentsExpect from '@/components/WhatStudentsExpect';
 import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
 import AssessmentPopup from '@/components/AssessmentPopup';
+import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
 import ContactPage from '@/components/pages/ContactPage';
@@ -158,37 +159,45 @@ export default function HomePage() {
               <section id="about-ucsg">
                 <AboutUCSGSection />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 3. Situation Selector */}
               <section id="situation-selector">
                 <SituationSelector />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 4. Personalized Guidance */}
               <section id="personalized-guidance">
                 <PersonalizedGuidance />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 5. How UCSG Helps */}
               <section id="how-ucsg-helps">
                 <HowUCSGHelps />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 6. Featured Universities (Logo Rail) */}
               <FeaturedUniversities onUniversityClick={handleUniversityClick} />
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 7. Program Explorer */}
               <section id="program-explorer">
                 <ProgramExplorer />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 8. F-1 Resource Center */}
               <F1ResourceCenter />
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 9. What Students Can Expect */}
               <section id="what-students-expect">
                 <WhatStudentsExpect />
               </section>
+              <div className="ucsg-section-divider" aria-hidden="true" />
 
               {/* 10. Final Assessment CTA */}
               <FinalAssessmentCTA />
@@ -220,6 +229,7 @@ export default function HomePage() {
       </main>
       <Footer onNavigate={handleNavigate} onContactClick={goContact} />
       <AssessmentPopup currentView={view.type} />
+      {view.type === 'home' && <SectionNavigation />}
     </div>
   );
 }

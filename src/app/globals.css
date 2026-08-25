@@ -133,6 +133,18 @@
   color: #0F172A;
 }
 
+/* ------------------------------------------------------------------
+ * Section orbit dividers — decorative line between sections
+ * ------------------------------------------------------------------ */
+.ucsg-section-divider {
+  position: relative;
+  height: 1px;
+  max-width: 200px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, #0874F9 30%, #D6A84B 70%, transparent);
+  opacity: 0.3;
+}
+
 /* Custom scrollbar for university grid */
 .university-scroll::-webkit-scrollbar {
   height: 6px;
@@ -202,6 +214,23 @@
   [id] {
     scroll-margin-top: 66px;
   }
+}
+
+/* ------------------------------------------------------------------
+ * Smooth section reveal on scroll — subtle fade up for all sections
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  section[id] {
+    scroll-snap-margin: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Floating section nav — active indicator pulse
+ * ------------------------------------------------------------------ */
+@keyframes section-nav-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(8, 116, 249, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(8, 116, 249, 0); }
 }
 
 /* ------------------------------------------------------------------

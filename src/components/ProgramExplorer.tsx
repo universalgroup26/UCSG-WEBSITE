@@ -388,9 +388,22 @@ export default function ProgramExplorer() {
     <section
       ref={sectionRef}
       aria-label="Program Explorer"
-      className="bg-white py-16 md:py-20"
+      className="relative overflow-hidden bg-white py-16 md:py-20"
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+      {/* Background image with light overlay */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <Image
+          src="/images/bg-university.png"
+          alt=""
+          fill
+          className="object-cover"
+          sizes="100vw"
+          unoptimized
+        />
+        <div className="absolute inset-0 bg-white/90" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* ── Section Header ──────────────────────────────────────────── */}
         <motion.div
           className="text-center mb-10"
