@@ -8,13 +8,15 @@ const GHL_API_KEY = process.env.GHL_API_KEY || '';
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || '';
 const GHL_PIPELINE_ID = process.env.GHL_PIPELINE_ID || '';
 const GHL_STAGE_ID = process.env.GHL_STAGE_ID || '';
-const UCSG_API_KEY = process.env.UCSG_API_KEY || '';
 const UCSG_TRACKING_ID = process.env.UCSG_TRACKING_ID || '';
 const SMTP_HOST = process.env.SMTP_HOST || '';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
 const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const EMAIL_TO = process.env.EMAIL_TO || SMTP_USER;
+
+// Cache for auto-discovered location ID
+let cachedLocationId: string | null | undefined = undefined; // undefined = not tried yet
 
 // ─── UTM Parameter Extraction ────────────────────────────────────────
 
@@ -63,16 +65,60 @@ async function pushToGoHighLevel(data: {
   utmCustomFields: { id: string; value: string }[];
   utm: Record<string, string>;
 }) {
-  if (!GHL_API_KEY || !GHL_LOCATION_ID) {
-    console.warn('[GHL] ⚠️  NOT CONNECTED — GHL_API_KEY and/or GHL_LOCATION_ID are not configured in environment variables.');
-    console.warn('[GHL] To fix: add GHL_API_KEY and GHL_LOCATION_ID to your Vercel environment settings.');
+  if (!GHL_API_KEY) {
+    console.warn('[GHL] ⚠️  NOT CONNECTED — GHL_API_KEY is not configured.');
+    return null;
+  }
+
+  // Resolve location ID: env var → cached discovery → try discover once
+  let locationId = GHL_LOCATION_ID;
+  if (!locationId) {
+    if (cachedLocationId === undefined) {
+      // Try to auto-discover location ID via GHL business profile
+      try {
+        console.log('[GHL] Auto-discovering location ID...');
+        const bizRes = await fetch('https://services.leadconnectorhq.com/businesses/', {
+          headers: {
+            'Authorization': `Bearer ${GHL_API_KEY}`,
+            'Version': '2021-07-28',
+            'Accept': 'application/json',
+          },
+        });
+        if (bizRes.ok) {
+          const bizData = await bizRes.json();
+          const loc = bizData?.locations?.[0]?.id || bizData?.locationId || bizData?.id;
+          if (loc) {
+            cachedLocationId = loc;
+            locationId = loc;
+            console.log('[GHL] ✓ Auto-discovered location ID:', loc);
+          } else {
+            cachedLocationId = null;
+            console.warn('[GHL] ⚠️  Could not auto-discover location ID from business profile. Response:', JSON.stringify(bizData).slice(0, 300));
+          }
+        } else {
+          cachedLocationId = null;
+          const errText = await bizRes.text().catch(() => 'unknown');
+          console.warn('[GHL] ⚠️  Auto-discover failed (' + bizRes.status + '):', errText.slice(0, 200));
+        }
+      } catch (e) {
+        cachedLocationId = null;
+        console.warn('[GHL] ⚠️  Auto-discover error:', e);
+      }
+    } else if (cachedLocationId) {
+      locationId = cachedLocationId;
+    }
+  }
+
+  if (!locationId) {
+    console.warn('[GHL] ⚠️  NOT CONNECTED — GHL_LOCATION_ID not configured and auto-discovery failed.');
+    console.warn('[GHL] To fix: add GHL_LOCATION_ID to Vercel environment settings (Settings → Environment Variables).');
     return null;
   }
 
   try {
     // 1. Upsert contact
     const contactRes = await fetch(
-      `https://services.leadconnectorhq.com/contacts/upsert?locationId=${GHL_LOCATION_ID}`,
+      `https://services.leadconnectorhq.com/contacts/upsert?locationId=${locationId}`,
       {
         method: 'POST',
         headers: {
@@ -117,7 +163,7 @@ async function pushToGoHighLevel(data: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
             },
-            body: JSON.stringify({ contact_id: [contactId] }),
+            body: JSON.stringify({ contact_ids: [contactId] }),
           },
         );
 
@@ -139,84 +185,52 @@ async function pushToGoHighLevel(data: {
   }
 }
 
-// ─── UCSG Lead Tracking System ────────────────────────────────────────
+// ─── GHL External Tracking (server-side ping) ─────────────────────────
 
-async function pushToUCSGTracking(leadData: {
+async function pingGHLTracking(leadData: {
   name: string;
   email: string;
   phone: string;
   service: string;
-  message: string;
   source: string;
-  utm: Record<string, string>;
 }) {
-  if (!UCSG_API_KEY || !UCSG_TRACKING_ID) {
-    console.log('[UCSG-Track] Skipping: API key or tracking ID not configured');
+  if (!UCSG_TRACKING_ID) {
+    console.log('[GHL-Track] Skipping: UCSG_TRACKING_ID not configured');
     return null;
   }
 
-  const payload = {
-    tracking_id: UCSG_TRACKING_ID,
-    event: 'lead_capture',
-    lead: {
-      name: leadData.name,
-      email: leadData.email,
-      phone: leadData.phone,
-      service_needed: leadData.service,
-      message: leadData.message,
-      source: leadData.source,
-      submitted_at: new Date().toISOString(),
-      utm: leadData.utm,
-    },
-  };
-
-  // Try the UCSG lead capture endpoint
+  // The GHL external tracking script (client-side) handles lead capture via goTrackLead().
+  // This server-side function is a redundant fallback that pings the tracking webhook.
+  // Primary lead flow: client goTrackLead() → GHL. This is a safety net only.
   try {
-    const res = await fetch('https://lead.universalconsultingservices.com/api/lead-capture', {
+    const res = await fetch(`https://lead.universalconsultingservices.com/api/lead-capture`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${UCSG_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      const result = await res.json().catch(() => null);
-      console.log('[UCSG-Track] Lead captured successfully:', result?.id || 'ok');
-      return result;
-    }
-    console.warn(`[UCSG-Track] Lead capture returned ${res.status}:`, await res.text().catch(() => ''));
-  } catch (err) {
-    console.warn('[UCSG-Track] Lead capture request failed:', err);
-  }
-
-  // Fallback: try alternative endpoint pattern
-  try {
-    const res = await fetch('https://lead.universalconsultingservices.com/api/v1/leads', {
-      method: 'POST',
-      headers: {
-        'x-api-key': UCSG_API_KEY,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
       body: JSON.stringify({
-        ...payload,
-        api_key: UCSG_API_KEY,
+        tracking_id: UCSG_TRACKING_ID,
+        event: 'lead_capture',
+        lead: {
+          name: leadData.name,
+          email: leadData.email,
+          phone: leadData.phone,
+          service_needed: leadData.service,
+          source: leadData.source,
+          submitted_at: new Date().toISOString(),
+        },
       }),
     });
-
     if (res.ok) {
       const result = await res.json().catch(() => null);
-      console.log('[UCSG-Track] Lead captured via fallback endpoint:', result?.id || 'ok');
+      console.log('[GHL-Track] Lead pinged successfully:', result?.id || 'ok');
       return result;
     }
-    console.warn(`[UCSG-Track] Fallback endpoint returned ${res.status}`);
-  } catch (err) {
-    console.warn('[UCSG-Track] Fallback endpoint request failed:', err);
+    console.log('[GHL-Track] Endpoint returned', res.status, '— client-side goTrackLead() will handle the lead');
+  } catch {
+    // Silently fail — client-side tracking is the primary path
   }
-
   return null;
 }
 
@@ -455,13 +469,13 @@ export async function POST(req: NextRequest) {
 
     // Also keep UTM as custom fields (GHL doesn't have built-in UTM fields)
     const utmCustomFields: { id: string; value: string }[] = [
-      ...(data.utm.utm_source ? [{ id: 'utm_source', value: data.utm.utm_source }] : []),
-      ...(data.utm.utm_medium ? [{ id: 'utm_medium', value: data.utm.utm_medium }] : []),
-      ...(data.utm.utm_campaign ? [{ id: 'utm_campaign', value: data.utm.utm_campaign }] : []),
-      ...(data.utm.utm_term ? [{ id: 'utm_term', value: data.utm.utm_term }] : []),
-      ...(data.utm.utm_content ? [{ id: 'utm_content', value: data.utm.utm_content }] : []),
-      ...(data.utm.gclid ? [{ id: 'gclid', value: data.utm.gclid }] : []),
-      ...(data.utm.fbclid ? [{ id: 'fbclid', value: data.utm.fbclid }] : []),
+      ...(utm.utm_source ? [{ id: 'utm_source', value: utm.utm_source }] : []),
+      ...(utm.utm_medium ? [{ id: 'utm_medium', value: utm.utm_medium }] : []),
+      ...(utm.utm_campaign ? [{ id: 'utm_campaign', value: utm.utm_campaign }] : []),
+      ...(utm.utm_term ? [{ id: 'utm_term', value: utm.utm_term }] : []),
+      ...(utm.utm_content ? [{ id: 'utm_content', value: utm.utm_content }] : []),
+      ...(utm.gclid ? [{ id: 'gclid', value: utm.gclid }] : []),
+      ...(utm.fbclid ? [{ id: 'fbclid', value: utm.fbclid }] : []),
     ];
 
     // ─── Push to all lead destinations (non-blocking, fire-and-forget) ───
@@ -478,15 +492,13 @@ export async function POST(req: NextRequest) {
       utm,
     }).catch(() => {});
 
-    // 2. UCSG External Lead Tracking System
-    pushToUCSGTracking({
+    // 2. GHL External Tracking webhook (client-side goTrackLead is primary)
+    pingGHLTracking({
       name: trimmedName,
       email: trimmedEmail,
       phone: trimmedPhone,
       service: trimmedService,
-      message: trimmedMessage,
       source: formSource,
-      utm,
     }).catch(() => {});
 
     // 3. Email notification to ucsgassist@gmail.com
