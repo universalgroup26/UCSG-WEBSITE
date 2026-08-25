@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useEffect, useCallback, type LucideIcon } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeftRight,
   GitCompare,

@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
+import ScrollProgress from '@/components/ScrollProgress';
 import HeroSection from '@/components/HeroSection';
 import SituationSelector from '@/components/SituationSelector';
 import PersonalizedGuidance from '@/components/PersonalizedGuidance';
@@ -142,6 +143,7 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
+      <ScrollProgress />
       <Header onNavigate={handleNavigate} />
       <main className="flex-1">
         <AnimatePresence mode="wait">
