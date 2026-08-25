@@ -15,7 +15,7 @@ import F1ResourceCenter from '@/components/F1ResourceCenter';
 import WhatStudentsExpect from '@/components/WhatStudentsExpect';
 import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
-import ContactPopup from '@/components/ContactPopup';
+import AssessmentPopup from '@/components/AssessmentPopup';
 import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -57,7 +57,7 @@ export default function HomePage() {
   }, [view]);
 
   const handleNavigate = useCallback((_view: string, id?: string) => {
-    // Intercept all 'contact' navigations to open the popup instead
+    // Intercept 'contact' navigations → open assessment popup instead
     if (_view === 'contact') {
       window.dispatchEvent(
         new CustomEvent('ucsg-assessment', { detail: { open: 'assessment' } }),
@@ -79,11 +79,6 @@ export default function HomePage() {
         setView({ type: 'home' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      return;
-    }
-    if (_view === 'contact') {
-      setView({ type: 'contact' });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     if (_view === 'university' && id) {
@@ -132,8 +127,9 @@ export default function HomePage() {
 
   const handleApplyClick = useCallback((_universityId?: string) => {
     track.ctaClick({ cta_type: 'apply', cta_source: _universityId ? `university_page:${_universityId}` : 'body' });
-    setView({ type: 'contact' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.dispatchEvent(
+      new CustomEvent('ucsg-assessment', { detail: { open: 'assessment' } }),
+    );
   }, []);
 
   useEffect(() => {
@@ -237,7 +233,7 @@ export default function HomePage() {
         </AnimatePresence>
       </main>
       <Footer onNavigate={handleNavigate} onContactClick={goContact} />
-      <ContactPopup />
+      <AssessmentPopup currentView={view.type} />
       {view.type === 'home' && <SectionNavigation />}
     </div>
   );

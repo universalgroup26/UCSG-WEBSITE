@@ -85,10 +85,24 @@ export default function AssessmentPopup({ currentView }: Props) {
     }
   }, [currentView]);
 
-  // --- Timer: 45 seconds ---
+  // --- Timer: 45 seconds (waits for consent decision on first visit) ---
   useEffect(() => {
     if (hasTriggered.current || isSessionDismissed() || isWithinSevenDayCooldown()) return;
     if (currentView !== 'home' && currentView !== undefined) return;
+
+    // On first visit, wait for cookie consent before showing assessment
+    let consentGiven = false;
+    try { consentGiven = !!localStorage.getItem('ucsg_consent_v2'); } catch { /* noop */ }
+
+    if (!consentGiven) {
+      const onConsent = () => {
+        if (hasTriggered.current || isSessionDismissed() || isWithinSevenDayCooldown()) return;
+        setTimeout(() => openPopup('timeout'), 1000);
+        window.removeEventListener('ucsg-consent-decided', onConsent);
+      };
+      window.addEventListener('ucsg-consent-decided', onConsent);
+      return () => window.removeEventListener('ucsg-consent-decided', onConsent);
+    }
 
     const timer = setTimeout(() => {
       openPopup('timeout');
@@ -151,6 +165,12 @@ export default function AssessmentPopup({ currentView }: Props) {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.open === 'assessment') {
+        // Close mobile nav sheet if open (dispatch close event to Sheet)
+        document.querySelectorAll('[data-state="open"]').forEach(el => {
+          if (el.closest('[data-slot="sheet-content"]')) {
+            (el as HTMLElement).click();
+          }
+        });
         setPopupOpen(true);
         triggerSource.current = 'fab';
         track.popupEvent({ event: 'popup_open', popup_trigger: 'fab' });
