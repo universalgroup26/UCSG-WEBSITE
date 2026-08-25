@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import {
   ArrowLeft,
   Star,
@@ -21,11 +21,30 @@ import {
   Eye,
   UserCheck,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { AnimatedHeading } from '@/components/animations/TextReveal';
 import { universities } from '@/lib/data/universities';
 import { track } from '@/lib/analytics';
+
+/* ------------------------------------------------------------------
+ * About Page Slider Data
+ * ------------------------------------------------------------------ */
+
+const aboutSlides = [
+  { src: '/images/about-slider-1.png', alt: 'UCSG team supporting international students' },
+  { src: '/images/about-slider-2.png', alt: 'UCSG educational consulting services' },
+  { src: '/images/about-slider-3.png', alt: 'UCSG guiding F-1 students to success' },
+];
+
+const ABOUT_AUTOPLAY_INTERVAL = 6000;
+const ABOUT_CROSSFADE_DURATION = 0.8;
+const ABOUT_OVERLAY_DESKTOP =
+  'linear-gradient(90deg, rgba(3,18,54,.94) 0%, rgba(4,28,73,.82) 40%, rgba(4,28,73,.40) 70%, rgba(4,28,73,.18) 100%)';
+const ABOUT_OVERLAY_MOBILE =
+  'linear-gradient(90deg, rgba(3,18,54,.97) 0%, rgba(4,28,73,.92) 50%, rgba(4,28,73,.78) 100%)';
 
 /* ------------------------------------------------------------------ */
 /*  Animation helpers                                                  */
@@ -350,6 +369,267 @@ function MindmapBranch({
 }
 
 /* ------------------------------------------------------------------ */
+/*  About Page Hero Slider Component                                  */
+/* ------------------------------------------------------------------ */
+function AboutHeroSlider() {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [prefersReducedMotion] = useReducedMotion();
+  const [progress, setProgress] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressStartRef = useRef<number>(Date.now());
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  /* ---- Visibility (pause when tab inactive) ---- */
+  useEffect(() => {
+    const handler = () => setIsPaused(document.visibilityState !== 'visible');
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
+
+  /* ---- Autoplay ---- */
+  useEffect(() => {
+    if (prefersReducedMotion || isPaused) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (progressRef.current) clearInterval(progressRef.current);
+      return;
+    }
+    progressStartRef.current = Date.now();
+    setProgress(0);
+
+    progressRef.current = setInterval(() => {
+      const elapsed = Date.now() - progressStartRef.current;
+      setProgress(Math.min(elapsed / ABOUT_AUTOPLAY_INTERVAL, 1));
+    }, 50);
+
+    timerRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % aboutSlides.length);
+      progressStartRef.current = Date.now();
+      setProgress(0);
+    }, ABOUT_AUTOPLAY_INTERVAL);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (progressRef.current) clearInterval(progressRef.current);
+    };
+  }, [isPaused, prefersReducedMotion, current]);
+
+  /* ---- Navigation ---- */
+  const goNext = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % aboutSlides.length);
+    progressStartRef.current = Date.now();
+    setProgress(0);
+  }, []);
+
+  const goPrev = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + aboutSlides.length) % aboutSlides.length);
+    progressStartRef.current = Date.now();
+    setProgress(0);
+  }, []);
+
+  /* ---- Touch / Swipe ---- */
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (touchStartX.current === null || touchStartY.current === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = e.changedTouches[0].clientY - touchStartY.current;
+      touchStartX.current = null;
+      touchStartY.current = null;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx < 0) goNext();
+        else goPrev();
+      }
+    },
+    [goNext, goPrev],
+  );
+
+  /* ---- Animation Variants ---- */
+  const slideVariants = {
+    enter: { opacity: 0 },
+    center: { opacity: 1 },
+    exit: { opacity: 0 },
+  };
+
+  const bgVariants = prefersReducedMotion
+    ? {}
+    : {
+        initial: { scale: 1.05 },
+        animate: {
+          scale: 1,
+          transition: { duration: 6, ease: 'easeOut' as const },
+        },
+      };
+
+  /* ---- Reduced Motion: Show only first slide ---- */
+  if (prefersReducedMotion) {
+    const slide = aboutSlides[0];
+    return (
+      <section className="relative min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] overflow-hidden" aria-label="About hero">
+        <div className="absolute inset-0">
+          <Image src={slide.src} alt={slide.alt} fill sizes="100vw" className="object-cover object-center" priority />
+          <div className="absolute inset-0 md:hidden" style={{ background: ABOUT_OVERLAY_MOBILE }} />
+          <div className="absolute inset-0 hidden md:block" style={{ background: ABOUT_OVERLAY_DESKTOP }} />
+        </div>
+        <div className="relative z-10 flex min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] items-center">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="mb-6 flex items-center justify-center gap-2">
+                <div className="h-px w-8 bg-[#D6A84B]/50" />
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">Our Story</span>
+                <div className="h-px w-8 bg-[#D6A84B]/50" />
+              </div>
+              <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                About Universal Consulting <span className="text-[#D6A84B]">Service Group</span>
+              </h1>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
+                Founded by a U.S. Army Veteran, UCSG provides trusted educational
+                guidance for F-1 students navigating university transfers, CPT
+                authorization, and immigration pathways.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ---- Active Slide ---- */
+  const activeSlide = aboutSlides[current];
+
+  return (
+    <section
+      className="relative min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] overflow-hidden"
+      aria-label="About hero slideshow"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* ===== Background Slides ===== */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: ABOUT_CROSSFADE_DURATION, ease: 'easeInOut' }}
+          className="absolute inset-0"
+        >
+          <motion.div className="absolute inset-0" variants={bgVariants} initial="initial" animate="animate">
+            <Image
+              src={activeSlide.src}
+              alt={activeSlide.alt}
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+              priority={current === 0}
+              unoptimized
+            />
+          </motion.div>
+
+          {/* Navy overlay — heavier on mobile */}
+          <div className="absolute inset-0 md:hidden" style={{ background: ABOUT_OVERLAY_MOBILE }} aria-hidden="true" />
+          <div className="absolute inset-0 hidden md:block" style={{ background: ABOUT_OVERLAY_DESKTOP }} aria-hidden="true" />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* ===== Content ===== */}
+      <div className="relative z-10 flex min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] items-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <motion.div
+              className="mb-6 flex items-center justify-center gap-2"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+            >
+              <div className="h-px w-8 bg-[#D6A84B]/50" />
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
+                Our Story
+              </span>
+              <div className="h-px w-8 bg-[#D6A84B]/50" />
+            </motion.div>
+
+            <motion.h1
+              className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+            >
+              About Universal Consulting{' '}
+              <span className="text-[#D6A84B]">Service Group</span>
+            </motion.h1>
+
+            <motion.p
+              className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.5 }}
+            >
+              Founded by a U.S. Army Veteran, UCSG provides trusted educational
+              guidance for F-1 students navigating university transfers, CPT
+              authorization, and immigration pathways.
+            </motion.p>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Navigation Arrows ===== */}
+      <div className="absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-3 sm:px-6 pointer-events-none">
+        <button
+          onClick={goPrev}
+          className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 transition-all hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={goNext}
+          className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 transition-all hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* ===== Progress Bar ===== */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 h-1 bg-white/10" aria-hidden="true">
+        <motion.div
+          className="h-full bg-[#D6A84B]"
+          style={{ width: `${progress * 100}%` }}
+          transition={{ duration: 0.05 }}
+        />
+      </div>
+
+      {/* ===== Dot Indicators ===== */}
+      <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2" aria-label="Slide indicators">
+        {aboutSlides.map((slide, i) => (
+          <button
+            key={slide.src}
+            onClick={() => {
+              setCurrent(i);
+              progressStartRef.current = Date.now();
+              setProgress(0);
+            }}
+            className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-[#D6A84B]' : 'w-2 bg-white/40 hover:bg-white/60'}`}
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === current ? 'true' : undefined}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main About Page Component                                          */
 /* ------------------------------------------------------------------ */
 interface AboutPageProps {
@@ -403,62 +683,8 @@ export default function AboutPage({ onBack }: AboutPageProps) {
         </div>
       </motion.div>
 
-      {/* ──────────────────────────────── Hero Banner ──────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#061846] via-[#092B68] to-[#061846]">
-        {/* Subtle dot pattern overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Gold glow accent */}
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-[#D6A84B]/[0.08] blur-[100px]"
-          aria-hidden="true"
-        />
-
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <motion.div
-              className="mb-6 flex items-center justify-center gap-2"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-            >
-              <div className="h-px w-8 bg-[#D6A84B]/50" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D6A84B]">
-                Our Story
-              </span>
-              <div className="h-px w-8 bg-[#D6A84B]/50" />
-            </motion.div>
-
-            <motion.h1
-              className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-            >
-              About Universal Consulting{' '}
-              <span className="text-[#D6A84B]">Service Group</span>
-            </motion.h1>
-
-            <motion.p
-              className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.5 }}
-            >
-              Founded by a U.S. Army Veteran, UCSG provides trusted educational
-              guidance for F-1 students navigating university transfers, CPT
-              authorization, and immigration pathways.
-            </motion.p>
-          </div>
-        </div>
-      </section>
+      {/* ──────────────────────────────── Hero Slider ──────────────────────────────── */}
+      <AboutHeroSlider />
 
       {/* ──────────────────────────────── Founder Section ──────────────────────────────── */}
       <section className="relative overflow-hidden bg-white py-16 sm:py-20 lg:py-24">
