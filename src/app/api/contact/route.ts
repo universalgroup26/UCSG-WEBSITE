@@ -60,10 +60,12 @@ async function pushToGoHighLevel(data: {
   phone?: string;
   tags: string[];
   customFields: { id: string; value: string }[];
+  utmCustomFields: { id: string; value: string }[];
   utm: Record<string, string>;
 }) {
   if (!GHL_API_KEY || !GHL_LOCATION_ID) {
-    console.log('[GHL] Skipping direct API: API key or location ID not configured');
+    console.warn('[GHL] ⚠️  NOT CONNECTED — GHL_API_KEY and/or GHL_LOCATION_ID are not configured in environment variables.');
+    console.warn('[GHL] To fix: add GHL_API_KEY and GHL_LOCATION_ID to your Vercel environment settings.');
     return null;
   }
 
@@ -87,14 +89,7 @@ async function pushToGoHighLevel(data: {
           tags: data.tags,
           customFields: [
             ...data.customFields.filter(f => f.value),
-            // Add UTM params as custom fields
-            ...(data.utm.utm_source ? [{ id: 'utm_source', value: data.utm.utm_source }] : []),
-            ...(data.utm.utm_medium ? [{ id: 'utm_medium', value: data.utm.utm_medium }] : []),
-            ...(data.utm.utm_campaign ? [{ id: 'utm_campaign', value: data.utm.utm_campaign }] : []),
-            ...(data.utm.utm_term ? [{ id: 'utm_term', value: data.utm.utm_term }] : []),
-            ...(data.utm.utm_content ? [{ id: 'utm_content', value: data.utm.utm_content }] : []),
-            ...(data.utm.gclid ? [{ id: 'gclid', value: data.utm.gclid }] : []),
-            ...(data.utm.fbclid ? [{ id: 'fbclid', value: data.utm.fbclid }] : []),
+            ...data.utmCustomFields,
           ],
         }),
       },
@@ -433,24 +428,40 @@ export async function POST(req: NextRequest) {
     tags.push(...intentTags);
 
     // Build custom fields for GHL
-    const customFields: { id: string; value: string }[] = [
-      { id: 'whatsapp_number', value: whatsapp?.trim() || '' },
-      { id: 'nationality', value: nationality?.trim() || '' },
-      { id: 'english_level', value: englishLevel?.trim() || '' },
-      { id: 'service_needed', value: trimmedService },
-      { id: 'message', value: trimmedMessage },
-      { id: 'last_name', value: lastName },
-      { id: 'source', value: formSource },
+    // ⚠️ IMPORTANT: GoHighLevel requires NUMERIC custom field IDs (e.g. "0Pabc123"), not
+    // string names. The values below use descriptive keys as placeholders — replace each
+    // `GHL_FIELD_*` constant with the actual numeric ID from your GHL dashboard:
+    //   Settings → Custom Fields → copy the Field ID for each field.
+    // Until these are set, custom fields will be silently ignored by the GHL API.
+    const ghlCustomFields: { id: string; value: string }[] = [
+      { id: process.env.GHL_FIELD_WHATSAPP || 'whatsapp_number', value: whatsapp?.trim() || '' },
+      { id: process.env.GHL_FIELD_NATIONALITY || 'nationality', value: nationality?.trim() || '' },
+      { id: process.env.GHL_FIELD_ENGLISH_LEVEL || 'english_level', value: englishLevel?.trim() || '' },
+      { id: process.env.GHL_FIELD_SERVICE || 'service_needed', value: trimmedService },
+      { id: process.env.GHL_FIELD_MESSAGE || 'message', value: trimmedMessage },
+      { id: process.env.GHL_FIELD_LAST_NAME || 'last_name', value: lastName },
+      { id: process.env.GHL_FIELD_SOURCE || 'source', value: formSource },
       // Assessment-specific fields
-      { id: 'f1_situation', value: situation?.trim() || '' },
-      { id: 'degree_level', value: degreeLevel?.trim() || '' },
-      { id: 'field_of_study', value: fieldOfStudy?.trim() || '' },
-      { id: 'preferred_location', value: preferredLocation?.trim() || preferredLocation?.trim() || '' },
-      { id: 'preferred_format', value: preferredFormat?.trim() || '' },
-      { id: 'budget_range', value: budgetRange?.trim() || '' },
-      { id: 'opt_end_date', value: optEndDate?.trim() || '' },
-      { id: 'target_intake', value: targetIntake?.trim() || '' },
-      { id: 'current_university', value: currentUniversity?.trim() || '' },
+      { id: process.env.GHL_FIELD_F1_SITUATION || 'f1_situation', value: situation?.trim() || '' },
+      { id: process.env.GHL_FIELD_DEGREE_LEVEL || 'degree_level', value: degreeLevel?.trim() || '' },
+      { id: process.env.GHL_FIELD_FIELD_OF_STUDY || 'field_of_study', value: fieldOfStudy?.trim() || '' },
+      { id: process.env.GHL_FIELD_PREFERRED_LOCATION || 'preferred_location', value: preferredLocation?.trim() || '' },
+      { id: process.env.GHL_FIELD_PREFERRED_FORMAT || 'preferred_format', value: preferredFormat?.trim() || '' },
+      { id: process.env.GHL_FIELD_BUDGET_RANGE || 'budget_range', value: budgetRange?.trim() || '' },
+      { id: process.env.GHL_FIELD_OPT_END_DATE || 'opt_end_date', value: optEndDate?.trim() || '' },
+      { id: process.env.GHL_FIELD_TARGET_INTAKE || 'target_intake', value: targetIntake?.trim() || '' },
+      { id: process.env.GHL_FIELD_CURRENT_UNIVERSITY || 'current_university', value: currentUniversity?.trim() || '' },
+    ];
+
+    // Also keep UTM as custom fields (GHL doesn't have built-in UTM fields)
+    const utmCustomFields: { id: string; value: string }[] = [
+      ...(data.utm.utm_source ? [{ id: 'utm_source', value: data.utm.utm_source }] : []),
+      ...(data.utm.utm_medium ? [{ id: 'utm_medium', value: data.utm.utm_medium }] : []),
+      ...(data.utm.utm_campaign ? [{ id: 'utm_campaign', value: data.utm.utm_campaign }] : []),
+      ...(data.utm.utm_term ? [{ id: 'utm_term', value: data.utm.utm_term }] : []),
+      ...(data.utm.utm_content ? [{ id: 'utm_content', value: data.utm.utm_content }] : []),
+      ...(data.utm.gclid ? [{ id: 'gclid', value: data.utm.gclid }] : []),
+      ...(data.utm.fbclid ? [{ id: 'fbclid', value: data.utm.fbclid }] : []),
     ];
 
     // ─── Push to all lead destinations (non-blocking, fire-and-forget) ───
@@ -462,7 +473,8 @@ export async function POST(req: NextRequest) {
       email: trimmedEmail,
       phone: trimmedPhone || undefined,
       tags,
-      customFields,
+      customFields: ghlCustomFields,
+      utmCustomFields,
       utm,
     }).catch(() => {});
 

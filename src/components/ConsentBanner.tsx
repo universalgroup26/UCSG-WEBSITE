@@ -55,6 +55,7 @@ export default function ConsentBanner() {
     saveConsent(state);
     applyConsent(state);
     setVisible(false);
+    window.dispatchEvent(new CustomEvent('ucsg-consent-decided'));
   }, []);
 
   const rejectNonEssential = useCallback(() => {
@@ -62,6 +63,7 @@ export default function ConsentBanner() {
     saveConsent(state);
     applyConsent(state);
     setVisible(false);
+    window.dispatchEvent(new CustomEvent('ucsg-consent-decided'));
   }, []);
 
   const savePreferences = useCallback(() => {
@@ -69,6 +71,7 @@ export default function ConsentBanner() {
     saveConsent(state);
     applyConsent(state);
     setVisible(false);
+    window.dispatchEvent(new CustomEvent('ucsg-consent-decided'));
   }, [analytics, advertising]);
 
   // Expose a way to re-open preferences from footer
@@ -82,7 +85,7 @@ export default function ConsentBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-[200] p-3 sm:p-4"
+      className="fixed bottom-0 left-0 right-0 z-[80] p-3 sm:p-4"
       role="dialog"
       aria-label="Cookie consent"
       aria-describedby="consent-desc"

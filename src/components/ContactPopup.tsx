@@ -465,9 +465,29 @@ export default function ContactPopup() {
   }, []);
 
   // --- First visit trigger: show after 5s, once per session, 7-day cooldown ---
+  // Waits for consent banner to be dismissed first to avoid overlap
   useEffect(() => {
     if (isPermanentlyDismissed() || isWithinCooldown()) return;
     if (getSessionFlag(SESSION_SHOWN_FIRST_VISIT)) return;
+
+    // If no consent decision yet, wait for it before showing popup
+    let consentGiven = false;
+    try { consentGiven = !!localStorage.getItem('ucsg_consent_v2'); } catch { /* noop */ }
+
+    if (!consentGiven) {
+      const onConsent = () => {
+        // Small delay after consent dismiss so the banner animates out
+        setTimeout(() => {
+          if (isPermanentlyDismissed() || isWithinCooldown()) return;
+          if (getSessionFlag(SESSION_SHOWN_FIRST_VISIT)) return;
+          setSessionFlag(SESSION_SHOWN_FIRST_VISIT);
+          handleOpen('first_visit');
+        }, 800);
+        window.removeEventListener('ucsg-consent-decided', onConsent);
+      };
+      window.addEventListener('ucsg-consent-decided', onConsent);
+      return () => window.removeEventListener('ucsg-consent-decided', onConsent);
+    }
 
     const timer = setTimeout(() => {
       setSessionFlag(SESSION_SHOWN_FIRST_VISIT);
