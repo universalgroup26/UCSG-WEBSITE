@@ -374,7 +374,7 @@ function MindmapBranch({
 function AboutHeroSlider() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [prefersReducedMotion] = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
   const [progress, setProgress] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
