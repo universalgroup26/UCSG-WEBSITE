@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useInView, useReducedMotion, type Variants } from 'framer-motion';
 import {
   ArrowLeft,
   Star,
@@ -457,7 +457,7 @@ function AboutHeroSlider() {
     exit: { opacity: 0 },
   };
 
-  const bgVariants = prefersReducedMotion
+  const bgVariants: Variants = prefersReducedMotion
     ? {}
     : {
         initial: { scale: 1.05 },
