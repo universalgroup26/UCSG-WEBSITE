@@ -420,6 +420,13 @@ export default function HeroSection({ onContactClick }: Props) {
         <div className="relative z-10 flex min-h-[720px] md:min-h-[680px] lg:min-h-[760px] items-center">
           <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="max-w-[60%] flex flex-col items-start">
+              {/* Company Name */}
+              <p className="mb-3 font-heading text-xl font-bold tracking-wide text-white/90 sm:text-2xl md:text-3xl">
+                Universal Consulting{' '}
+                <span className="bg-gradient-to-r from-[#D6A84B] via-[#E8C76A] to-[#D6A84B] bg-clip-text text-transparent">
+                  Service Group
+                </span>
+              </p>
               <p className="mb-4 text-sm font-medium uppercase tracking-widest text-[#D6A84B] sm:text-base">
                 {slide.eyebrow}
               </p>
@@ -536,6 +543,23 @@ export default function HeroSection({ onContactClick }: Props) {
               animate="animate"
               className="max-w-[60%] flex flex-col items-start"
             >
+              {/* Company Name */}
+              <motion.p
+                className="mb-3 font-heading text-xl font-bold tracking-wide text-white/90 sm:text-2xl md:text-3xl"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                  delay: 0.05,
+                }}
+              >
+                Universal Consulting{' '}
+                <span className="bg-gradient-to-r from-[#D6A84B] via-[#E8C76A] to-[#D6A84B] bg-clip-text text-transparent">
+                  Service Group
+                </span>
+              </motion.p>
+
               {/* Eyebrow */}
               <motion.p
                 className="mb-4 text-sm font-medium uppercase tracking-widest text-[#D6A84B] sm:text-base"
