@@ -285,6 +285,15 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} font-sans antialiased bg-white text-foreground`}
       >
+        {/* GTM noscript fallback — must be immediately after <body> per Google guidelines */}
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-K65M9LJW'}`}
+          height="0"
+          width="0"
+          style={{ display: 'none', visibility: 'hidden' }}
+          title="GTM"
+          suppressHydrationWarning
+        />
         <Analytics />
         {children}
         {/* Cloudflare Web Analytics */}

@@ -19,17 +19,16 @@ declare global {
 
 export default function Analytics() {
   useEffect(() => {
-    // Initialise GHL External Tracking after the script has loaded
     try {
       window.track?.init();
     } catch {
-      // Silently fail – the script may not have loaded yet
+      /* GHL not loaded yet */
     }
   }, []);
 
   return (
     <>
-      {/* ── Google Consent Mode v2 defaults (MUST run before GTM) ── */}
+      {/* Google Consent Mode v2 defaults (MUST run before GTM) */}
       <script
         id="google-consent-defaults"
         dangerouslySetInnerHTML={{
@@ -47,31 +46,20 @@ export default function Analytics() {
         }}
       />
 
-      {/* ── GTM container – single tag manager for GA4, Meta Pixel, Clarity ── */}
+      {/* GTM container – single tag manager for GA4, Meta Pixel, Clarity */}
       <Script
         id="gtm-script"
         src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
         strategy="afterInteractive"
       />
 
-      {/* ── GHL External Tracking (loaded directly, NOT inside GTM) ── */}
+      {/* GHL External Tracking (loaded directly, NOT inside GTM) */}
       <Script
         id="ghl-external-tracking"
         src="https://lead.universalconsultingservices.com/js/external-tracking.js"
         data-tracking-id={UCSG_TRACKING_ID}
         strategy="afterInteractive"
       />
-
-      {/* ── GTM noscript fallback ── */}
-      <noscript>
-        <iframe
-          src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-          height="0"
-          width="0"
-          style={{ display: 'none', visibility: 'hidden' }}
-          title="GTM"
-        />
-      </noscript>
     </>
   );
 }
