@@ -125,10 +125,20 @@ export default function ContactPage({ onBack }: Props) {
     // Submit form data to backend
     try {
       track.formEvent({ event: 'form_submit', form_id: 'contact_page', form_name: 'Contact Page Form' });
+
+      // Generate shared event_id for Meta Pixel + CAPI deduplication
+      const metaEventId = track.generateEventId();
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, source: 'Contact Page' }),
+        body: JSON.stringify({
+          ...formData,
+          source: 'Contact Page',
+          meta_event_id: metaEventId,
+          meta_lead_value: 50,
+          meta_currency: 'USD',
+        }),
       });
       if (!res.ok) {
         track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: `HTTP ${res.status}` });
@@ -142,6 +152,9 @@ export default function ContactPage({ onBack }: Props) {
         email: formData.email,
         phone: formData.phone || formData.whatsapp,
         service: formData.service,
+        value: 50,
+        currency: 'USD',
+        eventId: metaEventId,
       });
     } catch {
       track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: 'Network error' });

@@ -611,6 +611,7 @@ export default function StudentAssessment({ open, onClose, preselectedIntent }: 
     ].join('\n');
 
     try {
+      const metaEventId = track.generateEventId();
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -630,6 +631,9 @@ export default function StudentAssessment({ open, onClose, preselectedIntent }: 
           currentUniversity: data.currentUniversity,
           message,
           source: 'Student Assessment Popup',
+          meta_event_id: metaEventId,
+          meta_lead_value: 50,
+          meta_currency: 'USD',
         }),
       });
 
@@ -643,6 +647,9 @@ export default function StudentAssessment({ open, onClose, preselectedIntent }: 
           email: data.email.trim(),
           phone: data.phone.trim(),
           service: data.service,
+          value: 50,
+          currency: 'USD',
+          eventId: metaEventId,
         });
         setSubmitted(true);
         // Close after 3 seconds

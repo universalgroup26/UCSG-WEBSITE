@@ -569,16 +569,29 @@ export default function ContactPopup() {
     // Submit form data to backend
     try {
       track.formEvent({ event: 'form_submit', form_id: 'contact_popup', form_name: 'Contact Popup Form' });
+
+      // Generate shared event_id for Meta Pixel + CAPI deduplication
+      const metaEventId = track.generateEventId();
+      const metaLeadValue = 50;
+      const metaCurrency = 'USD';
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, source: 'Contact Popup' }),
+        body: JSON.stringify({
+          ...formData,
+          source: 'Contact Popup',
+          meta_event_id: metaEventId,
+          meta_lead_value: metaLeadValue,
+          meta_currency: metaCurrency,
+        }),
       });
       if (!res.ok) {
         track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: `HTTP ${res.status}` });
         return;
       }
       // Fire comprehensive lead conversion to ALL analytics platforms
+      // Same event_id ensures Meta deduplicates client pixel + server CAPI
       track.leadConversion({
         formId: 'contact_popup',
         formName: 'Contact Popup Form',
@@ -586,6 +599,9 @@ export default function ContactPopup() {
         email: formData.email,
         phone: formData.phone,
         service: formData.service,
+        value: metaLeadValue,
+        currency: metaCurrency,
+        eventId: metaEventId,
       });
     } catch {
       track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: 'Network error' });

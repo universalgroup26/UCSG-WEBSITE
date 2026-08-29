@@ -8,7 +8,8 @@ const GHL_API_KEY = process.env.GHL_API_KEY || '';
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || '';
 const GHL_PIPELINE_ID = process.env.GHL_PIPELINE_ID || '';
 const GHL_STAGE_ID = process.env.GHL_STAGE_ID || '';
-const UCSG_TRACKING_ID = process.env.UCSG_TRACKING_ID || '';
+// Use NEXT_PUBLIC_ prefixed var as fallback (Vercel exposes both to server)
+const UCSG_TRACKING_ID = process.env.UCSG_TRACKING_ID || process.env.NEXT_PUBLIC_UCSG_TRACKING_ID || '';
 const SMTP_HOST = process.env.SMTP_HOST || '';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
 const SMTP_USER = process.env.SMTP_USER || '';
@@ -195,7 +196,8 @@ async function pingGHLTracking(leadData: {
   source: string;
 }) {
   if (!UCSG_TRACKING_ID) {
-    console.log('[GHL-Track] Skipping: UCSG_TRACKING_ID not configured');
+    console.warn('[GHL-Track] ⚠️  NOT CONNECTED — UCSG_TRACKING_ID not configured.');
+    console.warn('[GHL-Track] Set UCSG_TRACKING_ID in Vercel env (same value as NEXT_PUBLIC_UCSG_TRACKING_ID).');
     return null;
   }
 
@@ -227,11 +229,87 @@ async function pingGHLTracking(leadData: {
       console.log('[GHL-Track] Lead pinged successfully:', result?.id || 'ok');
       return result;
     }
-    console.log('[GHL-Track] Endpoint returned', res.status, '— client-side goTrackLead() will handle the lead');
+    console.warn('[GHL-Track] Endpoint returned', res.status, '— client-side goTrackLead() will handle the lead');
   } catch {
     // Silently fail — client-side tracking is the primary path
   }
   return null;
+}
+
+// ─── Meta Conversions API (Server-Side) ──────────────────────────────
+
+/**
+ * Fire a server-side Lead event to Meta Conversions API.
+ * This deduplicates with the client-side fbq('track','Lead') using the same event_id.
+ * Meta counts it as ONE conversion even though it arrives from two sources.
+ */
+async function fireMetaCAPI(data: {
+  event_id?: string;
+  event_source_url?: string;
+  user_agent?: string;
+  email?: string;
+  phone?: string;
+  name?: string;
+  value?: number;
+  currency?: string;
+  content_name?: string;
+  content_category?: string;
+}) {
+  const pixelId = process.env.META_PIXEL_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
+  const accessToken = process.env.META_ACCESS_TOKEN || '';
+
+  if (!pixelId || !accessToken) {
+    // Silently skip — META_ACCESS_TOKEN is only needed for CAPI
+    return;
+  }
+
+  if (!data.event_id) {
+    console.warn('[Meta CAPI] Skipped: no event_id for deduplication');
+    return;
+  }
+
+  try {
+    const event = {
+      event_name: 'Lead',
+      event_time: Math.floor(Date.now() / 1000),
+      event_id: data.event_id,
+      event_source_url: data.event_source_url || 'https://www.universalconsultingservices.com',
+      action_source: 'website',
+      user_data: {
+        client_user_agent: data.user_agent,
+        em: data.email ? [data.email.toLowerCase().trim()] : undefined,
+        ph: data.phone ? [data.phone.replace(/\D/g, '')] : undefined,
+        fn: data.name ? [data.name.toLowerCase().trim()] : undefined,
+      },
+      custom_data: {
+        value: data.value ?? 50,
+        currency: data.currency || 'USD',
+      },
+    };
+
+    // Remove undefined user_data fields
+    const ud = event.user_data as Record<string, unknown>;
+    Object.keys(ud).forEach(k => ud[k] === undefined && delete ud[k]);
+
+    const res = await fetch(`https://graph.facebook.com/v21.0/${pixelId}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ data: [event], access_token: accessToken }),
+    });
+
+    if (res.ok) {
+      const result = await res.json().catch(() => null);
+      console.log('[Meta CAPI] ✓ Lead event sent (dedup:', data.event_id.slice(0, 8) + '...)');
+    } else {
+      const errText = await res.text().catch(() => 'unknown');
+      console.warn('[Meta CAPI] Failed (' + res.status + '):', errText.slice(0, 200));
+    }
+  } catch (err) {
+    console.warn('[Meta CAPI] Error:', err);
+  }
 }
 
 // ─── Email Notification ──────────────────────────────────────────────
@@ -396,6 +474,8 @@ export async function POST(req: NextRequest) {
       englishLevel, source, situation, degreeLevel, fieldOfStudy,
       preferredLocation, preferredFormat, budgetRange, optEndDate,
       targetIntake, currentUniversity,
+      // Client-side analytics event_id for Meta CAPI deduplication
+      meta_event_id, meta_lead_value, meta_currency,
     } = body;
 
     // Extract UTM parameters
@@ -514,7 +594,21 @@ export async function POST(req: NextRequest) {
       utm,
     }).catch(() => {});
 
-    // 4. Store in local database
+    // 4. Meta Conversions API (server-side deduplication with client-side pixel)
+    fireMetaCAPI({
+      event_id: meta_event_id,
+      event_source_url: req.headers.get('referer') || req.url,
+      user_agent: req.headers.get('user-agent') || undefined,
+      email: trimmedEmail,
+      phone: trimmedPhone || undefined,
+      name: trimmedName,
+      value: meta_lead_value,
+      currency: meta_currency,
+      content_name: formSource,
+      content_category: 'lead_generation',
+    }).catch(() => {});
+
+    // 5. Store in local database
     const submission = await db.contactSubmission.create({
       data: {
         name: trimmedName,

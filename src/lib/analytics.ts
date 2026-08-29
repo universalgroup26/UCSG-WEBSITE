@@ -1,9 +1,9 @@
 /**
- * UCSG Analytics — Canonical dataLayer event system
+ * UCSG Analytics — Canonical dataLayer + direct platform events
  *
- * GTM is the SOLE tag manager for GA4, Meta Pixel, and Clarity.
- * This module pushes ONLY to window.dataLayer.
- * Never include PII (email, phone, name, passport, SEVIS) in events.
+ * Pushes to window.dataLayer for GTM → GA4/Clarity.
+ * ALSO fires Meta Pixel fbq() directly (bypass GTM) for reliable Lead events
+ * with proper currency. Server-side CAPI handles deduplication.
  *
  * Usage:
  *   import { track } from '@/lib/analytics';
@@ -17,8 +17,19 @@ declare global {
     dataLayer: Record<string, unknown>[];
     goTrackLead?: (data: Record<string, string>) => void;
     _ucsgq?: Record<string, unknown>[];
+    fbq?: (...args: unknown[]) => void;
+    _fbq?: unknown[];
   }
 }
+
+// ─── Currency & Value Constants ──────────────────────────────────────
+
+/** ISO 4217 3-letter currency code — MUST match Meta's supported currencies */
+const CURRENCY = 'USD';
+
+/** Default lead value in USD. Meta uses this for ROAS calculation.
+ *  Set higher if you know your average customer lifetime value. */
+const DEFAULT_LEAD_VALUE = 50;
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
@@ -27,7 +38,6 @@ function generateEventId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  // Fallback for older browsers
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
@@ -48,6 +58,22 @@ function push(event: Record<string, unknown>) {
     page_title: typeof document !== 'undefined' ? document.title : '',
     ...event,
   });
+}
+
+/** Fire a Meta Pixel event directly (bypass GTM for reliability) */
+function metaPixelTrack(eventName: string, params?: Record<string, unknown>) {
+  if (typeof window === 'undefined') return;
+  if (typeof window.fbq === 'function') {
+    try {
+      if (params) {
+        window.fbq('track', eventName, params);
+      } else {
+        window.fbq('track', eventName);
+      }
+    } catch {
+      // Meta Pixel not available
+    }
+  }
 }
 
 // ─── Event type definitions (lowercase snake_case) ───────────────────
@@ -119,7 +145,6 @@ interface LeadConversionEvent {
   form_id: string;
   form_name?: string;
   lead_type?: string;
-  // NO PII — name/email/phone must NOT appear here
   service?: string;
   value?: number;
   currency?: string;
@@ -145,6 +170,36 @@ type AnalyticsEvent =
   | LeadConversionEvent
   | ExternalLinkEvent;
 
+// ─── GHL goTrackLead queue ──────────────────────────────────────────
+
+const ghlLeadQueue: Array<Record<string, string>> = [];
+let ghlFlushInterval: ReturnType<typeof setInterval> | null = null;
+
+function startGHLQueueFlusher() {
+  if (ghlFlushInterval) return;
+  ghlFlushInterval = setInterval(() => {
+    if (typeof window.goTrackLead === 'function' && ghlLeadQueue.length > 0) {
+      const pending = ghlLeadQueue.splice(0);
+      for (const data of pending) {
+        try { window.goTrackLead!(data); } catch { /* skip */ }
+      }
+      console.log('[GHL] Flushed', pending.length, 'queued lead(s) to goTrackLead');
+      clearInterval(ghlFlushInterval!);
+      ghlFlushInterval = null;
+    }
+  }, 1000);
+
+  setTimeout(() => {
+    if (ghlFlushInterval) {
+      clearInterval(ghlFlushInterval);
+      ghlFlushInterval = null;
+      if (ghlLeadQueue.length > 0) {
+        console.warn('[GHL]', ghlLeadQueue.length, 'queued lead(s) never delivered');
+      }
+    }
+  }, 30000);
+}
+
 // ─── Public tracking API ────────────────────────────────────────────────
 
 /** Initialize dataLayer */
@@ -153,7 +208,7 @@ function init() {
   window.dataLayer = window.dataLayer || [];
 }
 
-/** Track page view */
+/** Track page view (dataLayer only — Meta PageView fires from base code) */
 function pageView(title: string, location?: string) {
   push({
     event: 'page_view',
@@ -200,20 +255,12 @@ function sectionView(sectionName: string) {
 
 /** Track university page view */
 function universityView(_id: string, name: string) {
-  push({
-    event: 'view_university',
-    university_name: name,
-    page_type: 'university',
-  });
+  push({ event: 'view_university', university_name: name, page_type: 'university' });
 }
 
 /** Track resource page view */
 function resourceView(_id: string, name: string) {
-  push({
-    event: 'view_resource',
-    resource_name: name,
-    page_type: 'resource',
-  });
+  push({ event: 'view_resource', resource_name: name, page_type: 'resource' });
 }
 
 /** Track social link clicks */
@@ -228,8 +275,14 @@ function externalLink(url: string, text: string) {
 
 /**
  * Track a successful lead conversion.
- * NO PII in dataLayer — name/email/phone must never appear.
- * GTM handles forwarding to GA4/Meta/Clarity server-side.
+ *
+ * Fires to 3 destinations:
+ *   1. dataLayer → GTM → GA4 / Clarity
+ *   2. Meta Pixel DIRECTLY: fbq('track','Lead',{value,currency:'USD'})
+ *   3. GHL goTrackLead (queued if not loaded yet)
+ *
+ * Server-side CAPI fires from /api/contact → /api/meta-conversions
+ * for deduplication with the same event_id.
  */
 function leadConversion(params: {
   formId: string;
@@ -240,12 +293,16 @@ function leadConversion(params: {
   service?: string;
   value?: number;
   currency?: string;
+  /** Pass a pre-generated event_id to share with server-side CAPI for deduplication */
+  eventId?: string;
 }) {
   if (typeof window === 'undefined') return;
 
-  const eventId = generateEventId();
+  const eventId = params.eventId || generateEventId();
+  const leadValue = params.value ?? DEFAULT_LEAD_VALUE;
+  const leadCurrency = params.currency || CURRENCY;
 
-  // Push NON-PII event to dataLayer (consumed by GTM → GA4/Meta/Clarity)
+  // 1. Push NON-PII event to dataLayer (consumed by GTM → GA4/Clarity)
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'generate_lead',
@@ -255,38 +312,42 @@ function leadConversion(params: {
     form_name: params.formName || '',
     lead_type: 'contact_form',
     service: params.service || '',
-    value: params.value || 0,
-    currency: params.currency || 'USD',
+    value: leadValue,
+    currency: leadCurrency,
     page_location: window.location.href,
     page_title: document.title,
   });
 
-  // GHL External Tracking (if available) — PII is OK here as it's their own CRM
+  // 2. Fire Meta Pixel Lead event DIRECTLY with value + currency
+  // This guarantees Meta receives the currency even if GTM tag is misconfigured
+  metaPixelTrack('Lead', {
+    value: leadValue,
+    currency: leadCurrency,
+    content_name: params.formName || 'Contact Form',
+    content_category: 'lead_generation',
+  });
+
+  // 3. GHL External Tracking
+  const leadData = {
+    name: params.name || '',
+    email: params.email || '',
+    phone: params.phone || '',
+    service: params.service || '',
+    source: params.formId,
+  };
+
   if (typeof window.goTrackLead === 'function') {
     try {
-      window.goTrackLead({
-        name: params.name || '',
-        email: params.email || '',
-        phone: params.phone || '',
-        service: params.service || '',
-        source: params.formId,
-      });
+      window.goTrackLead(leadData);
+      console.log('[GHL] Lead sent via goTrackLead');
     } catch {
-      // GHL tracking not available
+      ghlLeadQueue.push(leadData);
+      startGHLQueueFlusher();
     }
-  }
-
-  // UCSG tracking queue
-  if (Array.isArray(window._ucsgq)) {
-    window._ucsgq.push({
-      event: 'lead',
-      data: {
-        name: params.name || '',
-        email: params.email || '',
-        phone: params.phone || '',
-        service: params.service || '',
-      },
-    });
+  } else {
+    ghlLeadQueue.push(leadData);
+    startGHLQueueFlusher();
+    console.log('[GHL] goTrackLead not ready — lead queued');
   }
 }
 
@@ -296,8 +357,8 @@ function customEvent(eventName: string, params?: Record<string, unknown>) {
 }
 
 /**
- * Update Google Consent Mode — call when user makes a consent choice.
- * This updates GTM's consent state so tags fire or suppress accordingly.
+ * Update Google Consent Mode + reconsent Meta Pixel.
+ * Call when user makes a consent choice.
  */
 function updateConsent(granted: {
   analytics: boolean;
@@ -312,6 +373,13 @@ function updateConsent(granted: {
     consent_ad_user_data: granted.advertising ? 'granted' : 'denied',
     consent_ad_personalization: granted.advertising ? 'granted' : 'denied',
   });
+
+  // Re-consent Meta Pixel when advertising is granted
+  if (granted.advertising && typeof window.fbq === 'function') {
+    try {
+      window.fbq('consent', 'grant');
+    } catch { /* noop */ }
+  }
 }
 
 export const track = {
@@ -330,4 +398,6 @@ export const track = {
   leadConversion,
   customEvent,
   updateConsent,
+  /** Generate a unique event_id (expose for CAPI deduplication) */
+  generateEventId,
 };
