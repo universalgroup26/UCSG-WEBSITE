@@ -567,46 +567,43 @@ export default function ContactPopup() {
     }
 
     // Submit form data to backend
-    try {
-      track.formEvent({ event: 'form_submit', form_id: 'contact_popup', form_name: 'Contact Popup Form' });
+    // Generate shared event_id for Meta Pixel + CAPI deduplication
+    const metaEventId = track.generateEventId();
+    const metaLeadValue = 50;
+    const metaCurrency = 'USD';
 
-      // Generate shared event_id for Meta Pixel + CAPI deduplication
-      const metaEventId = track.generateEventId();
-      const metaLeadValue = 50;
-      const metaCurrency = 'USD';
+    // ⚡ FIRE GHL + Meta IMMEDIATELY — don't wait for API
+    track.formEvent({ event: 'form_submit', form_id: 'contact_popup', form_name: 'Contact Popup Form' });
+    track.leadConversion({
+      formId: 'contact_popup',
+      formName: 'Contact Popup Form',
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      service: formData.service,
+      value: metaLeadValue,
+      currency: metaCurrency,
+      eventId: metaEventId,
+    });
 
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          source: 'Contact Popup',
-          meta_event_id: metaEventId,
-          meta_lead_value: metaLeadValue,
-          meta_currency: metaCurrency,
-        }),
-      });
+    // Send to server (non-blocking — GHL + Meta already received the lead)
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        source: 'Contact Popup',
+        meta_event_id: metaEventId,
+        meta_lead_value: metaLeadValue,
+        meta_currency: metaCurrency,
+      }),
+    }).then((res) => {
       if (!res.ok) {
         track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: `HTTP ${res.status}` });
-        return;
       }
-      // Fire comprehensive lead conversion to ALL analytics platforms
-      // Same event_id ensures Meta deduplicates client pixel + server CAPI
-      track.leadConversion({
-        formId: 'contact_popup',
-        formName: 'Contact Popup Form',
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        service: formData.service,
-        value: metaLeadValue,
-        currency: metaCurrency,
-        eventId: metaEventId,
-      });
-    } catch {
+    }).catch(() => {
       track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: 'Network error' });
-      return;
-    }
+    });
 
     setSubmitted(true);
   };

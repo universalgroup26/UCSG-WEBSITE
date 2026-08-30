@@ -123,42 +123,41 @@ export default function ContactPage({ onBack }: Props) {
     }
 
     // Submit form data to backend
-    try {
-      track.formEvent({ event: 'form_submit', form_id: 'contact_page', form_name: 'Contact Page Form' });
+    // Generate shared event_id for Meta Pixel + CAPI deduplication
+    const metaEventId = track.generateEventId();
 
-      // Generate shared event_id for Meta Pixel + CAPI deduplication
-      const metaEventId = track.generateEventId();
+    // ⚡ FIRE GHL + Meta IMMEDIATELY — don't wait for API
+    track.formEvent({ event: 'form_submit', form_id: 'contact_page', form_name: 'Contact Page Form' });
+    track.leadConversion({
+      formId: 'contact_page',
+      formName: 'Contact Page Form',
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || formData.whatsapp,
+      service: formData.service,
+      value: 50,
+      currency: 'USD',
+      eventId: metaEventId,
+    });
 
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          source: 'Contact Page',
-          meta_event_id: metaEventId,
-          meta_lead_value: 50,
-          meta_currency: 'USD',
-        }),
-      });
+    // Send to server (non-blocking — GHL + Meta already received the lead)
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        source: 'Contact Page',
+        meta_event_id: metaEventId,
+        meta_lead_value: 50,
+        meta_currency: 'USD',
+      }),
+    }).then((res) => {
       if (!res.ok) {
         track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: `HTTP ${res.status}` });
-        return;
       }
-      // Fire comprehensive lead conversion to ALL analytics platforms
-      track.leadConversion({
-        formId: 'contact_page',
-        formName: 'Contact Page Form',
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || formData.whatsapp,
-        service: formData.service,
-        value: 50,
-        currency: 'USD',
-        eventId: metaEventId,
-      });
-    } catch {
+    }).catch(() => {
       track.formEvent({ event: 'form_error', form_id: 'contact_page', error_message: 'Network error' });
-    }
+    });
 
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);

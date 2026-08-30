@@ -16,6 +16,16 @@ const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const EMAIL_TO = process.env.EMAIL_TO || SMTP_USER;
 
+// Timeout for all external fetch calls (10 seconds)
+const FETCH_TIMEOUT_MS = 10_000;
+
+/** Wrapper around fetch that auto-aborts after FETCH_TIMEOUT_MS */
+function fetchWithTimeout(url: string, init?: RequestInit, timeoutMs = FETCH_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...init, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 // Cache for auto-discovered location ID
 let cachedLocationId: string | null | undefined = undefined; // undefined = not tried yet
 
@@ -78,7 +88,7 @@ async function pushToGoHighLevel(data: {
       // Try to auto-discover location ID via GHL business profile
       try {
         console.log('[GHL] Auto-discovering location ID...');
-        const bizRes = await fetch('https://services.leadconnectorhq.com/businesses/', {
+        const bizRes = await fetchWithTimeout('https://services.leadconnectorhq.com/businesses/', {
           headers: {
             'Authorization': `Bearer ${GHL_API_KEY}`,
             'Version': '2021-07-28',
@@ -118,7 +128,7 @@ async function pushToGoHighLevel(data: {
 
   try {
     // 1. Upsert contact
-    const contactRes = await fetch(
+    const contactRes = await fetchWithTimeout(
       `https://services.leadconnectorhq.com/contacts/upsert?locationId=${locationId}`,
       {
         method: 'POST',
@@ -154,7 +164,7 @@ async function pushToGoHighLevel(data: {
     // 2. Add to pipeline/stage if configured
     if (contactId && GHL_PIPELINE_ID && GHL_STAGE_ID) {
       try {
-        const pipelineRes = await fetch(
+        const pipelineRes = await fetchWithTimeout(
           `https://services.leadconnectorhq.com/pipelines/${GHL_PIPELINE_ID}/stages/${GHL_STAGE_ID}/contacts`,
           {
             method: 'POST',
@@ -205,7 +215,7 @@ async function pingGHLTracking(leadData: {
   // This server-side function is a redundant fallback that pings the tracking webhook.
   // Primary lead flow: client goTrackLead() → GHL. This is a safety net only.
   try {
-    const res = await fetch(`https://lead.universalconsultingservices.com/api/lead-capture`, {
+    const res = await fetchWithTimeout(`https://lead.universalconsultingservices.com/api/lead-capture`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -291,7 +301,7 @@ async function fireMetaCAPI(data: {
     const ud = event.user_data as Record<string, unknown>;
     Object.keys(ud).forEach(k => ud[k] === undefined && delete ud[k]);
 
-    const res = await fetch(`https://graph.facebook.com/v21.0/${pixelId}/events`, {
+    const res = await fetchWithTimeout(`https://graph.facebook.com/v21.0/${pixelId}/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -559,8 +569,10 @@ export async function POST(req: NextRequest) {
     ];
 
     // ─── Push to all lead destinations (non-blocking, fire-and-forget) ───
+    // Client-side already fired GHL goTrackLead + Meta fbq before calling this API.
+    // These server-side calls are supplementary (DB, email, CAPI, GHL Direct API backup).
 
-    // 1. GoHighLevel Direct API (contact upsert + pipeline)
+    // 1. GoHighLevel Direct API (contact upsert + pipeline) — backup to client-side goTrackLead
     pushToGoHighLevel({
       firstName,
       lastName: lastName || undefined,
@@ -570,7 +582,9 @@ export async function POST(req: NextRequest) {
       customFields: ghlCustomFields,
       utmCustomFields,
       utm,
-    }).catch(() => {});
+    }).catch((err) => {
+      console.warn('[GHL-Direct] Fire-and-forget failed:', err?.message || err);
+    });
 
     // 2. GHL External Tracking webhook (client-side goTrackLead is primary)
     pingGHLTracking({
@@ -579,9 +593,11 @@ export async function POST(req: NextRequest) {
       phone: trimmedPhone,
       service: trimmedService,
       source: formSource,
-    }).catch(() => {});
+    }).catch((err) => {
+      console.warn('[GHL-Track] Fire-and-forget failed:', err?.message || err);
+    });
 
-    // 3. Email notification to ucsgassist@gmail.com
+    // 3. Email notification
     sendEmailNotification({
       name: trimmedName,
       email: trimmedEmail,
@@ -592,7 +608,9 @@ export async function POST(req: NextRequest) {
       whatsapp: whatsapp?.trim() || undefined,
       nationality: nationality?.trim() || undefined,
       utm,
-    }).catch(() => {});
+    }).catch((err) => {
+      console.warn('[Email] Fire-and-forget failed:', err?.message || err);
+    });
 
     // 4. Meta Conversions API (server-side deduplication with client-side pixel)
     fireMetaCAPI({
@@ -606,23 +624,33 @@ export async function POST(req: NextRequest) {
       currency: meta_currency,
       content_name: formSource,
       content_category: 'lead_generation',
-    }).catch(() => {});
-
-    // 5. Store in local database
-    const submission = await db.contactSubmission.create({
-      data: {
-        name: trimmedName,
-        email: trimmedEmail,
-        phone: trimmedPhone || null,
-        whatsapp: whatsapp?.trim() || null,
-        nationality: nationality?.trim() || null,
-        englishLevel: englishLevel?.trim() || null,
-        service: trimmedService || null,
-        message: trimmedMessage,
-      },
+    }).catch((err) => {
+      console.warn('[Meta-CAPI] Fire-and-forget failed:', err?.message || err);
     });
 
-    return NextResponse.json({ success: true, id: submission.id });
+    // 5. Store in local database — this is the ONLY awaited operation
+    let submissionId: string;
+    try {
+      const submission = await db.contactSubmission.create({
+        data: {
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: trimmedPhone || null,
+          whatsapp: whatsapp?.trim() || null,
+          nationality: nationality?.trim() || null,
+          englishLevel: englishLevel?.trim() || null,
+          service: trimmedService || null,
+          message: trimmedMessage,
+        },
+      });
+      submissionId = submission.id;
+    } catch (dbErr) {
+      console.error('[DB] Failed to save submission:', dbErr);
+      // Still return success — GHL + Meta already received the lead client-side
+      return NextResponse.json({ success: true, id: 'db-fallback' });
+    }
+
+    return NextResponse.json({ success: true, id: submissionId });
   } catch (error) {
     console.error('Contact submission error:', error);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
