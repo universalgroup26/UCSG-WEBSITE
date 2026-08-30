@@ -304,6 +304,14 @@ export default function RootLayout({
             data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
           />
         )}
+        {/* ── GHL Chat Widget ─────────────────────────────────────── */}
+        <Script
+          id="ghl-chat-widget"
+          src="https://widgets.leadconnectorhq.com/loader.js"
+          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+          data-widget-id="6a94415c23454f63fef11477"
+          strategy="lazyOnload"
+        />
         <ConsentBanner />
       </body>
     </html>
