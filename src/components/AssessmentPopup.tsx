@@ -70,6 +70,13 @@ export default function AssessmentPopup({ currentView }: Props) {
     setShowFab(true);
   }, []);
 
+  const handleCloseAfterSubmit = useCallback(() => {
+    // Close without marking as dismissed — user successfully submitted
+    // so the popup should be able to auto-trigger again on future visits
+    setPopupOpen(false);
+    setShowFab(true);
+  }, []);
+
   const handleFabOpen = useCallback(() => {
     setPopupOpen(true);
     track.popupEvent({ event: 'popup_open', popup_trigger: 'fab' });
@@ -182,7 +189,7 @@ export default function AssessmentPopup({ currentView }: Props) {
 
   return (
     <>
-      <StudentAssessment open={popupOpen} onClose={handleClose} />
+      <StudentAssessment open={popupOpen} onClose={handleClose} onCloseAfterSubmit={handleCloseAfterSubmit} />
 
       {showFab && !popupOpen && <PersistentAssessmentButton onClick={handleFabOpen} />}
     </>

@@ -35,6 +35,7 @@ import { Button } from '@/components/ui/button';
 interface Props {
   open: boolean;
   onClose: () => void;
+  onCloseAfterSubmit?: () => void;
   preselectedIntent?: string;
 }
 
@@ -515,7 +516,7 @@ function ThankYouScreen() {
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 
-export default function StudentAssessment({ open, onClose, preselectedIntent }: Props) {
+export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, preselectedIntent }: Props) {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<StepData>(INITIAL_STEP_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -650,11 +651,26 @@ export default function StudentAssessment({ open, onClose, preselectedIntent }: 
           value: 50,
           currency: 'USD',
           eventId: metaEventId,
+          ghlFields: {
+            f1_situation: data.situation,
+            degree_level: data.degreeLevel,
+            field_of_study: data.fieldOfStudy,
+            target_intake: data.targetIntake,
+            preferred_location: data.preferredLocation,
+            preferred_format: data.preferredFormat,
+            budget_range: data.budgetRange,
+            opt_end_date: data.optEndDate,
+            current_university: data.currentUniversity,
+          },
         });
         setSubmitted(true);
-        // Close after 3 seconds
+        // Close after 3 seconds — use onCloseAfterSubmit to avoid 7-day cooldown
         setTimeout(() => {
-          onClose();
+          if (onCloseAfterSubmit) {
+            onCloseAfterSubmit();
+          } else {
+            onClose();
+          }
         }, 3000);
       } else {
         setErrors({ submit: 'Something went wrong. Please try again.' });

@@ -7,7 +7,7 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-K65M9LJW';
 const UCSG_TRACKING_ID =
   process.env.NEXT_PUBLIC_UCSG_TRACKING_ID ||
   'tk_b6bec4688bdc473b85ae341de9f730fc';
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '2582317282238910';
 
 declare global {
   interface Window {

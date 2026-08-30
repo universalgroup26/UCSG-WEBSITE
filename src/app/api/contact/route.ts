@@ -255,7 +255,7 @@ async function fireMetaCAPI(data: {
   content_name?: string;
   content_category?: string;
 }) {
-  const pixelId = process.env.META_PIXEL_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
+  const pixelId = process.env.META_PIXEL_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID || '2582317282238910';
   const accessToken = process.env.META_ACCESS_TOKEN || '';
 
   if (!pixelId || !accessToken) {

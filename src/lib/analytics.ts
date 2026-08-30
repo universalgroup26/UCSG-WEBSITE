@@ -295,6 +295,8 @@ function leadConversion(params: {
   currency?: string;
   /** Pass a pre-generated event_id to share with server-side CAPI for deduplication */
   eventId?: string;
+  /** Extra fields to pass to GHL goTrackLead (assessment data, etc.) */
+  ghlFields?: Record<string, string>;
 }) {
   if (typeof window === 'undefined') return;
 
@@ -328,13 +330,18 @@ function leadConversion(params: {
   });
 
   // 3. GHL External Tracking
-  const leadData = {
+  const leadData: Record<string, string> = {
     name: params.name || '',
     email: params.email || '',
     phone: params.phone || '',
     service: params.service || '',
     source: params.formId,
   };
+
+  // Include extra GHL fields if provided (assessment data, etc.)
+  if (params.ghlFields) {
+    Object.assign(leadData, params.ghlFields);
+  }
 
   if (typeof window.goTrackLead === 'function') {
     try {
