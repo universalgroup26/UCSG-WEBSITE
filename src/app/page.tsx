@@ -15,6 +15,7 @@ import WhatStudentsExpect from '@/components/WhatStudentsExpect';
 import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
 import AssessmentPopup from '@/components/AssessmentPopup';
+import BookingCalendar from '@/components/BookingCalendar';
 import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -58,6 +59,7 @@ const ABOUT_VIEWS = ['about', 'about-mission', 'about-vision', 'about-career'] a
 export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
   const homeRef = useRef<HTMLDivElement>(null);
+  const [showBooking, setShowBooking] = useState(false);
   const [showLoading, setShowLoading] = useState(() => {
     if (typeof window === 'undefined') return false;
     return !sessionStorage.getItem('ucsg-loading-seen');
@@ -134,9 +136,7 @@ export default function HomePage() {
   }, []);
 
   const goContact = useCallback(() => {
-    window.dispatchEvent(
-      new CustomEvent('ucsg-assessment', { detail: { open: 'assessment' } }),
-    );
+    setShowBooking(true);
   }, []);
 
   const handleUniversityClick = useCallback((uni: UniversityData) => {
@@ -291,6 +291,7 @@ export default function HomePage() {
       </main>
       <Footer onContactClick={goContact} />
       <AssessmentPopup currentView={view.type} />
+      <BookingCalendar open={showBooking} onClose={() => setShowBooking(false)} />
       {view.type === 'home' && <SectionNavigation />}
     </div>
   );

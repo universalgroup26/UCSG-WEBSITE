@@ -37,7 +37,7 @@ const quickLinks = [
   { label: 'Programs', view: 'home' as const, id: 'programs' },
   { label: 'F-1 Resources', view: 'home' as const, id: 'resources' },
   { label: 'About UCSG', view: 'about' as const, id: undefined },
-  { label: 'Contact Us', view: 'contact' as const, id: undefined },
+  { label: 'Book Appointment', view: 'contact' as const, id: undefined },
 ];
 
 const socialIconMap: Record<string, React.ReactNode> = {
@@ -155,7 +155,7 @@ export default function Footer({ onContactClick }: Props) {
             {/* Column 4: Contact */}
             <div>
               <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
-                Contact Us
+                Book Appointment
               </h4>
               <ul className="mt-4 space-y-4">
                 <li>

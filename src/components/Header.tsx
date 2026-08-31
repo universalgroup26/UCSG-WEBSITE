@@ -663,12 +663,12 @@ export default function Header({ onNavigate }: Props) {
               Transfer Support
             </button>
 
-            {/* Contact */}
+            {/* Book Appointment */}
             <button
-              onClick={() => navigate('contact', undefined, 'Contact', 'contact')}
+              onClick={() => navigate('contact', undefined, 'Book Appointment', 'contact')}
               className="rounded-lg px-3.5 py-2 text-[13px] font-semibold text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
             >
-              Contact
+              Book Appointment
             </button>
 
           </nav>
@@ -974,12 +974,12 @@ export default function Header({ onNavigate }: Props) {
                     Transfer Support
                   </button>
 
-                  {/* Contact */}
+                  {/* Book Appointment */}
                   <button
-                    onClick={() => navigate('contact', undefined, 'Contact', 'contact')}
+                    onClick={() => navigate('contact', undefined, 'Book Appointment', 'contact')}
                     className="min-h-[44px] rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#334155] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]"
                   >
-                    Contact
+                    Book Appointment
                   </button>
 
                   {/* Divider */}
