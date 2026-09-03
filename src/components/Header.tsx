@@ -65,6 +65,8 @@ const UNIVERSITY_COLUMN_1_IDS: string[] = [
   'international-american-university',
   'touro',
   'uca',
+  'national-louis',
+  'mcdaniel',
 ];
 
 const UNIVERSITY_COLUMN_2_IDS: string[] = [
@@ -76,6 +78,8 @@ const UNIVERSITY_COLUMN_2_IDS: string[] = [
   'seattle-colleges',
   'bluedata-esl',
   'windsor-school',
+  'indiana-wesleyan',
+  'avila-az',
 ];
 
 const PROGRAM_LINKS: ProgramLink[] = [
