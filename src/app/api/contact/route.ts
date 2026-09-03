@@ -279,6 +279,19 @@ async function fireMetaCAPI(data: {
   }
 
   try {
+    // SHA-256 hash PII — Meta Conversions API REQUIRES SHA-256 hashed values
+    const hashSHA256 = async (str: string): Promise<string> => {
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(str));
+      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    };
+
+    const [hashedEmail, hashedPhone, hashedName] = await Promise.all([
+      data.email ? hashSHA256(data.email.toLowerCase().trim()) : null,
+      data.phone ? hashSHA256(data.phone.replace(/\D/g, '')) : null,
+      data.name ? hashSHA256(data.name.toLowerCase().trim()) : null,
+    ]);
+
     const event = {
       event_name: 'Lead',
       event_time: Math.floor(Date.now() / 1000),
@@ -287,9 +300,9 @@ async function fireMetaCAPI(data: {
       action_source: 'website',
       user_data: {
         client_user_agent: data.user_agent,
-        em: data.email ? [data.email.toLowerCase().trim()] : undefined,
-        ph: data.phone ? [data.phone.replace(/\D/g, '')] : undefined,
-        fn: data.name ? [data.name.toLowerCase().trim()] : undefined,
+        em: hashedEmail ? [hashedEmail] : undefined,
+        ph: hashedPhone ? [hashedPhone] : undefined,
+        fn: hashedName ? [hashedName] : undefined,
       },
       custom_data: {
         value: data.value ?? 50,

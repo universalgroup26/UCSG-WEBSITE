@@ -45,15 +45,13 @@ interface CapiEvent {
   };
 }
 
-/** Simple hash function for PII normalization (Meta requires hashed PII) */
-function simpleHash(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return Math.abs(hash).toString(16).padStart(8, '0');
+/** SHA-256 hash for PII normalization — Meta Conversions API REQUIRES SHA-256 */
+async function sha256(str: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 /** Extract fbc/fbp from Cookie header */
@@ -70,19 +68,19 @@ function extractFbCookies(cookieHeader: string | null): { fbc?: string; fbp?: st
   };
 }
 
-/** Normalize and hash an email for Meta (lowercase, trimmed, SHA-256 would be ideal but we use simple hash) */
-function hashEmail(email: string): string {
-  return simpleHash(email.toLowerCase().trim());
+/** Normalize and SHA-256 hash an email for Meta (lowercase, trimmed) */
+async function hashEmail(email: string): Promise<string> {
+  return sha256(email.toLowerCase().trim());
 }
 
-/** Normalize and hash a phone for Meta (digits only) */
-function hashPhone(phone: string): string {
-  return simpleHash(phone.replace(/\D/g, ''));
+/** Normalize and SHA-256 hash a phone for Meta (digits only) */
+async function hashPhone(phone: string): Promise<string> {
+  return sha256(phone.replace(/\D/g, ''));
 }
 
-/** Normalize and hash a name for Meta (lowercase, trimmed) */
-function hashName(name: string): string {
-  return simpleHash(name.toLowerCase().trim());
+/** Normalize and SHA-256 hash a name for Meta (lowercase, trimmed) */
+async function hashName(name: string): Promise<string> {
+  return sha256(name.toLowerCase().trim());
 }
 
 export async function POST(req: NextRequest) {
@@ -129,9 +127,9 @@ export async function POST(req: NextRequest) {
     };
     if (finalFbc) userData.fbc = finalFbc;
     if (finalFbp) userData.fbp = finalFbp;
-    if (email) userData.em = [hashEmail(email)];
-    if (phone) userData.ph = [hashPhone(phone)];
-    if (name) userData.fn = [hashName(name)];
+    if (email) userData.em = [await hashEmail(email)];
+    if (phone) userData.ph = [await hashPhone(phone)];
+    if (name) userData.fn = [await hashName(name)];
 
     const event: CapiEvent = {
       event_name,

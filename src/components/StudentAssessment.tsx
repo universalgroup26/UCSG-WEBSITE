@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import CloudflareTurnstile from '@/components/CloudflareTurnstile';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -424,10 +425,16 @@ function Step4({
   data,
   onChange,
   errors,
+  onTurnstileVerify,
+  onTurnstileError,
+  onTurnstileExpire,
 }: {
   data: StepData;
   onChange: (patch: Partial<StepData>) => void;
   errors: Record<string, string>;
+  onTurnstileVerify: (token: string) => void;
+  onTurnstileError: () => void;
+  onTurnstileExpire: () => void;
 }) {
   return (
     <div className="space-y-4">
@@ -487,6 +494,16 @@ function Step4({
           {errors.consent}
         </p>
       )}
+      {/* Cloudflare Turnstile — bot protection */}
+      <div className="flex items-center gap-2 pt-1">
+        <CloudflareTurnstile
+          onVerify={onTurnstileVerify}
+          onError={onTurnstileError}
+          onExpire={onTurnstileExpire}
+          className="w-full"
+          size="compact"
+        />
+      </div>
     </div>
   );
 }
@@ -522,7 +539,10 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const prevOpenRef = useRef(false);
+
+  const TURNSTILE_CONFIGURED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   // Reset on open — use ref comparison to avoid calling setState on initial mount
   useEffect(() => {
@@ -542,6 +562,7 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
         setErrors({});
         setSubmitting(false);
         setSubmitted(false);
+        setTurnstileToken(null);
       });
       track.customEvent('assessment_start', { preselected_intent: preselectedIntent || 'none' });
     }
@@ -597,6 +618,31 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
 
   const handleSubmit = useCallback(async () => {
     if (!validateStep(4, data)) return;
+
+    // Verify Turnstile (required when site key is configured)
+    if (TURNSTILE_CONFIGURED && !turnstileToken) {
+      setErrors({ consent: 'Please complete the security verification.' });
+      return;
+    }
+    if (turnstileToken) {
+      try {
+        const res = await fetch('/api/turnstile/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+        const verifyData = await res.json();
+        if (!verifyData.success) {
+          setErrors({ consent: 'Security verification failed. Please try again.' });
+          setTurnstileToken(null);
+          return;
+        }
+      } catch {
+        // Graceful — allow submission even if Turnstile verify fails
+        console.warn('[Assessment] Turnstile verification request failed — proceeding');
+      }
+    }
+
     setSubmitting(true);
 
     // Build message with all assessment details
@@ -689,7 +735,7 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
       }
     }, 3000);
     setSubmitting(false);
-  }, [data, onClose, onCloseAfterSubmit]);
+  }, [data, onClose, onCloseAfterSubmit, turnstileToken, TURNSTILE_CONFIGURED, validateStep]);
 
   const isCurrentStepValid = useMemo(() => {
     if (step === 1) return isStep1Valid(data);
@@ -737,7 +783,7 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
               {step === 1 && <Step1 data={data} onChange={handleChange} />}
               {step === 2 && <Step2 data={data} onChange={handleChange} />}
               {step === 3 && <Step3 data={data} onChange={handleChange} />}
-              {step === 4 && <Step4 data={data} onChange={handleChange} errors={errors} />}
+              {step === 4 && <Step4 data={data} onChange={handleChange} errors={errors} onTurnstileVerify={setTurnstileToken} onTurnstileError={() => setTurnstileToken(null)} onTurnstileExpire={() => setTurnstileToken(null)} />}
 
               {errors.submit && (
                 <p className="mt-3 text-sm text-red-500 text-center" role="alert">
