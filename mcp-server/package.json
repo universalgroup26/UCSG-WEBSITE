@@ -2,12 +2,12 @@
   "name": "@ucsg/mcp-server",
   "version": "1.0.0",
   "description": "MCP server for Universal Consulting Service Group - F-1 student guidance, university programs, CPT/OPT resources",
-  "main": "dist/index.js",
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsc --watch"
+    "dev": "bun --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target node",
+    "start": "bun src/index.ts"
   },
   "keywords": [
     "mcp",

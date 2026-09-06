@@ -233,12 +233,28 @@ export default function Footer({ onContactClick }: Props) {
                 &copy; {currentYear} Universal Consulting Service Group. All rights
                 reserved.
               </p>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('ucsg-consent-preferences'))}
-                className="text-xs text-white/40 transition-colors hover:text-white/60"
-              >
-                Privacy &amp; Cookie Settings
-              </button>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <button
+                  onClick={() => {
+                    track.navClick({
+                      nav_type: 'footer',
+                      nav_target: 'privacy',
+                      nav_text: 'Privacy Policy',
+                    });
+                    handleNavigate('privacy');
+                  }}
+                  className="text-xs text-white/40 transition-colors hover:text-white/60"
+                >
+                  Privacy Policy
+                </button>
+                <span className="text-white/20" aria-hidden="true">·</span>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('ucsg-consent-preferences'))}
+                  className="text-xs text-white/40 transition-colors hover:text-white/60"
+                >
+                  Privacy &amp; Cookie Settings
+                </button>
+              </div>
             </div>
             <p className="max-w-2xl text-sm leading-relaxed text-white/40">
               UCSG provides educational information and student-support services.

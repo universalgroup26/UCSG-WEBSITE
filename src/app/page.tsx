@@ -25,6 +25,7 @@ import AboutPage from '@/components/pages/AboutPage';
 import MissionPage from '@/components/pages/MissionPage';
 import VisionPage from '@/components/pages/VisionPage';
 import CareerPage from '@/components/pages/CareerPage';
+import PrivacyPage from '@/components/pages/PrivacyPage';
 import LoadingScreen from '@/components/LoadingScreen';
 import { getUniversityById, type UniversityData } from '@/lib/data/universities';
 import { getResourceById, type ResourceData } from '@/lib/data/resources';
@@ -38,7 +39,8 @@ type ViewType =
   | { type: 'about' }
   | { type: 'about-mission' }
   | { type: 'about-vision' }
-  | { type: 'about-career' };
+  | { type: 'about-career' }
+  | { type: 'privacy' };
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -104,6 +106,9 @@ export default function HomePage() {
     } else if (view.type === 'about-career') {
       track.pageView('Career');
       document.title = 'Careers | UCSG';
+    } else if (view.type === 'privacy') {
+      track.pageView('Privacy Policy');
+      document.title = 'Privacy Policy | UCSG';
     }
   }, [view]);
 
@@ -136,6 +141,13 @@ export default function HomePage() {
     // About Us pages
     if ((ABOUT_VIEWS as readonly string[]).includes(_view)) {
       setView({ type: _view as ViewType['type'] } as ViewType);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Privacy Policy (SPA view)
+    if (_view === 'privacy') {
+      setView({ type: 'privacy' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -311,6 +323,11 @@ export default function HomePage() {
           {view.type === 'about-career' && (
             <motion.div key="about-career" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <CareerPage onBack={goHome} />
+            </motion.div>
+          )}
+          {view.type === 'privacy' && (
+            <motion.div key="privacy" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <PrivacyPage onBack={goHome} />
             </motion.div>
           )}
         </AnimatePresence>

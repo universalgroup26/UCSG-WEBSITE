@@ -26,13 +26,20 @@ declare global {
     fbq?: (...args: unknown[]) => void;
     _fbq?: unknown[];
     fbAsyncInit?: () => void;
+    __fbReady?: boolean;
     FB?: {
       init: (params: Record<string, unknown>) => void;
       getLoginStatus: (cb: (response: unknown) => void) => void;
       login: (cb: (response: unknown) => void, opts?: Record<string, unknown>) => void;
-      api: (path: string, cb: (response: unknown) => void) => void;
-      ui: (params: Record<string, unknown>, cb: (response: unknown) => void) => void;
-      XFBML?: { parse: () => void };
+      logout?: (cb: (response: unknown) => void) => void;
+      api: (path: string, cb?: (response: unknown) => void) => void;
+      ui: (params: Record<string, unknown>, cb?: (response: unknown) => void) => void;
+      XFBML?: { parse: (node?: HTMLElement) => void };
+      AppEvents?: {
+        logEvent: (name: string, params?: Record<string, unknown>) => void;
+        logPageView: () => void;
+        setUserIDs?: (ids: Record<string, string>) => void;
+      };
     };
   }
 }
@@ -147,29 +154,48 @@ export default function Analytics() {
       )}
 
       {/* ── Facebook JavaScript SDK ──────────────────────────────── */}
-      {/* Provides FB.login(), FB.api(), FB.ui() for social features. */}
-      {/* Per Facebook SDK v18.3 changelog: SSO support, external ID, */}
-      {/* improved security (SecureRandom, SSL bypass removal, thread safety). */}
+      {/* Provides FB.login(), FB.ui() (share dialog), FB.api() social features. */}
+      {/* App ID 1735690574381075 (app "UCSG"), discovered via debug_token. */}
+      {/* Loads the SDK; tracking remains gated by the Meta Pixel consent (fbq 'consent'). */}
+      {/* fbAsyncInit is defined BEFORE sdk.js loads so the SDK calls it when ready. */}
       {META_APP_ID && (
         <script
           id="facebook-js-sdk"
           dangerouslySetInnerHTML={{
             __html: `
               window.fbAsyncInit = function() {
-                FB.init({
-                  appId      : '${META_APP_ID}',
-                  cookie     : true,
-                  xfbml      : true,
-                  version    : 'v26.0'
-                });
-                console.log('[FB SDK] Initialized with app:', '${META_APP_ID}');
+                try {
+                  FB.init({
+                    appId      : '${META_APP_ID}',
+                    cookie     : true,   // enable cookies for server-side session access
+                    xfbml      : true,   // parse social plugins (Like, Share)
+                    version    : 'v26.0' // latest Graph API version
+                  });
+                  window.__fbReady = true;
+                  console.log('[FB SDK] Initialized with app:', '${META_APP_ID}', '(v26.0)');
+                  // Notify any listeners that the SDK is ready
+                  window.dispatchEvent(new CustomEvent('ucsg-fb-ready', { detail: { appId: '${META_APP_ID}' } }));
+                } catch (err) {
+                  console.error('[FB SDK] FB.init failed:', err);
+                  window.dispatchEvent(new CustomEvent('ucsg-fb-error', { detail: { stage: 'init', error: String(err) } }));
+                }
               };
               (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
+                js.async = true; js.defer = true;
+                js.crossOrigin = 'anonymous';
                 js.src = "https://connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
+                js.onerror = function() {
+                  console.warn('[FB SDK] sdk.js failed to load (ad blocker or network error)');
+                  window.dispatchEvent(new CustomEvent('ucsg-fb-error', { detail: { stage: 'script-load' } }));
+                };
+                if (fjs && fjs.parentNode) {
+                  fjs.parentNode.insertBefore(js, fjs);
+                } else {
+                  d.head.appendChild(js);
+                }
               }(document, 'script', 'facebook-jssdk'));
             `,
           }}

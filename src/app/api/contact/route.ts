@@ -126,69 +126,100 @@ async function pushToGoHighLevel(data: {
     return null;
   }
 
+  // Shared request body — sent to whichever GHL contact endpoint accepts the token.
+  // Note: GoHighLevel deduplicates contacts by email/phone at the location level, so
+  // `POST /contacts/` acts as an upsert (creates a new contact or updates the existing one).
+  const contactBody = {
+    firstName: data.firstName,
+    lastName: data.lastName || '',
+    email: data.email,
+    phone: data.phone || undefined,
+    tags: data.tags,
+    customFields: [
+      ...data.customFields.filter(f => f.value),
+      ...data.utmCustomFields,
+    ],
+    locationId,
+  };
+
+  const ghlHeaders = {
+    'Authorization': `Bearer ${GHL_API_KEY}`,
+    'Version': '2021-07-28',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+
   try {
-    // 1. Upsert contact
-    const contactRes = await fetchWithTimeout(
+    // 1. Create-or-update contact.
+    // Try the dedicated /contacts/upsert endpoint first (preferred for OAuth/agency tokens).
+    // Fall back to POST /contacts/ for location-scoped Private Integration Tokens (pit-),
+    // which return 403 on /upsert but 201 on /contacts/ (GHL dedupes by email/phone).
+    let contactRes = await fetchWithTimeout(
       `https://services.leadconnectorhq.com/contacts/upsert?locationId=${locationId}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${GHL_API_KEY}`,
-          'Version': '2021-07-28',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: data.firstName,
-          lastName: data.lastName || '',
-          email: data.email,
-          phone: data.phone || undefined,
-          tags: data.tags,
-          customFields: [
-            ...data.customFields.filter(f => f.value),
-            ...data.utmCustomFields,
-          ],
-        }),
-      },
+      { method: 'POST', headers: ghlHeaders, body: JSON.stringify(contactBody) },
     );
+
+    if (contactRes.status === 403) {
+      // pit- token lacks the upsert permission — fall back to the create endpoint.
+      console.warn('[GHL] /contacts/upsert returned 403 — falling back to POST /contacts/ (pit- token)');
+      contactRes = await fetchWithTimeout(
+        `https://services.leadconnectorhq.com/contacts/`,
+        { method: 'POST', headers: ghlHeaders, body: JSON.stringify(contactBody) },
+      );
+    }
 
     if (!contactRes.ok) {
       const errText = await contactRes.text();
-      console.error(`[GHL] Contact upsert failed (${contactRes.status}):`, errText);
+      console.error(`[GHL] Contact create failed (${contactRes.status}):`, errText.slice(0, 300));
       return null;
     }
 
     const contactData = await contactRes.json();
     const contactId = contactData.contact?.id;
 
-    // 2. Add to pipeline/stage if configured
+    // 2. Create an Opportunity in the Marketing Pipeline (modern Opportunities API).
+    // Replaces the deprecated POST /pipelines/{id}/stages/{id}/contacts (404).
+    // The modern endpoint is POST /opportunities/ with:
+    //   - name (required) — human-readable label, typically the lead name + source
+    //   - pipelineId, locationId, pipelineStageId (note: stageId is rejected)
+    //   - contactId (links the opportunity to the contact)
+    //   - monetaryValue (for ROAS/sales forecasting)
+    //   - status: 'open' | 'won' | 'lost' | 'abandoned'
     if (contactId && GHL_PIPELINE_ID && GHL_STAGE_ID) {
       try {
-        const pipelineRes = await fetchWithTimeout(
-          `https://services.leadconnectorhq.com/pipelines/${GHL_PIPELINE_ID}/stages/${GHL_STAGE_ID}/contacts`,
+        const opportunityName = `${data.firstName}${data.lastName ? ' ' + data.lastName : ''} — UCSG Website Lead`;
+        const oppRes = await fetchWithTimeout(
+          `https://services.leadconnectorhq.com/opportunities/`,
           {
             method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${GHL_API_KEY}`,
-              'Version': '2021-07-28',
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify({ contact_ids: [contactId] }),
+            headers: ghlHeaders,
+            body: JSON.stringify({
+              name: opportunityName,
+              pipelineId: GHL_PIPELINE_ID,
+              locationId,
+              pipelineStageId: GHL_STAGE_ID,
+              status: 'open',
+              contactId,
+              monetaryValue: 50,
+            }),
           },
         );
 
-        if (!pipelineRes.ok) {
-          console.error(`[GHL] Pipeline add failed (${pipelineRes.status}):`, await pipelineRes.text());
+        if (!oppRes.ok) {
+          // Non-fatal — contact was still created. Log and continue.
+          const errText = await oppRes.text().catch(() => '');
+          console.warn(`[GHL] Opportunity creation skipped (${oppRes.status}): ${errText.slice(0, 150)}`);
         } else {
-          console.log(`[GHL] Contact ${contactId} added to pipeline ${GHL_PIPELINE_ID}/${GHL_STAGE_ID}`);
+          const oppData = await oppRes.json().catch(() => ({} as Record<string, unknown>));
+          const oppId = (oppData as { opportunity?: { id?: string } })?.opportunity?.id;
+          console.log(`[GHL] ✓ Opportunity ${oppId} created in pipeline ${GHL_PIPELINE_ID} / stage ${GHL_STAGE_ID}`);
         }
-      } catch (pipelineErr) {
-        console.error('[GHL] Pipeline error:', pipelineErr);
+      } catch (oppErr) {
+        console.warn('[GHL] Opportunity creation error (non-fatal):', oppErr instanceof Error ? oppErr.message : oppErr);
       }
     }
 
-    console.log(`[GHL] Contact ${contactId} created/updated successfully`);
+    console.log(`[GHL] ✓ Contact ${contactId} created/updated in location ${locationId}`);
     return contactId;
   } catch (err) {
     console.error('[GHL] Direct API error:', err);

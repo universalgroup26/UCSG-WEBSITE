@@ -177,6 +177,22 @@ export default function ConsentBanner() {
                   <p className="mt-1 text-xs leading-relaxed text-gray-500 sm:text-sm">
                     We use analytics to improve your experience and advertising to reach students who may benefit from our services. You can choose which to allow.
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      track.navClick({
+                        nav_type: 'consent_banner',
+                        nav_target: 'privacy',
+                        nav_text: 'Read our Privacy Policy',
+                      });
+                      window.dispatchEvent(
+                        new CustomEvent('ucsg-navigate', { detail: { view: 'privacy' } }),
+                      );
+                    }}
+                    className="mt-1.5 text-xs font-medium text-[#0874F9] underline decoration-[#0874F9]/30 underline-offset-2 transition-colors hover:text-[#0660D4]"
+                  >
+                    Read our Privacy Policy
+                  </button>
                 </div>
               </div>
               <button
