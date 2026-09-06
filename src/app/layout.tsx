@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import Script from "next/script";
-import Analytics from "@/components/Analytics";
+import { Analytics } from "@vercel/analytics/next";
+import AnalyticsScripts from "@/components/Analytics";
 import ConsentBanner from "@/components/ConsentBanner";
 import "./globals.css";
 
@@ -317,14 +318,14 @@ export default function RootLayout({
       >
         {/* GTM noscript fallback — must be immediately after <body> per Google guidelines */}
         <iframe
-          src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-K65M9LJW'}`}
+          src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-M5DGD7Z2'}`}
           height="0"
           width="0"
           style={{ display: 'none', visibility: 'hidden' }}
           title="GTM"
           suppressHydrationWarning
         />
-        <Analytics />
+        <AnalyticsScripts />
         {children}
         {/* Cloudflare Web Analytics */}
         {CF_ANALYTICS_TOKEN && (
@@ -343,6 +344,8 @@ export default function RootLayout({
           strategy="lazyOnload"
         />
         <ConsentBanner />
+        {/* Vercel Analytics — Web Vitals & custom events */}
+        <Analytics />
       </body>
     </html>
   );

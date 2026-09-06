@@ -3,7 +3,10 @@
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-K65M9LJW';
+// ── Tracking IDs ──────────────────────────────────────────────────────
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-M5DGD7Z2';
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || 'G-MHC25XBP3P';
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'y7hrmh5gu4';
 const UCSG_TRACKING_ID =
   process.env.NEXT_PUBLIC_UCSG_TRACKING_ID ||
   'tk_b6bec4688bdc473b85ae341de9f730fc';
@@ -12,6 +15,8 @@ const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '2582317282238910
 declare global {
   interface Window {
     dataLayer: Record<string, unknown>[];
+    gtag: (...args: unknown[]) => void;
+    clarity: (...args: unknown[]) => void;
     track: {
       init: () => void;
     };
@@ -68,7 +73,7 @@ export default function Analytics() {
 
   return (
     <>
-      {/* ── Google Consent Mode v2 defaults (MUST run before GTM) ──── */}
+      {/* ── Google Consent Mode v2 defaults (MUST run before GTM/gtag) ── */}
       <script
         id="google-consent-defaults"
         dangerouslySetInnerHTML={{
@@ -120,12 +125,52 @@ export default function Analytics() {
         </>
       )}
 
-      {/* ── GTM container ─────────────────────────────────────────── */}
+      {/* ── Google Tag Manager (GTM-M5DGD7Z2) ────────────────────── */}
+      {/* GTM handles GA4, ads, and other tags via its container config */}
       <Script
         id="gtm-script"
         src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
         strategy="afterInteractive"
       />
+
+      {/* ── Google Analytics 4 (GA4) Direct gtag.js ──────────────── */}
+      {/* Fallback/redundancy: GA4 also fires directly via gtag.js. */}
+      {/* GTM container should include GA4 config; this ensures events */}
+      {/* are captured even if GTM tag is misconfigured. */}
+      {GA4_ID && (
+        <Script
+          id="ga4-gtag"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
+          strategy="afterInteractive"
+          onLoad={() => {
+            if (typeof window.gtag === 'function') {
+              window.gtag('js', new Date());
+              window.gtag('config', GA4_ID, {
+                send_page_view: true,
+              });
+              console.log('[GA4] Initialized:', GA4_ID);
+            }
+          }}
+        />
+      )}
+
+      {/* ── Microsoft Clarity ─────────────────────────────────────── */}
+      {/* Session replay & heatmap analytics */}
+      {CLARITY_ID && (
+        <Script
+          id="ms-clarity"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "${CLARITY_ID}");
+            `,
+          }}
+        />
+      )}
 
       {/* ── GHL External Tracking (Lead Connector) ───────────────── */}
       <Script
