@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import AnalyticsScripts from "@/components/Analytics";
 import ConsentBanner from "@/components/ConsentBanner";
+import GlobalShell from "@/components/layout/GlobalShell";
 import "./globals.css";
 
 const inter = Inter({
@@ -307,7 +308,7 @@ export default function RootLayout({
           suppressHydrationWarning
         />
         <AnalyticsScripts />
-        {children}
+        <GlobalShell>{children}</GlobalShell>
         {/* Cloudflare Web Analytics */}
         {CF_ANALYTICS_TOKEN && (
           <Script
