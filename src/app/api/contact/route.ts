@@ -249,17 +249,29 @@ async function pingGHLTracking(leadData: {
 // ─── Meta Conversions API (Server-Side) ──────────────────────────────
 
 /**
- * Fire a server-side Lead event to Meta Conversions API.
- * This deduplicates with the client-side fbq('track','Lead') using the same event_id.
+ * Fire a server-side Lead event to Meta Conversions API (CAPI).
+ * Deduplicates with the client-side fbq('track','Lead') using the same event_id.
  * Meta counts it as ONE conversion even though it arrives from two sources.
+ *
+ * Follows Meta's official CAPI guide:
+ * - API version: v26.0
+ * - PII hashed with SHA-256 (required)
+ * - Phone in E.164 format (+1XXXXXXXXXX) before hashing
+ * - Name split into fn (first) / ln (last) before hashing
+ * - event_id for deduplication with client-side pixel
+ * - action_source: 'website' for real-time form submissions
+ * - custom_data includes event_source and lead_event_source for CRM attribution
  */
 async function fireMetaCAPI(data: {
   event_id?: string;
   event_source_url?: string;
   user_agent?: string;
+  fbc?: string;         // Facebook click ID cookie (_fbc)
+  fbp?: string;         // Facebook browser ID cookie (_fbp)
   email?: string;
   phone?: string;
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   value?: number;
   currency?: string;
   content_name?: string;
@@ -269,7 +281,7 @@ async function fireMetaCAPI(data: {
   const accessToken = process.env.META_ACCESS_TOKEN || '';
 
   if (!pixelId || !accessToken) {
-    // Silently skip — META_ACCESS_TOKEN is only needed for CAPI
+    console.warn('[Meta CAPI] Skipped: pixel ID or access token not configured');
     return;
   }
 
@@ -286,11 +298,34 @@ async function fireMetaCAPI(data: {
       return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     };
 
-    const [hashedEmail, hashedPhone, hashedName] = await Promise.all([
+    // Normalize phone to E.164 format: strip non-digits, prepend +1 if 10 digits (US)
+    const normalizePhone = (raw: string): string => {
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length === 10) return '+1' + digits;
+      if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
+      if (digits.length > 0) return '+' + digits;
+      return '';
+    };
+
+    const phoneE164 = data.phone ? normalizePhone(data.phone) : '';
+
+    const [hashedEmail, hashedPhone, hashedFirstName, hashedLastName] = await Promise.all([
       data.email ? hashSHA256(data.email.toLowerCase().trim()) : null,
-      data.phone ? hashSHA256(data.phone.replace(/\D/g, '')) : null,
-      data.name ? hashSHA256(data.name.toLowerCase().trim()) : null,
+      phoneE164 ? hashSHA256(phoneE164) : null,
+      data.firstName ? hashSHA256(data.firstName.toLowerCase().trim()) : null,
+      data.lastName ? hashSHA256(data.lastName.toLowerCase().trim()) : null,
     ]);
+
+    const userData: Record<string, unknown> = {
+      client_user_agent: data.user_agent,
+    };
+    if (hashedEmail) userData.em = [hashedEmail];
+    if (hashedPhone) userData.ph = [hashedPhone];
+    if (hashedFirstName) userData.fn = [hashedFirstName];
+    if (hashedLastName) userData.ln = [hashedLastName];
+    // Facebook browser/click IDs for improved matching
+    if (data.fbp) userData.fbp = data.fbp;
+    if (data.fbc) userData.fbc = data.fbc;
 
     const event = {
       event_name: 'Lead',
@@ -298,37 +333,33 @@ async function fireMetaCAPI(data: {
       event_id: data.event_id,
       event_source_url: data.event_source_url || 'https://www.universalconsultingservices.com',
       action_source: 'website',
-      user_data: {
-        client_user_agent: data.user_agent,
-        em: hashedEmail ? [hashedEmail] : undefined,
-        ph: hashedPhone ? [hashedPhone] : undefined,
-        fn: hashedName ? [hashedName] : undefined,
-      },
+      user_data: userData,
       custom_data: {
         value: data.value ?? 50,
         currency: data.currency || 'USD',
+        content_name: data.content_name || 'Contact Form Lead',
+        content_category: data.content_category || 'education_consulting',
+        // CRM attribution fields (per Meta CAPI guide)
+        event_source: 'website',
+        lead_event_source: 'UCSG Contact Form',
       },
     };
 
-    // Remove undefined user_data fields
-    const ud = event.user_data as Record<string, unknown>;
-    Object.keys(ud).forEach(k => ud[k] === undefined && delete ud[k]);
-
-    const res = await fetchWithTimeout(`https://graph.facebook.com/v21.0/${pixelId}/events`, {
+    // Send to Meta Conversions API v26.0
+    const res = await fetchWithTimeout(`https://graph.facebook.com/v26.0/${pixelId}/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ data: [event], access_token: accessToken }),
     });
 
     if (res.ok) {
       const result = await res.json().catch(() => null);
-      console.log('[Meta CAPI] ✓ Lead event sent (dedup:', data.event_id.slice(0, 8) + '...)');
+      console.log('[Meta CAPI] ✓ Lead event sent (dedup:', data.event_id.slice(0, 8) + '...)', result?.events_received ? `| ${result.events_received} received` : '');
     } else {
       const errText = await res.text().catch(() => 'unknown');
-      console.warn('[Meta CAPI] Failed (' + res.status + '):', errText.slice(0, 200));
+      console.warn('[Meta CAPI] Failed (' + res.status + '):', errText.slice(0, 300));
     }
   } catch (err) {
     console.warn('[Meta CAPI] Error:', err);
@@ -626,13 +657,23 @@ export async function POST(req: NextRequest) {
     });
 
     // 4. Meta Conversions API (server-side deduplication with client-side pixel)
+    // Extract _fbp and _fbc cookies for improved event matching
+    const cookieHeader = req.headers.get('cookie') || '';
+    const getCookieValue = (name: string): string | undefined => {
+      const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+      return match ? decodeURIComponent(match[1]) : undefined;
+    };
+
     fireMetaCAPI({
       event_id: meta_event_id,
       event_source_url: req.headers.get('referer') || req.url,
       user_agent: req.headers.get('user-agent') || undefined,
+      fbp: getCookieValue('_fbp'),
+      fbc: getCookieValue('_fbc'),
       email: trimmedEmail,
       phone: trimmedPhone || undefined,
-      name: trimmedName,
+      firstName: firstName || undefined,
+      lastName: lastName || undefined,
       value: meta_lead_value,
       currency: meta_currency,
       content_name: formSource,
