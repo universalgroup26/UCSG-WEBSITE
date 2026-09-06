@@ -1,16 +1,46 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
-let prisma: any;
+// ─── Prisma Postgres Setup ────────────────────────────────────────────
+// Uses @prisma/adapter-pg to connect to Prisma Postgres (cloud PostgreSQL).
+// DATABASE_URL = pooled connection (for runtime — optimized for serverless)
+// DIRECT_URL  = direct connection (for Prisma CLI migrations only)
 
-// Detect if we're running on Vercel (serverless) or in a local/self-hosted env.
-// Vercel has an ephemeral filesystem — SQLite file-based DB will NOT persist.
-// In that case, we use a lightweight in-memory mock that silently absorbs writes.
-const isVercel = !!process.env.VERCEL;
-const isServerless = isVercel || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+const connectionString = process.env.DATABASE_URL;
 
-if (isServerless) {
-  // Serverless / Vercel: use mock DB — SQLite file won't persist across invocations
-  console.log('[DB] Serverless environment detected — using in-memory mock (writes are fire-and-forget)');
+if (!connectionString) {
+  console.warn('[DB] No DATABASE_URL set — database features will be unavailable');
+}
+
+let db: any;
+
+try {
+  if (connectionString) {
+    // Create the PostgreSQL adapter with the pooled connection string
+    const adapter = new PrismaPg({ connectionString });
+    
+    const globalForPrisma = globalThis as unknown as {
+      prisma: PrismaClient | undefined;
+    };
+    
+    const prisma =
+      globalForPrisma.prisma ??
+      new PrismaClient({
+        adapter,
+        log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+      });
+    
+    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+    
+    db = prisma;
+    console.log('[DB] Connected to Prisma Postgres via @prisma/adapter-pg');
+  } else {
+    throw new Error('DATABASE_URL not configured');
+  }
+} catch (err) {
+  console.warn('[DB] Prisma Postgres connection failed — using in-memory mock:', err instanceof Error ? err.message : err);
+  
+  // Fallback: in-memory mock (for development without database)
   let mockId = 1;
   const noOp = {
     findMany: async () => [],
@@ -26,11 +56,10 @@ if (isServerless) {
     count: async () => 0,
     upsert: async (d: any) => ({ id: d?.where?.id ?? 'mock', ...d?.create }),
   };
-  prisma = new Proxy(
+  db = new Proxy(
     {},
     {
       get: (_target, prop) => {
-        // Allow .contactSubmission, .user, .post etc. to return the noOp proxy
         if (prop === 'then' || typeof prop === 'symbol') return undefined;
         return new Proxy(noOp, {
           get: (_t, method) => {
@@ -41,32 +70,6 @@ if (isServerless) {
       },
     }
   );
-} else {
-  // Local / self-hosted: use real Prisma + SQLite
-  try {
-    const globalForPrisma = globalThis as unknown as {
-      prisma: PrismaClient | undefined;
-    };
-    prisma =
-      globalForPrisma.prisma ??
-      new PrismaClient({
-        log: process.env.NODE_ENV === 'development' ? ['query'] : [],
-      });
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-  } catch {
-    console.warn('[DB] SQLite connection failed — using in-memory mock');
-    let mockId = 1;
-    const noOp = {
-      findMany: async () => [],
-      findFirst: async () => null,
-      findUnique: async () => null,
-      create: async (d: any) => ({ id: String(mockId++), ...d?.data }),
-      update: async (d: any) => ({ id: d?.where?.id ?? 'mock', ...d?.data }),
-      delete: async () => ({}),
-      count: async () => 0,
-    };
-    prisma = new Proxy({}, { get: () => noOp });
-  }
 }
 
-export const db = prisma;
+export { db };
