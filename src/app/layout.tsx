@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import Script from "next/script";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import Analytics from "@/components/Analytics";
 import ConsentBanner from "@/components/ConsentBanner";
 import "./globals.css";
@@ -343,6 +344,7 @@ export default function RootLayout({
           strategy="lazyOnload"
         />
         <ConsentBanner />
+        <VercelAnalytics />
       </body>
     </html>
   );
