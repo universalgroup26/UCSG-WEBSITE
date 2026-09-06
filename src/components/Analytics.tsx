@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
 // ── Tracking IDs ──────────────────────────────────────────────────────
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-M5DGD7Z2';
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NLD3G98X';
 const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || 'G-MHC25XBP3P';
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'y7hrmh5gu4';
 const UCSG_TRACKING_ID =
@@ -202,7 +202,7 @@ export default function Analytics() {
         />
       )}
 
-      {/* ── Google Tag Manager (GTM-M5DGD7Z2) ────────────────────── */}
+      {/* ── Google Tag Manager (GTM-NLD3G98X) ────────────────────── */}
       {/* GTM handles GA4, ads, and other tags via its container config */}
       <Script
         id="gtm-script"

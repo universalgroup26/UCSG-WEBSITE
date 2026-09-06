@@ -59,7 +59,7 @@ export async function GET() {
 
     // GTM
     gtm: {
-      containerId: process.env.NEXT_PUBLIC_GTM_ID || 'GTM-M5DGD7Z2',
+      containerId: process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NLD3G98X',
       status: 'Active — GTM container loads on all pages',
     },
 
