@@ -2,8 +2,16 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { track } from '@/lib/analytics';
-import StudentAssessment from '@/components/StudentAssessment';
 import PersistentAssessmentButton from '@/components/PersistentAssessmentButton';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { CalendarDays } from 'lucide-react';
+
+const GHL_BOOKING_URL =
+  'https://lead.universalconsultingservices.com/widget/booking/czfpsgCdiNUEWSQoYIaU';
 
 interface Props {
   currentView?: string;
@@ -70,13 +78,6 @@ export default function AssessmentPopup({ currentView }: Props) {
     setShowFab(true);
   }, []);
 
-  const handleCloseAfterSubmit = useCallback(() => {
-    // Close without marking as dismissed — user successfully submitted
-    // so the popup should be able to auto-trigger again on future visits
-    setPopupOpen(false);
-    setShowFab(true);
-  }, []);
-
   const handleFabOpen = useCallback(() => {
     setPopupOpen(true);
     track.popupEvent({ event: 'popup_open', popup_trigger: 'fab' });
@@ -117,12 +118,12 @@ export default function AssessmentPopup({ currentView }: Props) {
     return () => clearTimeout(timer);
   }, [currentView, openPopup]);
 
-  // --- Scroll: 60% via IntersectionObserver ---
+  // --- Scroll: 70% via IntersectionObserver ---
   useEffect(() => {
     if (hasTriggered.current || isSessionDismissed() || isWithinSevenDayCooldown()) return;
     if (currentView !== 'home' && currentView !== undefined) return;
 
-    // Create a sentinel element at 60% of the document height
+    // Create a sentinel element at 70% of the document height
     const sentinel = document.createElement('div');
     sentinel.style.position = 'absolute';
     sentinel.style.top = '70%';
@@ -189,7 +190,36 @@ export default function AssessmentPopup({ currentView }: Props) {
 
   return (
     <>
-      <StudentAssessment open={popupOpen} onClose={handleClose} onCloseAfterSubmit={handleCloseAfterSubmit} />
+      {/* GHL Booking Calendar Dialog — replaces the old StudentAssessment form */}
+      <Dialog open={popupOpen} onOpenChange={(v) => { if (!v) handleClose(); }}>
+        <DialogContent
+          className="sm:max-w-[640px] lg:max-w-[720px] p-0 overflow-hidden rounded-2xl"
+          aria-label="Book Appointment"
+        >
+          {/* Header bar */}
+          <div className="flex items-center gap-2.5 bg-[#061846] px-5 py-3.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#D6A84B]/15">
+              <CalendarDays className="h-[18px] w-[18px] text-[#D6A84B]" aria-hidden="true" />
+            </div>
+            <div>
+              <DialogTitle className="text-sm font-heading font-semibold text-white">
+                Book Your Free Assessment
+              </DialogTitle>
+              <p className="text-[11px] text-white/50">
+                Select a date and time that works for you
+              </p>
+            </div>
+          </div>
+
+          {/* GHL Booking iframe */}
+          <iframe
+            src={GHL_BOOKING_URL}
+            allow="payment"
+            title="GHL Booking Calendar"
+            className="h-[560px] w-full border-0"
+          />
+        </DialogContent>
+      </Dialog>
 
       {showFab && !popupOpen && <PersistentAssessmentButton onClick={handleFabOpen} />}
     </>

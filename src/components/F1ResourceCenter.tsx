@@ -193,10 +193,12 @@ export default function F1ResourceCenter() {
           <Image
             src="/images/ucsg-resource-center.png"
             alt=""
+            role="presentation"
             fill
             className="object-cover"
             sizes="100vw"
             unoptimized
+            aria-hidden="true"
           />
           {/* Dark overlay */}
           <div
@@ -267,6 +269,7 @@ export default function F1ResourceCenter() {
           <Image
             src="/images/bg-sevis.png"
             alt=""
+            role="presentation"
             fill
             className="object-cover"
             sizes="100vw"

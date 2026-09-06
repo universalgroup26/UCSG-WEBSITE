@@ -361,7 +361,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
                           <BarChart3 className="h-5 w-5 text-amber-600" />
                         </div>
-                        <h4 className="font-semibold text-[#0F172A]">Rankings &amp; Reputation</h4>
+                        <h3 className="font-semibold text-[#0F172A]">Rankings &amp; Reputation</h3>
                       </div>
                       <p className="mt-3 text-sm font-medium text-amber-700">{university.ranking}</p>
                       <p className="mt-1.5 text-xs text-[#6B7280]">
@@ -377,7 +377,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
                           <MapPin className="h-5 w-5 text-emerald-600" />
                         </div>
-                        <h4 className="font-semibold text-[#0F172A]">Campus &amp; Location</h4>
+                        <h3 className="font-semibold text-[#0F172A]">Campus &amp; Location</h3>
                       </div>
                       <p className="mt-3 text-sm font-medium text-emerald-700">{university.campusSize}</p>
                       <p className="mt-1.5 text-xs text-[#6B7280]">
@@ -391,7 +391,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
                           <Wifi className="h-5 w-5 text-blue-600" />
                         </div>
-                        <h4 className="font-semibold text-[#0F172A]">Flexibility</h4>
+                        <h3 className="font-semibold text-[#0F172A]">Flexibility</h3>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <Badge className={university.onlinePrograms ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-gray-200 bg-gray-50 text-gray-400'}>
@@ -418,7 +418,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
                           <DollarSign className="h-5 w-5 text-purple-600" />
                         </div>
-                        <h4 className="font-semibold text-[#0F172A]">Affordability</h4>
+                        <h3 className="font-semibold text-[#0F172A]">Affordability</h3>
                       </div>
                       <p className="mt-3 text-sm font-medium text-purple-700">{university.tuitionRange}</p>
                       <div className="mt-2 flex items-center gap-1.5">
@@ -459,7 +459,7 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                               <Badge className="border-gray-200 bg-gray-50 text-[#6B7280]">{program.level}</Badge>
                             </div>
                           </div>
-                          <h4 className="mt-3 font-semibold text-[#0F172A]">{program.name}</h4>
+                          <h3 className="mt-3 font-semibold text-[#0F172A]">{program.name}</h3>
                           <div className="mt-2 flex items-center gap-3 text-xs text-[#94A3B8]">
                             <span className="flex items-center gap-1">
                               <Clock className="h-3.5 w-3.5" />
@@ -536,10 +536,10 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
                     {/* Notable Alumni */}
                     {university.notableAlumni.length > 0 && (
                       <div>
-                        <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#0F172A]">
+                        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#0F172A]">
                           <Award className="h-4 w-4 text-amber-500" />
                           Notable Alumni
-                        </h4>
+                        </h3>
                         <div className="flex flex-wrap gap-2">
                           {university.notableAlumni.map((alumnus) => (
                             <Badge
@@ -555,10 +555,10 @@ export default function UniversityPage({ university, onBack, onApplyClick }: Pro
 
                     {/* Campus Amenities */}
                     <div className={university.notableAlumni.length > 0 ? 'mt-6' : ''}>
-                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#0F172A]">
+                      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#0F172A]">
                         <Building className="h-4 w-4 text-[#002868]" />
                         Campus Amenities
-                      </h4>
+                      </h3>
                       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                         {university.campusAmenities.map((amenity) => {
                           const Icon = getAmenityIcon(amenity);

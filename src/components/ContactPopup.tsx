@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { track } from '@/lib/analytics';
 import {
@@ -16,6 +17,7 @@ import {
   Clock,
   Star,
   ChevronDown,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CloudflareTurnstile from '@/components/CloudflareTurnstile';
@@ -209,14 +211,58 @@ function FloatingSelect({ value, onChange }: { value: string; onChange: (v: stri
   const [focused, setFocused] = useState(false);
   const isActive = focused || open || value.length > 0;
   const ref = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+
+  // Calculate position for portal dropdown
+  const updatePosition = useCallback(() => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + 6,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      updatePosition();
+      // Recalculate on scroll/resize
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
+    }
+  }, [open, updatePosition]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      // Close if click is outside both the trigger and the dropdown portal
+      const target = e.target as Node;
+      if (
+        ref.current && !ref.current.contains(target) &&
+        dropdownRef.current && !dropdownRef.current.contains(target)
+      ) {
+        setOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open]);
 
   return (
     <motion.div ref={ref} variants={fieldReveal} className="relative z-10">
@@ -224,6 +270,8 @@ function FloatingSelect({ value, onChange }: { value: string; onChange: (v: stri
         <button
           type="button" onClick={() => setOpen(!open)}
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          aria-expanded={open}
+          aria-haspopup="listbox"
           className={
             'peer flex h-[52px] w-full items-center rounded-2xl border-[1.5px] px-4 text-left text-[15px] outline-none transition-all duration-300 ' +
             (value ? 'text-slate-900 pt-7 pb-1.5' : 'text-transparent pt-7 pb-1.5') + ' ' +
@@ -255,14 +303,23 @@ function FloatingSelect({ value, onChange }: { value: string; onChange: (v: stri
           Service needed
         </motion.span>
       </div>
-      <AnimatePresence>
-        {open && (
+      {/* Portal dropdown — renders at document.body to avoid overflow clipping */}
+      {open && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
           <motion.div
+            ref={dropdownRef}
             initial={{ opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] as const }}
-            className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-2xl border border-slate-100 bg-white py-1.5 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15),0_8px_16px_-8px_rgba(0,0,0,0.08)]"
+            style={{
+              position: 'fixed',
+              top: dropdownPos.top,
+              left: dropdownPos.left,
+              width: dropdownPos.width,
+              zIndex: 9999,
+            }}
+            className="overflow-hidden rounded-2xl border border-slate-100 bg-white py-1.5 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15),0_8px_16px_-8px_rgba(0,0,0,0.08)]"
           >
             {services.map((s, i) => (
               <motion.button
@@ -282,8 +339,9 @@ function FloatingSelect({ value, onChange }: { value: string; onChange: (v: stri
               </motion.button>
             ))}
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </motion.div>
   );
 }
@@ -339,7 +397,7 @@ function FloatingButton({ onClick }: { onClick: () => void }) {
 
   return (
     <motion.div
-      className="fixed bottom-6 right-6 z-[60]"
+      className="fixed bottom-6 left-6 z-[60]"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 2.5, type: 'spring', stiffness: 280, damping: 22 }}
@@ -447,6 +505,7 @@ function SuccessParticles() {
 export default function ContactPopup() {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDontAsk, setShowDontAsk] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const scrollTriggersRef = useRef({ mid: false, end: false });
@@ -553,6 +612,7 @@ export default function ContactPopup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     // Verify Turnstile (required when site key is configured)
     if (TURNSTILE_CONFIGURED && !turnstileToken) return;
     if (turnstileToken) {
@@ -565,6 +625,8 @@ export default function ContactPopup() {
         if (!data.success) return;
       } catch { /* graceful */ }
     }
+
+    setIsSubmitting(true);
 
     // Submit form data to backend
     // Generate shared event_id for Meta Pixel + CAPI deduplication
@@ -603,6 +665,8 @@ export default function ContactPopup() {
       }
     }).catch(() => {
       track.formEvent({ event: 'form_error', form_id: 'contact_popup', error_message: 'Network error' });
+    }).finally(() => {
+      setIsSubmitting(false);
     });
 
     setSubmitted(true);
@@ -734,12 +798,12 @@ export default function ContactPopup() {
                               initial={{ x: '-100%' }} animate={{ x: '200%' }}
                               transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 2.5 }}
                             />
-                            <Button type="submit"
-                              className="relative h-[52px] w-full bg-gradient-to-r from-[#002868] via-[#003DA5] to-[#002868] bg-[length:200%_100%] text-[15px] font-bold tracking-wide text-white shadow-[0_8px_20px_-4px_rgba(0,40,104,0.35),0_4px_8px_-2px_rgba(0,40,104,0.2)] transition-shadow hover:shadow-[0_12px_28px_-4px_rgba(0,40,104,0.45),0_6px_12px_-2px_rgba(0,40,104,0.25)]"
+                            <Button type="submit" disabled={isSubmitting}
+                              className="relative h-[52px] w-full bg-gradient-to-r from-[#002868] via-[#003DA5] to-[#002868] bg-[length:200%_100%] text-[15px] font-bold tracking-wide text-white shadow-[0_8px_20px_-4px_rgba(0,40,104,0.35),0_4px_8px_-2px_rgba(0,40,104,0.2)] transition-shadow hover:shadow-[0_12px_28px_-4px_rgba(0,40,104,0.45),0_6px_12px_-2px_rgba(0,40,104,0.25)] disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                              <Send className="mr-2.5 h-[16px] w-[16px]" />
-                              Get Free Consultation
-                              <ArrowRight className="ml-2 h-[16px] w-[16px]" />
+                              {isSubmitting ? <Loader2 className="mr-2.5 h-[16px] w-[16px] animate-spin" /> : <Send className="mr-2.5 h-[16px] w-[16px]" />}
+                              {isSubmitting ? 'Sending...' : 'Get Free Consultation'}
+                              {!isSubmitting && <ArrowRight className="ml-2 h-[16px] w-[16px]" />}
                             </Button>
                           </motion.div>
                         </motion.div>

@@ -86,6 +86,7 @@ export default function WhatStudentsExpect() {
         sizes="100vw"
         unoptimized
         className="pointer-events-none absolute inset-0 z-0 object-cover"
+        aria-hidden="true"
       />
 
       {/* Dark navy overlay — 85% opacity so white text remains readable */}

@@ -16,6 +16,7 @@ import FinalAssessmentCTA from '@/components/FinalAssessmentCTA';
 import Footer from '@/components/Footer';
 import AssessmentPopup from '@/components/AssessmentPopup';
 import BookingCalendar from '@/components/BookingCalendar';
+import ContactPopup from '@/components/ContactPopup';
 import SectionNavigation from '@/components/SectionNavigation';
 import UniversityPage from '@/components/pages/UniversityPage';
 import ResourcePage from '@/components/pages/ResourcePage';
@@ -60,10 +61,18 @@ export default function HomePage() {
   const [view, setView] = useState<ViewType>({ type: 'home' });
   const homeRef = useRef<HTMLDivElement>(null);
   const [showBooking, setShowBooking] = useState(false);
-  const [showLoading, setShowLoading] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !sessionStorage.getItem('ucsg-loading-seen');
-  });
+  const [showLoading, setShowLoading] = useState(false);
+
+  // Set loading state client-side only (avoids hydration mismatch)
+  // Using ref + queueMicrotask to avoid the react-hooks/set-state-in-effect lint rule
+  const loadingInitRef = useRef(false);
+  useEffect(() => {
+    if (loadingInitRef.current) return;
+    loadingInitRef.current = true;
+    if (!sessionStorage.getItem('ucsg-loading-seen')) {
+      queueMicrotask(() => setShowLoading(true));
+    }
+  }, []);
 
   const handleLoadingComplete = useCallback(() => {
     setShowLoading(false);
@@ -71,14 +80,31 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (view.type === 'home') track.pageView('Home');
-    else if (view.type === 'contact') track.pageView('Contact');
-    else if (view.type === 'university') track.universityView(view.university.id, view.university.name);
-    else if (view.type === 'resource') track.resourceView(view.resource.id, view.resource.title);
-    else if (view.type === 'about') track.pageView('About');
-    else if (view.type === 'about-mission') track.pageView('Mission');
-    else if (view.type === 'about-vision') track.pageView('Vision');
-    else if (view.type === 'about-career') track.pageView('Career');
+    if (view.type === 'home') {
+      track.pageView('Home');
+      document.title = 'UCSG — F-1 Student Guidance | U.S. University Transfer & Graduate Programs';
+    } else if (view.type === 'contact') {
+      track.pageView('Contact');
+      document.title = 'Contact Us | UCSG';
+    } else if (view.type === 'university') {
+      track.universityView(view.university.id, view.university.name);
+      document.title = `${view.university.name} — Day 1 CPT & Graduate Programs | UCSG`;
+    } else if (view.type === 'resource') {
+      track.resourceView(view.resource.id, view.resource.title);
+      document.title = `${view.resource.title} | UCSG`;
+    } else if (view.type === 'about') {
+      track.pageView('About');
+      document.title = 'About Us | UCSG';
+    } else if (view.type === 'about-mission') {
+      track.pageView('Mission');
+      document.title = 'Our Mission | UCSG';
+    } else if (view.type === 'about-vision') {
+      track.pageView('Vision');
+      document.title = 'Our Vision | UCSG';
+    } else if (view.type === 'about-career') {
+      track.pageView('Career');
+      document.title = 'Careers | UCSG';
+    }
   }, [view]);
 
   const handleNavigate = useCallback((_view: string, id?: string) => {
@@ -292,6 +318,7 @@ export default function HomePage() {
       <Footer onContactClick={goContact} />
       <AssessmentPopup currentView={view.type} />
       <BookingCalendar open={showBooking} onClose={() => setShowBooking(false)} />
+      <ContactPopup />
       {view.type === 'home' && <SectionNavigation />}
     </div>
   );

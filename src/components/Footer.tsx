@@ -100,9 +100,9 @@ export default function Footer({ onContactClick }: Props) {
 
             {/* Column 2: Resources */}
             <div>
-              <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
+              <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
                 Resources
-              </h4>
+              </h3>
               <ul className="mt-4 space-y-3">
                 {resourceLinks.map((link) => (
                   <li key={link.id}>
@@ -126,9 +126,9 @@ export default function Footer({ onContactClick }: Props) {
 
             {/* Column 3: Quick Links */}
             <div>
-              <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
+              <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
                 Quick Links
-              </h4>
+              </h3>
               <ul className="mt-4 space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
@@ -154,9 +154,9 @@ export default function Footer({ onContactClick }: Props) {
 
             {/* Column 4: Contact */}
             <div>
-              <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
+              <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-white">
                 Book Appointment
-              </h4>
+              </h3>
               <ul className="mt-4 space-y-4">
                 <li>
                   <a

@@ -395,6 +395,7 @@ export default function ProgramExplorer() {
         <Image
           src="/images/bg-university.png"
           alt=""
+          role="presentation"
           fill
           className="object-cover"
           sizes="100vw"

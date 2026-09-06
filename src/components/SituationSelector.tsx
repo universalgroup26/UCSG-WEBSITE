@@ -92,6 +92,7 @@ export default function SituationSelector() {
       <Image
         src="/images/bg-situation-selector.png"
         alt=""
+        role="presentation"
         fill
         sizes="100vw"
         className="pointer-events-none select-none object-cover"

@@ -61,11 +61,14 @@ function push(event: Record<string, unknown>) {
 }
 
 /** Fire a Meta Pixel event directly (bypass GTM for reliability) */
-function metaPixelTrack(eventName: string, params?: Record<string, unknown>) {
+function metaPixelTrack(eventName: string, params?: Record<string, unknown>, eventId?: string) {
   if (typeof window === 'undefined') return;
   if (typeof window.fbq === 'function') {
     try {
-      if (params) {
+      if (params && eventId) {
+        // Pass event_id as 4th arg for deduplication with server-side CAPI
+        window.fbq('track', eventName, params, { event_id: eventId });
+      } else if (params) {
         window.fbq('track', eventName, params);
       } else {
         window.fbq('track', eventName);
@@ -320,14 +323,15 @@ function leadConversion(params: {
     page_title: document.title,
   });
 
-  // 2. Fire Meta Pixel Lead event DIRECTLY with value + currency
+  // 2. Fire Meta Pixel Lead event DIRECTLY with value + currency + event_id
   // This guarantees Meta receives the currency even if GTM tag is misconfigured
+  // event_id enables deduplication with server-side CAPI
   metaPixelTrack('Lead', {
     value: leadValue,
     currency: leadCurrency,
     content_name: params.formName || 'Contact Form',
     content_category: 'lead_generation',
-  });
+  }, eventId);
 
   // 3. GHL External Tracking
   const leadData: Record<string, string> = {

@@ -523,9 +523,9 @@ export default function Header({ onNavigate }: Props) {
                       <div className="min-w-0">
                         <div className="mb-1.5 flex items-center gap-2">
                           <BookOpen className="h-5 w-5 shrink-0 text-[#D6A84B]" />
-                          <h4 className="text-sm font-bold text-white">
+                          <h3 className="text-sm font-bold text-white">
                             F-1 Student Resource Center
-                          </h4>
+                          </h3>
                         </div>
                         <p className="text-xs leading-relaxed text-white/70">
                           Your comprehensive guide to maintaining F-1 status,

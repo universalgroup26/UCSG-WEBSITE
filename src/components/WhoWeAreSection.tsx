@@ -54,10 +54,12 @@ function BackgroundSlideshow({ current }: { current: number }) {
           <Image
             src={BG_IMAGES[current]}
             alt=""
+            role="presentation"
             fill
             className="object-cover"
             sizes="100vw"
             priority={current === 0}
+            aria-hidden="true"
           />
         </motion.div>
       </AnimatePresence>

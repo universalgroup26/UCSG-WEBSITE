@@ -35,7 +35,7 @@ export default function CloudflareTurnstile({
 }: CloudflareTurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
-  const [loaded, setLoaded] = useState(() => !!window.turnstile);
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isKeyConfigured = !!TURNSTILE_SITE_KEY;
 

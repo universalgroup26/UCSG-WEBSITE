@@ -18,7 +18,7 @@ const manrope = Manrope({
 const SITE_URL = "https://www.universalconsultingservices.com";
 const SITE_NAME = "UCSG — Universal Consulting Service Group";
 const SITE_DESCRIPTION =
-  "UCSG provides personalized educational guidance for F-1 students in the USA. Compare transfer-friendly universities, hybrid graduate programs, and get clear guidance on your educational journey.";
+  "UCSG helps F-1 students find transfer-friendly U.S. universities, hybrid graduate programs, and Day 1 CPT options. Free assessment and personalized guidance.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -94,10 +94,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/ucsg-logo.png",
-        width: 512,
-        height: 512,
-        alt: "UCSG Logo — Universal Consulting Service Group",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "UCSG — Universal Consulting Service Group | F-1 Student Guidance",
       },
     ],
   },
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "UCSG — Universal Consulting Service Group",
     description: SITE_DESCRIPTION,
-    images: ["/ucsg-logo.png"],
+    images: ["/og-image.png"],
   },
   alternates: {
     canonical: SITE_URL,
@@ -129,13 +129,13 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "LocalBusiness",
+        "@type": ["LocalBusiness", "EducationalOrganization"],
         "@id": `${SITE_URL}/#business`,
         name: "Universal Consulting Service Group",
         alternateName: "UCSG",
         url: SITE_URL,
         logo: `${SITE_URL}/ucsg-logo.png`,
-        image: `${SITE_URL}/ucsg-logo.png`,
+        image: `${SITE_URL}/ucsg@2x.png`,
         description: SITE_DESCRIPTION,
         telephone: "+1-302-893-5594",
         email: "Info@universalconsultingservices.com",
@@ -277,6 +277,28 @@ export default function RootLayout({
           "@type": "SearchAction",
           target: `${SITE_URL}/?q={search_term_string}`,
           "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Universal Consulting Service Group",
+        alternateName: "UCSG",
+        url: SITE_URL,
+        logo: `${SITE_URL}/ucsg-logo.png`,
+        sameAs: [
+          "https://www.instagram.com/universalconsultingsvc/",
+          "https://www.linkedin.com/company/81566580/",
+          "https://twitter.com/UniversalCons16",
+          "https://www.facebook.com/groups/universalconsultingservices/",
+          "https://www.facebook.com/universalconsultingservicesgroup",
+        ],
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: "+1-302-893-5594",
+          contactType: "customer service",
+          areaServed: "US",
+          availableLanguage: ["English", "Bengali", "Hindi"],
         },
       },
     ],

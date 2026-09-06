@@ -357,7 +357,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
 
                         {/* Requirements */}
                         <div className="mt-4">
-                          <h4 className="text-sm font-semibold text-[#0F172A]">Requirements</h4>
+                          <h3 className="text-sm font-semibold text-[#0F172A]">Requirements</h3>
                           <ul className="mt-2 space-y-1.5">
                             {job.requirements.map((req) => (
                               <li key={req} className="flex items-start gap-2 text-sm text-[#6B7280]">
@@ -425,7 +425,7 @@ export default function CareerPage({ onBack }: CareerPageProps) {
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-heading text-base font-bold text-[#0F172A]">{value.label}</h4>
+                      <h3 className="font-heading text-base font-bold text-[#0F172A]">{value.label}</h3>
                       <p className="mt-1 text-sm text-[#6B7280]">{value.description}</p>
                     </div>
                   </div>

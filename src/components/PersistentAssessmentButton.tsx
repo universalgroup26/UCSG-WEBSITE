@@ -28,7 +28,7 @@ export default function PersistentAssessmentButton({ onClick }: Props) {
     track.ctaClick({
       cta_type: 'assessment_fab',
       cta_source: 'persistent_fab',
-      cta_text: 'Free Assessment',
+      cta_text: 'Book Appointment',
     });
     onClick();
   };
@@ -37,7 +37,7 @@ export default function PersistentAssessmentButton({ onClick }: Props) {
     <button
       type="button"
       onClick={handleClick}
-      aria-label="Open Free Student Assessment"
+      aria-label="Book Appointment"
       className={
         'fixed bottom-6 right-6 z-40 flex items-center gap-2.5 ' +
         'bg-[#0874F9] text-white rounded-full pl-3.5 pr-4 py-3 ' +
@@ -59,7 +59,7 @@ export default function PersistentAssessmentButton({ onClick }: Props) {
 
       <GraduationCap className="h-5 w-5 shrink-0" aria-hidden="true" />
       <span className="text-sm font-semibold whitespace-nowrap max-sm:hidden">
-        Free Assessment
+        Book Appointment
       </span>
     </button>
   );

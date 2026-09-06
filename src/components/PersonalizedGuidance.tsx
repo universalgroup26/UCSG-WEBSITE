@@ -74,6 +74,7 @@ export default function PersonalizedGuidance() {
       <Image
         src="/images/bg-situation-selector.png"
         alt=""
+        role="presentation"
         fill
         className="object-cover object-center"
         aria-hidden="true"
