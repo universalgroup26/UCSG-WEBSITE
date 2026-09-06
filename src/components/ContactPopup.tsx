@@ -658,6 +658,8 @@ export default function ContactPopup() {
         meta_event_id: metaEventId,
         meta_lead_value: metaLeadValue,
         meta_currency: metaCurrency,
+        // Pass the Turnstile token for server-side re-verification (defense in depth)
+        turnstile_token: turnstileToken,
       }),
     }).then((res) => {
       if (!res.ok) {

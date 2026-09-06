@@ -716,6 +716,8 @@ export default function StudentAssessment({ open, onClose, onCloseAfterSubmit, p
         meta_event_id: metaEventId,
         meta_lead_value: 50,
         meta_currency: 'USD',
+        // Pass the Turnstile token for server-side re-verification (defense in depth)
+        turnstile_token: turnstileToken,
       }),
     }).then((res) => {
       if (!res.ok) {

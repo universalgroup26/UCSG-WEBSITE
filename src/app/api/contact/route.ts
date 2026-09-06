@@ -277,21 +277,25 @@ async function pingGHLTracking(leadData: {
   return null;
 }
 
-// ─── Meta Conversions API (Server-Side) ──────────────────────────────
+// ─── Meta Conversions API (Server-Side) — via official Parameter Builder Library ──
 
 /**
- * Fire a server-side Lead event to Meta Conversions API (CAPI).
+ * Fire a server-side Lead event to Meta Conversions API (CAPI) using Meta's
+ * official facebook-nodejs-business-sdk (the server-side Parameter Builder Library).
+ *
+ * The SDK handles ALL PII normalization + SHA-256 hashing per Meta's best practices:
+ *   - email → lowercase, trim, SHA-256
+ *   - phone → E.164 normalization, SHA-256
+ *   - first/last name → lowercase, trim, SHA-256
+ *   - external_id → SHA-256
+ *   - fbp/fbc → passed through (case-sensitive, never hashed)
+ * The SDK also appends the PBL "appendix" field (8-char marker) so Meta can
+ * measure PBL performance.
+ *
  * Deduplicates with the client-side fbq('track','Lead') using the same event_id.
  * Meta counts it as ONE conversion even though it arrives from two sources.
  *
- * Follows Meta's official CAPI guide:
- * - API version: v26.0
- * - PII hashed with SHA-256 (required)
- * - Phone in E.164 format (+1XXXXXXXXXX) before hashing
- * - Name split into fn (first) / ln (last) before hashing
- * - event_id for deduplication with client-side pixel
- * - action_source: 'website' for real-time form submissions
- * - custom_data includes event_source and lead_event_source for CRM attribution
+ * Ref: https://developers.facebook.com/documentation/ads-commerce/conversions-api/parameter-builder-library
  */
 async function fireMetaCAPI(data: {
   event_id?: string;
@@ -323,80 +327,65 @@ async function fireMetaCAPI(data: {
   }
 
   try {
-    // SHA-256 hash PII — Meta Conversions API REQUIRES SHA-256 hashed values
-    const hashSHA256 = async (str: string): Promise<string> => {
-      const encoder = new TextEncoder();
-      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(str));
-      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    };
+    // Dynamic import — the SDK is server-only (uses Node crypto, axios).
+    // Using dynamic import keeps the route's module-load fast and avoids bundling
+    // the SDK into edge/ISR paths that can't use it.
+    const FB_SDK = await import('facebook-nodejs-business-sdk');
+    const { FacebookAdsApi, UserData, ServerEvent, CustomData, EventRequest } = FB_SDK;
 
-    // Normalize phone to E.164 format: strip non-digits, prepend +1 if 10 digits (US)
-    const normalizePhone = (raw: string): string => {
-      const digits = raw.replace(/\D/g, '');
-      if (digits.length === 10) return '+1' + digits;
-      if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
-      if (digits.length > 0) return '+' + digits;
-      return '';
-    };
+    FacebookAdsApi.init(accessToken);
 
-    const phoneE164 = data.phone ? normalizePhone(data.phone) : '';
+    // Build user_data — the SDK normalizes + SHA-256 hashes PII on execute().
+    // Per PBL best practice: pass RAW values (lowercased/trimmed is fine but not
+    // required — the SDK does it). NEVER pre-hash; the SDK hashes once.
+    const userData = new UserData();
+    if (data.user_agent) userData.setClientUserAgent(data.user_agent);
+    if (data.email) userData.setEmails([data.email]);
+    if (data.phone) userData.setPhones([data.phone]);
+    if (data.firstName) userData.setFirstNames([data.firstName]);
+    if (data.lastName) userData.setLastNames([data.lastName]);
+    if (data.externalId) userData.setExternalIds([data.externalId]);
+    if (data.fbp) userData.setFbp(data.fbp);
+    if (data.fbc) userData.setFbc(data.fbc);
 
-    const [hashedEmail, hashedPhone, hashedFirstName, hashedLastName] = await Promise.all([
-      data.email ? hashSHA256(data.email.toLowerCase().trim()) : null,
-      phoneE164 ? hashSHA256(phoneE164) : null,
-      data.firstName ? hashSHA256(data.firstName.toLowerCase().trim()) : null,
-      data.lastName ? hashSHA256(data.lastName.toLowerCase().trim()) : null,
-    ]);
-
-    const userData: Record<string, unknown> = {
-      client_user_agent: data.user_agent,
-    };
-    if (hashedEmail) userData.em = [hashedEmail];
-    if (hashedPhone) userData.ph = [hashedPhone];
-    if (hashedFirstName) userData.fn = [hashedFirstName];
-    if (hashedLastName) userData.ln = [hashedLastName];
-    // External ID for deterministic cross-device matching (per SDK v18.1.3+)
-    if (data.externalId) userData.external_id = [await hashSHA256(data.externalId.toLowerCase().trim())];
-    // Facebook browser/click IDs for improved matching
-    if (data.fbp) userData.fbp = data.fbp;
-    if (data.fbc) userData.fbc = data.fbc;
-
-    const event = {
-      event_name: 'Lead',
-      event_time: Math.floor(Date.now() / 1000),
-      event_id: data.event_id,
-      event_source_url: data.event_source_url || 'https://www.universalconsultingservices.com',
-      action_source: 'website',
-      user_data: userData,
-      custom_data: {
-        value: data.value ?? 50,
-        currency: data.currency || 'USD',
-        content_name: data.content_name || 'Contact Form Lead',
-        content_category: data.content_category || 'education_consulting',
-        // CRM attribution fields (per Meta CAPI guide)
-        event_source: 'website',
-        lead_event_source: 'UCSG Contact Form',
-      },
-    };
-
-    // Send to Meta Conversions API v26.0
-    const res = await fetchWithTimeout(`https://graph.facebook.com/v26.0/${pixelId}/events`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ data: [event], access_token: accessToken }),
+    // Build custom_data with value/currency + CRM attribution fields.
+    const customData = new CustomData();
+    customData
+      .setValue(data.value ?? 50)
+      .setCurrency(data.currency || 'USD');
+    if (data.content_name) customData.setContentName(data.content_name);
+    if (data.content_category) customData.setContentCategory(data.content_category);
+    // CRM attribution fields (per Meta CAPI guide) — passed as custom properties.
+    customData.setCustomProperties({
+      event_source: 'website',
+      lead_event_source: 'UCSG Contact Form',
     });
 
-    if (res.ok) {
-      const result = await res.json().catch(() => null);
-      console.log('[Meta CAPI] ✓ Lead event sent (dedup:', data.event_id.slice(0, 8) + '...)', result?.events_received ? `| ${result.events_received} received` : '');
-    } else {
-      const errText = await res.text().catch(() => 'unknown');
-      console.warn('[Meta CAPI] Failed (' + res.status + '):', errText.slice(0, 300));
-    }
+    // Build the server event.
+    const event = (new ServerEvent())
+      .setEventName('Lead')
+      .setEventTime(Math.floor(Date.now() / 1000))
+      .setEventId(data.event_id)
+      .setEventSourceUrl(data.event_source_url || 'https://www.universalconsultingservices.com')
+      .setActionSource('website')
+      .setUserData(userData)
+      .setCustomData(customData);
+
+    // Send via the SDK's EventRequest (handles Graph API v26.0 + PBL appendix).
+    const eventRequest = new EventRequest(accessToken, pixelId)
+      .setEvents([event])
+      .setPartnerAgent('ucsg-nextjs'); // identifies our integration to Meta
+
+    const response = await eventRequest.execute();
+    const received = (response as { events_received?: number }).events_received;
+    console.log(
+      '[Meta CAPI] ✓ Lead event sent via PBL SDK (dedup:', data.event_id.slice(0, 8) + '...)',
+      received ? `| ${received} received` : '',
+    );
   } catch (err) {
-    console.warn('[Meta CAPI] Error:', err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn('[Meta CAPI] PBL SDK error:', msg.slice(0, 300));
+    // Non-fatal — the client-side fbq Lead event still fires as a fallback.
   }
 }
 
@@ -417,6 +406,14 @@ async function sendEmailNotification(data: {
     console.log('[Email] Skipping: SMTP credentials not configured');
     return;
   }
+  if (!SMTP_HOST) {
+    console.log('[Email] Skipping: SMTP_HOST not configured');
+    return;
+  }
+  if (!EMAIL_TO) {
+    console.log('[Email] Skipping: EMAIL_TO not configured');
+    return;
+  }
 
   try {
     const transporter = nodemailer.createTransport({
@@ -426,8 +423,15 @@ async function sendEmailNotification(data: {
       auth: { user: SMTP_USER, pass: SMTP_PASS },
     });
 
-  const utmInfo = Object.keys(data.utm).length > 0
-    ? `<p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">UTM Data</p><p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; color: #334155;">${Object.entries(data.utm).map(([k, v]) => `${k}: ${v}`).join('<br>')}</p>`
+  // Escape user-supplied strings before interpolating into HTML (prevent injection)
+  const esc = (s: string): string =>
+    (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  // Escape for href attribute contexts (mailto:/tel:/wa.me:) — strip unsafe chars
+  const escHref = (s: string): string => encodeURIComponent((s || '').replace(/[<>"\s]/g, ''));
+
+  const utmEntries = Object.entries(data.utm).filter(([, v]) => v);
+  const utmInfo = utmEntries.length > 0
+    ? `<p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">UTM Data</p><p style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; color: #334155;">${utmEntries.map(([k, v]) => `${esc(k)}: ${esc(v)}`).join('<br>')}</p>`
     : '';
 
     const subject = `New Lead from ${data.name} — ${data.service || 'General Inquiry'}`;
@@ -442,27 +446,27 @@ async function sendEmailNotification(data: {
           <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500; width: 120px;">Name</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.name}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${esc(data.name)}</td>
             </tr>
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Email</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><a href="mailto:${data.email}" style="color: #0874F9; text-decoration: none; font-weight: 600;">${data.email}</a></td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;"><a href="mailto:${escHref(data.email)}" style="color: #0874F9; text-decoration: none; font-weight: 600;">${esc(data.email)}</a></td>
             </tr>
-            ${data.phone ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Phone</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="tel:${data.phone}" style="color: #0874F9; text-decoration: none;">${data.phone}</a></td></tr>` : ''}
-            ${data.whatsapp ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">WhatsApp</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="https://wa.me/${data.whatsapp.replace(/[^0-9]/g, '')}" style="color: #25D366; text-decoration: none;">${data.whatsapp}</a></td></tr>` : ''}
+            ${data.phone ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Phone</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="tel:${escHref(data.phone)}" style="color: #0874F9; text-decoration: none;">${esc(data.phone)}</a></td></tr>` : ''}
+            ${data.whatsapp ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">WhatsApp</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;"><a href="https://wa.me/${escHref(data.whatsapp)}" style="color: #25D366; text-decoration: none;">${esc(data.whatsapp)}</a></td></tr>` : ''}
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Service</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.service || 'Not specified'}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${esc(data.service || 'Not specified')}</td>
             </tr>
-            ${data.nationality ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Nationality</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.nationality}</td></tr>` : ''}
+            ${data.nationality ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Nationality</td><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${esc(data.nationality)}</td></tr>` : ''}
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 500;">Source</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${data.source}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #0f172a;">${esc(data.source)}</td>
             </tr>
             ${utmInfo}
             <tr>
               <td style="padding: 10px 0; color: #64748b; font-weight: 500; vertical-align: top;">Message</td>
-              <td style="padding: 10px 0; font-weight: 500; color: #334155; line-height: 1.6;">${data.message.replace(/\n/g, '<br>')}</td>
+              <td style="padding: 10px 0; font-weight: 500; color: #334155; line-height: 1.6;">${esc(data.message).replace(/\n/g, '<br>')}</td>
             </tr>
           </table>
         </div>
@@ -472,7 +476,7 @@ async function sendEmailNotification(data: {
       </div>
     `;
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"UCSG Website" <${SMTP_USER}>`,
       to: EMAIL_TO,
       replyTo: data.email,
@@ -480,7 +484,8 @@ async function sendEmailNotification(data: {
       html: htmlBody,
     });
 
-    console.log('[Email] Notification sent successfully to', EMAIL_TO);
+    const previewUrl = nodemailer.getTestMessageUrl(info);
+    console.log('[Email] Notification sent successfully to', EMAIL_TO, '| messageId:', info.messageId, previewUrl ? `| preview: ${previewUrl}` : '');
   } catch (err) {
     console.error('[Email] Failed to send notification:', err);
   }
@@ -564,6 +569,8 @@ export async function POST(req: NextRequest) {
       targetIntake, currentUniversity,
       // Client-side analytics event_id for Meta CAPI deduplication
       meta_event_id, meta_lead_value, meta_currency,
+      // Cloudflare Turnstile token (from the CloudflareTurnstile widget on the form)
+      turnstile_token,
     } = body;
 
     // Extract UTM parameters
@@ -578,6 +585,47 @@ export async function POST(req: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email format.' }, { status: 400 });
+    }
+
+    // Cloudflare Turnstile bot protection (server-side verification).
+    // Only enforced when TURNSTILE_SECRET_KEY is configured — in dev (blank key)
+    // verification is skipped so the form remains testable. On production with a
+    // secret key set, a missing/invalid turnstile_token returns 403.
+    const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY || '';
+    if (TURNSTILE_SECRET) {
+      if (!turnstile_token) {
+        return NextResponse.json(
+          { error: 'Bot verification required. Please complete the captcha.' },
+          { status: 403 },
+        );
+      }
+      try {
+        const cfIp = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '';
+        const verifyRes = await fetchWithTimeout(
+          'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              secret: TURNSTILE_SECRET,
+              response: turnstile_token,
+              ...(cfIp ? { remoteip: cfIp } : {}),
+            }).toString(),
+          },
+        );
+        const verifyData = await verifyRes.json().catch(() => ({} as Record<string, unknown>));
+        if (!verifyData.success) {
+          console.warn('[Turnstile] Verification failed:', JSON.stringify(verifyData).slice(0, 200));
+          return NextResponse.json(
+            { error: 'Bot verification failed. Please try again.' },
+            { status: 403 },
+          );
+        }
+        console.log('[Turnstile] ✓ Bot verification passed');
+      } catch (turnstileErr) {
+        // If Cloudflare is unreachable, fail open (let the lead through) but log it.
+        console.warn('[Turnstile] Verification error (fail-open):', turnstileErr instanceof Error ? turnstileErr.message : turnstileErr);
+      }
     }
 
     // Idempotency: reject rapid duplicate submissions
