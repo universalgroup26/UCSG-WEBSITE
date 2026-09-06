@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
@@ -29,46 +29,6 @@ export const metadata: Metadata = {
     template: "%s | UCSG",
   },
   description: SITE_DESCRIPTION,
-  keywords: [
-    "UCSG",
-    "Universal Consulting Service Group",
-    "F-1 university transfer",
-    "hybrid graduate programs international students",
-    "Master programs F-1 students",
-    "OPT STEM OPT planning",
-    "CPT educational resources",
-    "international student support New York",
-    "Day 1 CPT",
-    "Day 1 CPT universities",
-    "University Transfers",
-    "SEVIS Reinstatement",
-    "Change of Status",
-    "F-1 Visa",
-    "International Students USA",
-    "CPT",
-    "OPT",
-    "STEM OPT",
-    "Study in USA",
-    "H-1B Visa",
-    "Immigration Consultation",
-    "US University Admission",
-    "Jackson Heights NY",
-    "Joy Chowdhury",
-    "U.S. Army Veteran-owned",
-    "Hybrid Programs USA",
-    "Trine University CPT",
-    "Monroe University CPT",
-    "Westcliff University CPT",
-    "Curry College CPT",
-    "National Louis University CPT",
-    "McDaniel College CPT",
-    "Indiana Wesleyan University CPT",
-    "Avila University Arizona CPT",
-    "Day 1 CPT Chicago",
-    "Day 1 CPT Maryland",
-    "Day 1 CPT Indiana",
-    "Day 1 CPT Arizona",
-  ],
   authors: [
     { name: "Joy Chowdhury", url: "https://www.linkedin.com/company/81566580/" },
   ],
@@ -112,10 +72,24 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
   },
   icons: {
-    icon: "/ucsg-logo.png",
-    apple: "/ucsg-logo.png",
+    icon: [
+      { url: "/favicon-512.png", type: "image/png" },
+      { url: "/ucsg-logo.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
   category: "Education",
+};
+
+// Viewport export (Next.js 14+ pattern) — themeColor for mobile browser chrome
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#061846" },
+    { media: "(prefers-color-scheme: dark)", color: "#061846" },
+  ],
 };
 
 // Cloudflare Web Analytics token
@@ -316,6 +290,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} font-sans antialiased bg-white text-foreground`}
       >
+        {/* Skip-to-content link — WCAG 2.1 Level A (2.4.1) accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[#061846] focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
         {/* GTM noscript fallback — must be immediately after <body> per Google guidelines */}
         <iframe
           src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NLD3G98X'}`}

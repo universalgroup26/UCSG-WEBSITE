@@ -205,20 +205,25 @@ function startGHLQueueFlusher() {
 
 // ─── Public tracking API ────────────────────────────────────────────────
 
-/** Initialize dataLayer */
+/** Initialize dataLayer + capture first/last-touch attribution */
 function init() {
   if (typeof window === 'undefined') return;
   window.dataLayer = window.dataLayer || [];
+  // Capture UTMs/gclid/fbclid on first mount (persists to localStorage/sessionStorage)
+  captureAttribution();
 }
 
-/** Track page view (dataLayer only — Meta PageView fires from base code) */
+/** Track page view (dataLayer + GA4 direct page_view for SPA view changes) */
 function pageView(title: string, location?: string) {
+  const loc = location || (typeof window !== 'undefined' ? window.location.href : '');
   push({
     event: 'page_view',
     page_title: title,
-    page_location: location || (typeof window !== 'undefined' ? window.location.href : ''),
+    page_location: loc,
     page_type: 'website',
   });
+  // Fire GA4 page_view directly — GTM History Change trigger may not fire on SPA nav.
+  ga4PageView(title, typeof window !== 'undefined' ? window.location.pathname : undefined);
 }
 
 /** Track CTA button clicks */
@@ -398,10 +403,112 @@ function updateConsent(granted: {
     consent_ad_personalization: granted.advertising ? 'granted' : 'denied',
   });
 
-  // Re-consent Meta Pixel when advertising is granted
-  if (granted.advertising && typeof window.fbq === 'function') {
+  // Re-consent Meta Pixel — grant OR revoke based on advertising consent state.
+  // Previously only granted (never revoked), leaving fbq stuck in 'grant' if the
+  // user later toggled advertising OFF via "Manage preferences".
+  if (typeof window.fbq === 'function') {
     try {
-      window.fbq('consent', 'grant');
+      window.fbq('consent', granted.advertising ? 'grant' : 'revoke');
+    } catch { /* noop */ }
+  }
+}
+
+// ─── First-touch / last-touch attribution helpers ──────────────────
+// Persist UTMs across sessions so server-side CAPI + GHL get full attribution.
+const FIRST_TOUCH_KEY = 'ucsg_first_touch';
+const LAST_TOUCH_KEY = 'ucsg_last_touch';
+
+interface TouchData {
+  utm?: Record<string, string>;
+  gclid?: string;
+  fbclid?: string;
+  referrer?: string;
+  landingPage?: string;
+  timestamp: number;
+}
+
+/** Capture UTMs from the URL on page load — call once on app mount. */
+function captureAttribution(): void {
+  if (typeof window === 'undefined') return;
+  const url = new URL(window.location.href);
+  const utm: Record<string, string> = {};
+  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id'];
+  for (const k of utmKeys) {
+    const v = url.searchParams.get(k);
+    if (v) utm[k] = v;
+  }
+  const gclid = url.searchParams.get('gclid');
+  const fbclid = url.searchParams.get('fbclid');
+  const referrer = document.referrer || undefined;
+  const landingPage = window.location.pathname + window.location.search;
+
+  // First-touch: write-once (only if not already set)
+  try {
+    if (!localStorage.getItem(FIRST_TOUCH_KEY)) {
+      const first: TouchData = {
+        utm: Object.keys(utm).length ? utm : undefined,
+        gclid: gclid || undefined,
+        fbclid: fbclid || undefined,
+        referrer,
+        landingPage,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(FIRST_TOUCH_KEY, JSON.stringify(first));
+    }
+  } catch { /* localStorage may be blocked */ }
+
+  // Last-touch: overwrite every page load
+  try {
+    const last: TouchData = {
+      utm: Object.keys(utm).length ? utm : undefined,
+      gclid: gclid || undefined,
+      fbclid: fbclid || undefined,
+      referrer,
+      landingPage,
+      timestamp: Date.now(),
+    };
+    sessionStorage.setItem(LAST_TOUCH_KEY, JSON.stringify(last));
+  } catch { /* sessionStorage may be blocked */ }
+}
+
+/** Read the persisted attribution data (first + last touch) for server-side calls. */
+function getAttribution(): { firstTouch?: TouchData; lastTouch?: TouchData } {
+  if (typeof window === 'undefined') return {};
+  let firstTouch: TouchData | undefined;
+  let lastTouch: TouchData | undefined;
+  try { firstTouch = JSON.parse(localStorage.getItem(FIRST_TOUCH_KEY) || 'null') || undefined; } catch { /* */ }
+  try { lastTouch = JSON.parse(sessionStorage.getItem(LAST_TOUCH_KEY) || 'null') || undefined; } catch { /* */ }
+  return { firstTouch, lastTouch };
+}
+
+// ─── External ID for cross-device matching ──────────────────────────
+const EXTERNAL_ID_KEY = 'ucsg_external_id';
+
+/** Get or create a stable external_id for the user (Meta identity graph). */
+function getOrCreateExternalId(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    let id = localStorage.getItem(EXTERNAL_ID_KEY);
+    if (!id) {
+      id = (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`);
+      localStorage.setItem(EXTERNAL_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return '';
+  }
+}
+
+/** Fire a GA4 page_view event on SPA view changes (GTM History trigger may not fire). */
+function ga4PageView(title: string, path?: string): void {
+  if (typeof window === 'undefined') return;
+  if (typeof window.gtag === 'function') {
+    try {
+      window.gtag('event', 'page_view', {
+        page_title: title,
+        page_location: window.location.href,
+        page_path: path || window.location.pathname,
+      });
     } catch { /* noop */ }
   }
 }
@@ -424,4 +531,8 @@ export const track = {
   updateConsent,
   /** Generate a unique event_id (expose for CAPI deduplication) */
   generateEventId,
+  /** Get or create a stable external_id (Meta cross-device matching) */
+  getOrCreateExternalId,
+  /** Read persisted first/last-touch attribution data */
+  getAttribution,
 };

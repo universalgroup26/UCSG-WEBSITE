@@ -71,6 +71,8 @@ export default function HomePage() {
   useEffect(() => {
     if (loadingInitRef.current) return;
     loadingInitRef.current = true;
+    // Initialize dataLayer + capture first/last-touch attribution on first mount.
+    track.init();
     if (!sessionStorage.getItem('ucsg-loading-seen')) {
       queueMicrotask(() => setShowLoading(true));
     }
@@ -228,7 +230,7 @@ export default function HomePage() {
       </AnimatePresence>
 
       <Header />
-      <main className="flex-1">
+      <main className="flex-1" id="main-content">
         <AnimatePresence mode="wait">
           {view.type === 'home' && (
             <motion.div key="home" ref={homeRef} variants={pageVariants} initial="initial" animate="animate" exit="exit">

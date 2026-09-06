@@ -646,9 +646,14 @@ export default function ContactPopup() {
       value: metaLeadValue,
       currency: metaCurrency,
       eventId: metaEventId,
+      externalId: track.getOrCreateExternalId(),
     });
 
     // Send to server (non-blocking — GHL + Meta already received the lead)
+    // Read consent state + attribution so server-side CAPI can be consent-aware.
+    const consentRaw = typeof window !== 'undefined' ? localStorage.getItem('ucsg_consent_v2') : null;
+    const consentState = consentRaw ? (JSON.parse(consentRaw) as { advertising?: boolean }) : null;
+    const attribution = track.getAttribution();
     fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -660,6 +665,12 @@ export default function ContactPopup() {
         meta_currency: metaCurrency,
         // Pass the Turnstile token for server-side re-verification (defense in depth)
         turnstile_token: turnstileToken,
+        // Consent state — server skips PII in CAPI if advertising denied (GDPR)
+        meta_consent_advertising: consentState?.advertising !== false,
+        // External ID for Meta cross-device matching
+        meta_external_id: track.getOrCreateExternalId(),
+        // First/last-touch attribution (UTMs, gclid, fbclid)
+        gclid: attribution.lastTouch?.gclid || attribution.firstTouch?.gclid,
       }),
     }).then((res) => {
       if (!res.ok) {

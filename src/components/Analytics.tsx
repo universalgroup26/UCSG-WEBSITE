@@ -91,18 +91,32 @@ export default function Analytics() {
   return (
     <>
       {/* ── Google Consent Mode v2 defaults (MUST run before GTM/gtag) ── */}
+      {/* Region-specific: EEA/UK/CH users get denied-by-default (GDPR/UK GDPR), */}
+      {/* rest of world gets granted-by-default (better ad attribution quality). */}
+      {/* url_passthrough + ads_data_redaction improve EEA compliance + attribution. */}
       <script
         id="google-consent-defaults"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+            // Default for ALL regions — denied (safe default)
             gtag('consent', 'default', {
               'analytics_storage': 'denied',
               'ad_storage': 'denied',
               'ad_user_data': 'denied',
               'ad_personalization': 'denied',
-              'wait_for_update': 500
+              'wait_for_update': 1500,
+              'url_passthrough': true,
+              'ads_data_redaction': true
+            });
+            // Region-specific override — non-EEA users get granted by default
+            gtag('consent', 'default', {
+              'analytics_storage': 'granted',
+              'ad_storage': 'granted',
+              'ad_user_data': 'granted',
+              'ad_personalization': 'granted',
+              'region': ['US','CA','MX','BR','AR','CL','CO','PE','IN','BD','PK','LK','NP','BT','MV','AU','NZ','JP','KR','SG','MY','TH','PH','ID','VN','AE','SA','QA','KW','BH','OM','EG','NG','ZA','MA','DZ','TN','KE','GH','ET']
             });
           `,
         }}
@@ -211,10 +225,9 @@ export default function Analytics() {
       />
 
       {/* ── Google Analytics 4 (GA4) Direct gtag.js ──────────────── */}
-      {/* Fallback/redundancy: GA4 also fires directly via gtag.js. */}
-      {/* GTM container should include GA4 config; this ensures events */}
-      {/* are captured even if GTM tag is misconfigured. */}
-      {GA4_ID && (
+      {/* Loaded ONLY if GTM is not present (prevents double page_view/event counts). */}
+      {/* GTM container (GTM-NLD3G98X) is the canonical GA4 loader; this is a fallback. */}
+      {GA4_ID && !GTM_ID && (
         <Script
           id="ga4-gtag"
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
@@ -225,8 +238,35 @@ export default function Analytics() {
               window.gtag('config', GA4_ID, {
                 send_page_view: true,
               });
-              console.log('[GA4] Initialized:', GA4_ID);
+              console.log('[GA4] Initialized (no GTM fallback):', GA4_ID);
             }
+          }}
+        />
+      )}
+      {GA4_ID && GTM_ID && (
+        <Script
+          id="ga4-gtag-gated"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Only load direct gtag.js if GTM failed to load (no google_tag_manager)
+              window.addEventListener('load', function() {
+                if (!window.google_tag_manager && !window.__ga4FallbackLoaded) {
+                  window.__ga4FallbackLoaded = true;
+                  var s = document.createElement('script');
+                  s.src = 'https://www.googletagmanager.com/gtag/js?id=${GA4_ID}';
+                  s.async = true;
+                  s.onload = function() {
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', '${GA4_ID}', { send_page_view: true });
+                    console.log('[GA4] Fallback initialized (GTM not detected):', '${GA4_ID}');
+                  };
+                  document.head.appendChild(s);
+                }
+              });
+            `,
           }}
         />
       )}

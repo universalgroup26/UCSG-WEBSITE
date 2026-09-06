@@ -308,6 +308,8 @@ async function fireMetaCAPI(data: {
   firstName?: string;
   lastName?: string;
   externalId?: string;  // External ID for cross-device matching (SDK v18.1.3+)
+  clientIp?: string;    // Client IP for improved match quality
+  gclid?: string;       // Google Click ID for click attribution
   value?: number;
   currency?: string;
   content_name?: string;
@@ -340,6 +342,7 @@ async function fireMetaCAPI(data: {
     // required — the SDK does it). NEVER pre-hash; the SDK hashes once.
     const userData = new UserData();
     if (data.user_agent) userData.setClientUserAgent(data.user_agent);
+    if (data.clientIp) userData.setClientIpAddress(data.clientIp);
     if (data.email) userData.setEmails([data.email]);
     if (data.phone) userData.setPhones([data.phone]);
     if (data.firstName) userData.setFirstNames([data.firstName]);
@@ -347,6 +350,9 @@ async function fireMetaCAPI(data: {
     if (data.externalId) userData.setExternalIds([data.externalId]);
     if (data.fbp) userData.setFbp(data.fbp);
     if (data.fbc) userData.setFbc(data.fbc);
+    // Note: Meta's UserData SDK has no setClickId for gclid. Google Click IDs are
+    // best passed via custom_data.custom_properties for server-side correlation.
+    // (The _fbc cookie captures Facebook click IDs, not Google's gclid.)
 
     // Build custom_data with value/currency + CRM attribution fields.
     const customData = new CustomData();
@@ -356,10 +362,13 @@ async function fireMetaCAPI(data: {
     if (data.content_name) customData.setContentName(data.content_name);
     if (data.content_category) customData.setContentCategory(data.content_category);
     // CRM attribution fields (per Meta CAPI guide) — passed as custom properties.
-    customData.setCustomProperties({
+    const customProps: Record<string, unknown> = {
       event_source: 'website',
       lead_event_source: 'UCSG Contact Form',
-    });
+    };
+    // Google Click ID for cross-platform attribution correlation
+    if (data.gclid) customProps.gclid = data.gclid;
+    customData.setCustomProperties(customProps);
 
     // Build the server event.
     const event = (new ServerEvent())
@@ -571,6 +580,14 @@ export async function POST(req: NextRequest) {
       meta_event_id, meta_lead_value, meta_currency,
       // Cloudflare Turnstile token (from the CloudflareTurnstile widget on the form)
       turnstile_token,
+      // Consent state (from client localStorage) — if advertising denied, skip PII in CAPI
+      meta_consent_advertising,
+      // External ID for cross-device matching (Meta identity graph)
+      meta_external_id,
+      // Client IP (passed through for CAPI match quality; server also has x-forwarded-for)
+      client_ip,
+      // Gclid for Meta click ID matching
+      gclid,
     } = body;
 
     // Extract UTM parameters
@@ -746,16 +763,33 @@ export async function POST(req: NextRequest) {
       return match ? decodeURIComponent(match[1]) : undefined;
     };
 
+    // Resolve client IP — prefer CF-Connecting-IP (behind Cloudflare), then X-Forwarded-For,
+    // then the client-provided fallback. PBL SDK uses this for improved match quality.
+    const resolvedClientIp =
+      req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      client_ip ||
+      undefined;
+
+    // Consent-aware CAPI: if user denied advertising consent, omit PII (em/ph/fn/ln)
+    // but still send the event with fbp/fbc/client_user_agent for aggregate measurement.
+    // This is a GDPR/LGPD compliance requirement for EEA users.
+    const advertisingGranted = meta_consent_advertising !== false; // default true if not specified
+
     fireMetaCAPI({
       event_id: meta_event_id,
       event_source_url: req.headers.get('referer') || req.url,
       user_agent: req.headers.get('user-agent') || undefined,
       fbp: getCookieValue('_fbp'),
       fbc: getCookieValue('_fbc'),
-      email: trimmedEmail,
-      phone: trimmedPhone || undefined,
-      firstName: firstName || undefined,
-      lastName: lastName || undefined,
+      // PII only if advertising consent granted
+      email: advertisingGranted ? trimmedEmail : undefined,
+      phone: advertisingGranted ? (trimmedPhone || undefined) : undefined,
+      firstName: advertisingGranted ? (firstName || undefined) : undefined,
+      lastName: advertisingGranted ? (lastName || undefined) : undefined,
+      externalId: meta_external_id,
+      clientIp: resolvedClientIp,
+      gclid: gclid || utm.gclid,
       value: meta_lead_value,
       currency: meta_currency,
       content_name: formSource,

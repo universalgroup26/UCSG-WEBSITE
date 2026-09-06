@@ -11,9 +11,9 @@ interface LoadingScreenProps {
 const NAVY = '#061846';
 const GOLD = '#D6A84B';
 
-/* Timing (seconds) */
-const TOTAL_DURATION = 7.0;
-const FADE_OUT_DURATION = 0.8;
+/* Timing (seconds) — kept short to avoid delaying LCP (Core Web Vitals) */
+const TOTAL_DURATION = 1.5;
+const FADE_OUT_DURATION = 0.4;
 
 /* City Points (normalised 0-1 coordinates) */
 interface City {
