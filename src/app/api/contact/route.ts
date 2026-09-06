@@ -272,6 +272,7 @@ async function fireMetaCAPI(data: {
   phone?: string;
   firstName?: string;
   lastName?: string;
+  externalId?: string;  // External ID for cross-device matching (SDK v18.1.3+)
   value?: number;
   currency?: string;
   content_name?: string;
@@ -323,6 +324,8 @@ async function fireMetaCAPI(data: {
     if (hashedPhone) userData.ph = [hashedPhone];
     if (hashedFirstName) userData.fn = [hashedFirstName];
     if (hashedLastName) userData.ln = [hashedLastName];
+    // External ID for deterministic cross-device matching (per SDK v18.1.3+)
+    if (data.externalId) userData.external_id = [await hashSHA256(data.externalId.toLowerCase().trim())];
     // Facebook browser/click IDs for improved matching
     if (data.fbp) userData.fbp = data.fbp;
     if (data.fbc) userData.fbc = data.fbc;

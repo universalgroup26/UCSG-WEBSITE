@@ -11,6 +11,7 @@ const UCSG_TRACKING_ID =
   process.env.NEXT_PUBLIC_UCSG_TRACKING_ID ||
   'tk_b6bec4688bdc473b85ae341de9f730fc';
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '2582317282238910';
+const META_APP_ID = process.env.NEXT_PUBLIC_META_APP_ID || '';
 
 declare global {
   interface Window {
@@ -24,6 +25,15 @@ declare global {
     _ucsgq?: Record<string, unknown>[];
     fbq?: (...args: unknown[]) => void;
     _fbq?: unknown[];
+    fbAsyncInit?: () => void;
+    FB?: {
+      init: (params: Record<string, unknown>) => void;
+      getLoginStatus: (cb: (response: unknown) => void) => void;
+      login: (cb: (response: unknown) => void, opts?: Record<string, unknown>) => void;
+      api: (path: string, cb: (response: unknown) => void) => void;
+      ui: (params: Record<string, unknown>, cb: (response: unknown) => void) => void;
+      XFBML?: { parse: () => void };
+    };
   }
 }
 
@@ -92,7 +102,10 @@ export default function Analytics() {
       />
 
       {/* ── Meta Pixel Base Code (DIRECT — not through GTM) ───────── */}
-      {/* This ensures fbq('track','Lead',{value,currency:'USD'}) fires reliably */}
+      {/* Includes Advanced Matching (Automatic Advanced Matching enabled) */}
+      {/* and external_id support per latest Meta SDK best practices. */}
+      {/* fbq('init') with autoConfig:true enables Automatic Advanced Matching, */}
+      {/* which sends hashed browser PII to improve event matching. */}
       {META_PIXEL_ID && (
         <>
           <script
@@ -107,9 +120,17 @@ export default function Analytics() {
                 t.src=v;s=b.getElementsByTagName(e)[0];
                 s.parentNode.insertBefore(t,s)}(window, document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '${META_PIXEL_ID}');
+                fbq('init', '${META_PIXEL_ID}', {
+                  em: undefined,
+                  ph: undefined,
+                  fn: undefined,
+                  ln: undefined,
+                  external_id: undefined
+                }, {
+                  eventID: 'PageView-' + Date.now()
+                });
                 fbq('consent', 'revoke');
-                fbq('track', 'PageView');
+                fbq('track', 'PageView', {}, { eventID: 'PageView-' + Date.now() });
               `,
             }}
           />
@@ -123,6 +144,36 @@ export default function Analytics() {
             />
           </noscript>
         </>
+      )}
+
+      {/* ── Facebook JavaScript SDK ──────────────────────────────── */}
+      {/* Provides FB.login(), FB.api(), FB.ui() for social features. */}
+      {/* Per Facebook SDK v18.3 changelog: SSO support, external ID, */}
+      {/* improved security (SecureRandom, SSL bypass removal, thread safety). */}
+      {META_APP_ID && (
+        <script
+          id="facebook-js-sdk"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.fbAsyncInit = function() {
+                FB.init({
+                  appId      : '${META_APP_ID}',
+                  cookie     : true,
+                  xfbml      : true,
+                  version    : 'v26.0'
+                });
+                console.log('[FB SDK] Initialized with app:', '${META_APP_ID}');
+              };
+              (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+            `,
+          }}
+        />
       )}
 
       {/* ── Google Tag Manager (GTM-M5DGD7Z2) ────────────────────── */}

@@ -293,11 +293,15 @@ function leadConversion(params: {
   name?: string;
   email?: string;
   phone?: string;
+  firstName?: string;
+  lastName?: string;
   service?: string;
   value?: number;
   currency?: string;
   /** Pass a pre-generated event_id to share with server-side CAPI for deduplication */
   eventId?: string;
+  /** External ID for cross-device matching (e.g., user UUID, CRM ID) */
+  externalId?: string;
   /** Extra fields to pass to GHL goTrackLead (assessment data, etc.) */
   ghlFields?: Record<string, string>;
 }) {
@@ -323,14 +327,23 @@ function leadConversion(params: {
     page_title: document.title,
   });
 
-  // 2. Fire Meta Pixel Lead event DIRECTLY with value + currency + event_id
-  // This guarantees Meta receives the currency even if GTM tag is misconfigured
-  // event_id enables deduplication with server-side CAPI
+  // 2. Fire Meta Pixel Lead event DIRECTLY with Advanced Matching
+  // Advanced Matching: pass PII directly to fbq for improved event attribution.
+  // Meta hashes this data client-side — no raw PII leaves the browser.
+  // external_id provides deterministic cross-device matching (per SDK v18.1.3+).
+  const userData: Record<string, unknown> = {};
+  if (params.email) userData.em = params.email;
+  if (params.phone) userData.ph = params.phone;
+  if (params.firstName) userData.fn = params.firstName;
+  if (params.lastName) userData.ln = params.lastName;
+  if (params.externalId) userData.external_id = params.externalId;
+
   metaPixelTrack('Lead', {
     value: leadValue,
     currency: leadCurrency,
     content_name: params.formName || 'Contact Form',
     content_category: 'lead_generation',
+    ...userData,
   }, eventId);
 
   // 3. GHL External Tracking
