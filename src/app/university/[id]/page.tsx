@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: 'University Not Found' };
   }
 
-  const title = `${uni.name} — Day 1 CPT & Graduate Programs | UCSG`;
+  const title = `${uni.name} — Day 1 CPT & Graduate Programs`;
   const description = `${uni.description.slice(0, 155)}...`;
 
   return {

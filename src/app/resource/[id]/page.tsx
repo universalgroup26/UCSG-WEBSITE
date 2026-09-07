@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: 'Resource Not Found' };
   }
 
-  const title = `${res.title} | UCSG`;
+  const title = res.title;
   const description = res.description.slice(0, 155);
 
   return {
