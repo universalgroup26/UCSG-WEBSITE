@@ -41,7 +41,7 @@ interface Props {
   onNavigate?: (view: string, id?: string) => void;
 }
 
-type MegaMenuId = 'universities' | 'resources' | 'about' | null;
+type MegaMenuId = 'universities' | 'resources' | 'about' | 'veterans' | null;
 
 interface ProgramLink {
   label: string;
@@ -659,6 +659,125 @@ export default function Header({ onNavigate }: Props) {
               </div>
             </div>
 
+            {/* Veteran Education mega menu trigger */}
+            <div
+              className="relative"
+              onMouseEnter={() => openMega('veterans')}
+              onMouseLeave={closeMega}
+            >
+              <button
+                onClick={() => setActiveMega((prev) => (prev === 'veterans' ? null : 'veterans'))}
+                onFocus={() => openMega('veterans')}
+                aria-expanded={activeMega === 'veterans'}
+                aria-controls="mega-veterans"
+                className={
+                  'flex items-center gap-1 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-colors ' +
+                  (activeMega === 'veterans'
+                    ? 'bg-[#061846] text-white'
+                    : 'bg-[#061846]/5 text-[#061846] hover:bg-[#061846] hover:text-white')
+                }
+              >
+                Veteran Education
+                <ChevronRight className="h-3 w-3 rotate-90" />
+              </button>
+
+              {/* Veteran Mega Menu Panel — 5 columns + CTA */}
+              <div
+                id="mega-veterans"
+                role="menu"
+                aria-label="Veteran Education menu"
+                onMouseEnter={cancelMegaClose}
+                onMouseLeave={closeMega}
+                className={
+                  'absolute left-1/2 top-full -translate-x-1/2 pt-2 transition-all duration-200 ' +
+                  (activeMega === 'veterans'
+                    ? 'pointer-events-auto visible translate-y-0 opacity-100'
+                    : 'pointer-events-none invisible -translate-y-2 opacity-0')
+                }
+              >
+                <div className="w-[920px] rounded-2xl border border-gray-200/80 bg-white p-6 shadow-2xl shadow-[#061846]/[0.12]">
+                  <div className="grid grid-cols-5 gap-4">
+                    {/* Column 1 — Start Here */}
+                    <div>
+                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Start Here</h3>
+                      <ul className="mt-3 space-y-1.5">
+                        <li><button onClick={() => navigate('veterans', undefined, 'Veteran Education Overview', 'veterans')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Overview</button></li>
+                        <li><button onClick={() => navigate('veterans', 'degree-planning', 'Degree Planning', 'veterans:degree-planning')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Degree Planning</button></li>
+                        <li><button onClick={() => navigate('veterans', 'assessment', 'Free Assessment', 'veterans:assessment')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0874F9] transition-colors hover:bg-[#EDF5FF] hover:text-[#0660D4]">Free Assessment</button></li>
+                        <li><button onClick={() => navigate('veterans', 'book-consultation', 'Book Consultation', 'veterans:book-consultation')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Book Consultation</button></li>
+                      </ul>
+                    </div>
+                    {/* Column 2 — Degree Paths */}
+                    <div>
+                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Degree Paths</h3>
+                      <ul className="mt-3 space-y-1.5">
+                        <li><button onClick={() => navigate('veterans', 'bachelors-degree', "Bachelor's Degree", 'veterans:bachelors-degree')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Bachelor's & Completion</button></li>
+                        <li><button onClick={() => navigate('veterans', 'masters-mba', "Master's & MBA", 'veterans:masters-mba')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Master's & MBA</button></li>
+                        <li><button onClick={() => navigate('veterans', 'doctoral-degrees', 'Doctoral Degrees', 'veterans:doctoral-degrees')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Doctoral & Professional</button></li>
+                        <li><button onClick={() => navigate('veterans', 'online-hybrid-degrees', 'Online & Hybrid', 'veterans:online-hybrid-degrees')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Online & Hybrid</button></li>
+                      </ul>
+                    </div>
+                    {/* Column 3 — Education Benefits & Cost */}
+                    <div>
+                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Benefits & Cost</h3>
+                      <ul className="mt-3 space-y-1.5">
+                        <li><button onClick={() => navigate('veterans', 'education-benefits', 'VA Education Benefits', 'veterans:education-benefits')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">VA Education Benefits</button></li>
+                        <li><button onClick={() => navigate('veterans', 'yellow-ribbon', 'Yellow Ribbon', 'veterans:yellow-ribbon')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Yellow Ribbon Program</button></li>
+                        <li><button onClick={() => navigate('veterans', 'vre', 'VR&E / Chapter 31', 'veterans:vre')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">VR&E / Chapter 31</button></li>
+                        <li><button onClick={() => navigate('veterans', 'cost-planning', 'Cost Planning', 'veterans:cost-planning')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Education Cost Planning</button></li>
+                      </ul>
+                    </div>
+                    {/* Column 4 — Military Experience & School Selection */}
+                    <div>
+                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">School Selection</h3>
+                      <ul className="mt-3 space-y-1.5">
+                        <li><button onClick={() => navigate('veterans', 'military-transfer-credit', 'Military Transfer Credit', 'veterans:military-transfer-credit')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Military & Transfer Credit</button></li>
+                        <li><button onClick={() => navigate('veterans', 'choosing-a-school', 'Choosing a School', 'veterans:choosing-a-school')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Choosing the Right School</button></li>
+                        <li><button onClick={() => navigate('veterans', 'program-comparison', 'Program Comparison', 'veterans:program-comparison')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Compare Programs</button></li>
+                      </ul>
+                    </div>
+                    {/* Column 5 — Resources */}
+                    <div>
+                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Resources</h3>
+                      <ul className="mt-3 space-y-1.5">
+                        <li><button onClick={() => navigate('veterans', 'resources', 'Resource Center', 'veterans:resources')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Resource Center</button></li>
+                        <li><button onClick={() => navigate('veterans', 'events', 'Events', 'veterans:events')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Workshops & Events</button></li>
+                        <li><button onClick={() => navigate('veterans', 'faq', 'FAQ', 'veterans:faq')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">FAQ</button></li>
+                        <li><button onClick={() => navigate('veterans', 'degree-planning', 'Planning Checklist', 'veterans:degree-planning')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Degree Planning Guide</button></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* CTA Card */}
+                  <div className="mt-4 flex items-center justify-between rounded-xl bg-gradient-to-r from-[#061846] to-[#092B68] p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#D6A84B]/20">
+                        <Star className="h-5 w-5 text-[#D6A84B]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">YOUR NEXT MISSION: EDUCATION</p>
+                        <p className="text-[11px] text-white/60">Not sure which degree path fits your goals?</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => navigate('veterans', 'assessment', 'Start Free Assessment', 'veterans:assessment')}
+                        className="rounded-lg bg-[#0874F9] px-4 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#0660D4]"
+                      >
+                        START FREE ASSESSMENT
+                      </button>
+                      <button
+                        onClick={() => navigate('veterans', 'book-consultation', 'Book a Consultation', 'veterans:book-consultation')}
+                        className="rounded-lg border border-white/30 px-4 py-2 text-[12px] font-semibold text-white transition-colors hover:border-white"
+                      >
+                        BOOK A CONSULTATION
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Transfer Support */}
             <button
               onClick={() => navigate('contact', undefined, 'Transfer Support', 'contact')}
@@ -964,6 +1083,60 @@ export default function Header({ onNavigate }: Props) {
                           >
                             <Building2 className="h-4 w-4 shrink-0 text-emerald-600" />
                             <span className="text-[13px] font-medium text-[#334155]">Careers</span>
+                          </button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Veteran Education Accordion */}
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="veterans" className="border-b-0">
+                      <AccordionTrigger className="min-h-[44px] py-3 text-sm font-semibold text-[#061846] hover:no-underline hover:text-[#0874F9]">
+                        Veteran Education
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 pb-2 pl-2">
+                          <button onClick={() => navigate('veterans', undefined, 'Overview', 'veterans')} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]">
+                            <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
+                            <span className="text-[13px] font-semibold text-[#0F172A]">Overview</span>
+                          </button>
+                          <p className="mt-2 mb-1 px-3 text-[11px] font-bold uppercase tracking-wide text-[#94A3B8]">Degree Paths</p>
+                          {[
+                            { id: 'bachelors-degree', label: "Bachelor's Degree" },
+                            { id: 'masters-mba', label: "Master's & MBA" },
+                            { id: 'doctoral-degrees', label: 'Doctoral Degrees' },
+                            { id: 'online-hybrid-degrees', label: 'Online & Hybrid' },
+                          ].map((item) => (
+                            <button key={item.id} onClick={() => navigate('veterans', item.id, item.label, `veterans:${item.id}`)} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]">
+                              <GraduationCap className="h-4 w-4 shrink-0 text-[#0874F9]" />
+                              <span className="text-[13px] font-medium text-[#334155]">{item.label}</span>
+                            </button>
+                          ))}
+                          <p className="mt-2 mb-1 px-3 text-[11px] font-bold uppercase tracking-wide text-[#94A3B8]">Resources</p>
+                          {[
+                            { id: 'education-benefits', label: 'VA Education Benefits' },
+                            { id: 'yellow-ribbon', label: 'Yellow Ribbon' },
+                            { id: 'vre', label: 'VR&E / Chapter 31' },
+                            { id: 'cost-planning', label: 'Cost Planning' },
+                            { id: 'military-transfer-credit', label: 'Military Transfer Credit' },
+                            { id: 'choosing-a-school', label: 'Choosing a School' },
+                            { id: 'resources', label: 'Resource Center' },
+                            { id: 'events', label: 'Events' },
+                            { id: 'faq', label: 'FAQ' },
+                          ].map((item) => (
+                            <button key={item.id} onClick={() => navigate('veterans', item.id, item.label, `veterans:${item.id}`)} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]">
+                              <BookOpen className="h-4 w-4 shrink-0 text-[#0874F9]" />
+                              <span className="text-[13px] font-medium text-[#334155]">{item.label}</span>
+                            </button>
+                          ))}
+                          <button onClick={() => navigate('veterans', 'assessment', 'Free Assessment', 'veterans:assessment')} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg bg-[#061846]/5 px-3 py-2 text-left transition-colors hover:bg-[#061846] hover:text-white">
+                            <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
+                            <span className="text-[13px] font-bold text-[#0874F9] group-hover:text-white">Free Veteran Assessment</span>
+                          </button>
+                          <button onClick={() => navigate('veterans', 'book-consultation', 'Book Consultation', 'veterans:book-consultation')} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]">
+                            <BookOpen className="h-4 w-4 shrink-0 text-[#0874F9]" />
+                            <span className="text-[13px] font-medium text-[#334155]">Book a Consultation</span>
                           </button>
                         </div>
                       </AccordionContent>

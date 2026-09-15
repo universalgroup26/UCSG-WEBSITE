@@ -68,6 +68,7 @@ export default function GlobalShell({ children }: { children: React.ReactNode })
         'about-vision': '/about/vision',
         'about-career': '/about/career',
         privacy: '/privacy',
+        veterans: id ? `/veterans/${id}` : '/veterans',
       };
 
       const targetPath = routeMap[view];
