@@ -24,7 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/veterans/degree-planning`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/veterans/bachelors-degree`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/veterans/masters-mba`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${SITE_URL}/veterans/doctoral-degrees`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/veterans/online-hybrid-degrees`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/veterans/education-benefits`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/veterans/yellow-ribbon`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },

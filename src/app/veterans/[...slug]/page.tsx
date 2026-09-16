@@ -18,10 +18,6 @@ const VETERAN_PAGES: Record<string, { title: string; description: string }> = {
     title: "Master's & MBA Degree Planning for Veterans",
     description: 'Compare graduate programs, MBA vs specialized master\'s, admission requirements, and cost planning for veterans pursuing a master\'s or MBA.',
   },
-  'doctoral-degrees': {
-    title: 'Doctoral & Professional Degree Planning for Veterans',
-    description: 'Explore PhD, DBA, and professional doctorate options. Compare research vs applied programs, admission criteria, and total cost for veterans.',
-  },
   'online-hybrid-degrees': {
     title: 'Flexible Degree Options for Veterans',
     description: 'Compare online, hybrid, and on-campus degree formats. Understand asynchronous vs synchronous and working-professional considerations for veterans.',

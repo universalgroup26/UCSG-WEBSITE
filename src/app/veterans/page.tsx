@@ -6,7 +6,7 @@ const SITE_URL = 'https://www.universalconsultingservices.com';
 export const metadata: Metadata = {
   title: 'Veteran Degree & Education Planning',
   description:
-    'Explore degree options, education resources, military transfer-credit questions and veteran-focused education planning with UCSG. Bachelor\'s, Master\'s, MBA, Doctoral, and Online/Hybrid programs.',
+    'Explore degree options, education resources, military transfer-credit questions and veteran-focused education planning with UCSG. Bachelor\'s, Master\'s, MBA, and Online/Hybrid programs.',
   alternates: { canonical: `${SITE_URL}/veterans` },
   openGraph: {
     title: 'Veteran Degree & Education Planning | UCSG',

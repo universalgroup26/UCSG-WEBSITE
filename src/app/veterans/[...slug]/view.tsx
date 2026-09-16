@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import VeteranBachelorsPage from '@/components/pages/veteran/VeteranBachelorsPage';
 import VeteranMastersPage from '@/components/pages/veteran/VeteranMastersPage';
-import VeteranDoctoralPage from '@/components/pages/veteran/VeteranDoctoralPage';
 import VeteranOnlineHybridPage from '@/components/pages/veteran/VeteranOnlineHybridPage';
 import VeteranAssessmentForm from '@/components/pages/veteran/VeteranAssessmentForm';
 import VeteranInfoPage from '@/components/pages/veteran/VeteranInfoPage';
@@ -328,7 +327,6 @@ export default function VeteranSlugView({ slug }: { slug: string }) {
   // Degree path pages have dedicated components
   if (slug === 'bachelors-degree') return <VeteranBachelorsPage />;
   if (slug === 'masters-mba') return <VeteranMastersPage />;
-  if (slug === 'doctoral-degrees') return <VeteranDoctoralPage />;
   if (slug === 'online-hybrid-degrees') return <VeteranOnlineHybridPage />;
   if (slug === 'assessment') return <VeteranAssessmentForm />;
 

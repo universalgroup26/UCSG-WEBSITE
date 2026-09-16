@@ -713,7 +713,6 @@ export default function Header({ onNavigate }: Props) {
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', 'bachelors-degree', "Bachelor's Degree", 'veterans:bachelors-degree')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Bachelor's & Completion</button></li>
                         <li><button onClick={() => navigate('veterans', 'masters-mba', "Master's & MBA", 'veterans:masters-mba')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Master's & MBA</button></li>
-                        <li><button onClick={() => navigate('veterans', 'doctoral-degrees', 'Doctoral Degrees', 'veterans:doctoral-degrees')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Doctoral & Professional</button></li>
                         <li><button onClick={() => navigate('veterans', 'online-hybrid-degrees', 'Online & Hybrid', 'veterans:online-hybrid-degrees')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Online & Hybrid</button></li>
                       </ul>
                     </div>
@@ -1105,7 +1104,6 @@ export default function Header({ onNavigate }: Props) {
                           {[
                             { id: 'bachelors-degree', label: "Bachelor's Degree" },
                             { id: 'masters-mba', label: "Master's & MBA" },
-                            { id: 'doctoral-degrees', label: 'Doctoral Degrees' },
                             { id: 'online-hybrid-degrees', label: 'Online & Hybrid' },
                           ].map((item) => (
                             <button key={item.id} onClick={() => navigate('veterans', item.id, item.label, `veterans:${item.id}`)} className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#EDF5FF]">

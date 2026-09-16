@@ -108,15 +108,6 @@ const journeyCards = [
     color: '#061846',
   },
   {
-    icon: Trophy,
-    title: 'Doctoral Degrees',
-    description:
-      'Considering a PhD, DBA, or professional doctorate? We help you think through research vs. applied paths.',
-    ctaText: 'Explore Doctoral Options',
-    navigate: { view: 'veterans', id: 'doctoral-degrees' },
-    color: '#D6A84B',
-  },
-  {
     icon: Globe,
     title: 'Flexible / Online / Hybrid',
     description:
@@ -171,17 +162,6 @@ const degreePaths = [
     navigate: { view: 'veterans', id: 'masters-mba' },
     color: '#061846',
     badge: 'Career Pivot',
-  },
-  {
-    icon: Trophy,
-    title: 'Doctoral Degrees',
-    tagline: 'Highest Credential',
-    description:
-      'PhD, DBA, or professional doctorate. The longest, most specialized path — deserves a clear plan.',
-    features: ['Research vs. applied', 'Faculty-fit matching', 'Funding & cost planning'],
-    navigate: { view: 'veterans', id: 'doctoral-degrees' },
-    color: '#D6A84B',
-    badge: 'Specialized',
   },
   {
     icon: Globe,
@@ -346,7 +326,7 @@ const resourceArticles = [
   },
   {
     category: 'Degree Planning',
-    title: 'Choosing Between a Bachelor\'s, Master\'s, or Doctoral Degree',
+    title: 'Choosing Between a Bachelor\'s or Master\'s Degree',
     description:
       'A framework for matching your career outcome to the right degree level — not just the next credential.',
     readTime: '8 min read',
@@ -521,7 +501,7 @@ export default function VeteranHubPage({ onBack }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45, duration: 0.5 }}
             >
-              Bachelor&apos;s • Master&apos;s • MBA • Doctoral • Professional Programs
+              Bachelor&apos;s • Master&apos;s • MBA • Professional Programs
             </motion.p>
 
             <motion.div
