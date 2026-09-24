@@ -428,7 +428,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           {brandWords.map((word, i) => (
             <motion.span
               key={word + i}
-              className="relative inline-block text-[9px] font-semibold uppercase tracking-[0.25em] sm:text-[11px] md:text-xs lg:text-sm"
+              className="relative inline-block text-[9px] font-semibold uppercase tracking-[0.25em] sm:text-[12px] md:text-xs lg:text-sm"
               style={{ color: 'rgba(214,168,75,0.85)' }}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

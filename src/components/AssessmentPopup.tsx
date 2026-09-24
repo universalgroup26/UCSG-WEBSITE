@@ -205,7 +205,7 @@ export default function AssessmentPopup({ currentView }: Props) {
               <DialogTitle className="text-sm font-heading font-semibold text-white">
                 Book Your Free Assessment
               </DialogTitle>
-              <p className="text-[11px] text-white/50">
+              <p className="text-[12px] text-white/50">
                 Select a date and time that works for you
               </p>
             </div>

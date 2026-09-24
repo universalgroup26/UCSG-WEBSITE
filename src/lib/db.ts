@@ -1,46 +1,33 @@
-import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
-// ─── Prisma Postgres Setup ────────────────────────────────────────────
-// Uses @prisma/adapter-pg to connect to Prisma Postgres (cloud PostgreSQL).
-// DATABASE_URL = pooled connection (for runtime — optimized for serverless)
-// DIRECT_URL  = direct connection (for Prisma CLI migrations only)
+// ─── SQLite (Prisma) Setup ──────────────────────────────────────────
+// Sandbox uses a local SQLite database. DATABASE_URL is a file: URL set in .env.
+// We reuse a single PrismaClient across hot-reloads in dev to avoid exhausting
+// SQLite connection handles.
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  console.warn('[DB] No DATABASE_URL set — database features will be unavailable');
-}
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 let db: any;
 
 try {
-  if (connectionString) {
-    // Create the PostgreSQL adapter with the pooled connection string
-    const adapter = new PrismaPg({ connectionString });
-    
-    const globalForPrisma = globalThis as unknown as {
-      prisma: PrismaClient | undefined;
-    };
-    
-    const prisma =
-      globalForPrisma.prisma ??
-      new PrismaClient({
-        adapter,
-        log: process.env.NODE_ENV === 'development' ? ['query'] : [],
-      });
-    
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-    
-    db = prisma;
-    console.log('[DB] Connected to Prisma Postgres via @prisma/adapter-pg');
-  } else {
-    throw new Error('DATABASE_URL not configured');
-  }
+  const prisma =
+    globalForPrisma.prisma ??
+    new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    });
+
+  if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+  db = prisma;
 } catch (err) {
-  console.warn('[DB] Prisma Postgres connection failed — using in-memory mock:', err instanceof Error ? err.message : err);
-  
-  // Fallback: in-memory mock (for development without database)
+  console.warn(
+    '[DB] Prisma client initialization failed — using in-memory mock:',
+    err instanceof Error ? err.message : err,
+  );
+
+  // Fallback: in-memory mock (keeps the site functional even without a DB)
   let mockId = 1;
   const noOp = {
     findMany: async () => [],
@@ -68,7 +55,7 @@ try {
           },
         });
       },
-    }
+    },
   );
 }
 

@@ -536,7 +536,7 @@ export default function VeteranAssessmentForm({ onBack }: Props) {
             transition={{ delay: 0.1, duration: 0.5 }}
           >
             <div className="h-px w-8 bg-[#D6A84B]/50" />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
               FOR VETERANS &amp; MILITARY-CONNECTED STUDENTS
             </span>
             <div className="h-px w-8 bg-[#D6A84B]/50" />

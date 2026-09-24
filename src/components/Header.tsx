@@ -155,7 +155,7 @@ function UniRow({ uni }: { uni: UniversityData }) {
         <span className="block truncate text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">
           {uni.name}
         </span>
-        <span className="block truncate text-[11px] text-[#64748B]">
+        <span className="block truncate text-[12px] text-[#64748B]">
           {uni.location}
         </span>
       </div>
@@ -325,7 +325,7 @@ export default function Header({ onNavigate }: Props) {
                   <div className="grid grid-cols-3 gap-6">
                     {/* Column 1 - Universities */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         Universities
                       </h3>
                       <div className="space-y-0.5">
@@ -337,7 +337,7 @@ export default function Header({ onNavigate }: Props) {
 
                     {/* Column 2 - Colleges, Language & Training */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         Colleges, Language {'&'} Training
                       </h3>
                       <div className="space-y-0.5">
@@ -349,7 +349,7 @@ export default function Header({ onNavigate }: Props) {
 
                     {/* Column 3 - Explore Programs */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         Explore Programs
                       </h3>
                       <div className="space-y-0.5">
@@ -441,7 +441,7 @@ export default function Header({ onNavigate }: Props) {
                   <div className="grid grid-cols-3 gap-6">
                     {/* Column 1 - Transfer Resources */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         Transfer Resources
                       </h3>
                       <div className="space-y-0.5">
@@ -467,7 +467,7 @@ export default function Header({ onNavigate }: Props) {
 
                     {/* Column 2 - CPT and OPT Education */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         CPT and OPT Education
                       </h3>
                       <div className="space-y-0.5">
@@ -493,7 +493,7 @@ export default function Header({ onNavigate }: Props) {
 
                     {/* Column 3 - Program and Cost Planning */}
                     <div>
-                      <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                      <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[#64748B]">
                         Program and Cost Planning
                       </h3>
                       <div className="space-y-0.5">
@@ -599,7 +599,7 @@ export default function Header({ onNavigate }: Props) {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-white">About UCSG</p>
-                      <p className="text-[11px] text-white/60">Our story, founder, and values</p>
+                      <p className="text-[12px] text-white/60">Our story, founder, and values</p>
                     </div>
                     <ChevronRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
                   </button>
@@ -615,7 +615,7 @@ export default function Header({ onNavigate }: Props) {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Mission</p>
-                        <p className="text-[11px] text-[#64748B]">Empowering students with clarity</p>
+                        <p className="text-[12px] text-[#64748B]">Empowering students with clarity</p>
                       </div>
                       <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
                     </button>
@@ -629,7 +629,7 @@ export default function Header({ onNavigate }: Props) {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Vision</p>
-                        <p className="text-[11px] text-[#64748B]">Shaping the future of education</p>
+                        <p className="text-[12px] text-[#64748B]">Shaping the future of education</p>
                       </div>
                       <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
                     </button>
@@ -643,7 +643,7 @@ export default function Header({ onNavigate }: Props) {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] font-semibold text-[#0F172A] group-hover:text-[#0874F9]">Careers</p>
-                        <p className="text-[11px] text-[#64748B]">Join our team of advocates</p>
+                        <p className="text-[12px] text-[#64748B]">Join our team of advocates</p>
                       </div>
                       <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#94A3B8] opacity-0 transition-opacity group-hover:opacity-100" />
                     </button>
@@ -652,7 +652,7 @@ export default function Header({ onNavigate }: Props) {
                   {/* Bottom accent */}
                   <div className="mt-4 flex items-center gap-2 rounded-lg bg-[#EDF5FF] px-4 py-3">
                     <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
-                    <p className="text-[11px] font-medium text-[#061846]/70">
+                    <p className="text-[12px] font-medium text-[#061846]/70">
                       Veteran-led • Student-first • Trusted by thousands
                     </p>
                   </div>
@@ -700,7 +700,7 @@ export default function Header({ onNavigate }: Props) {
                   <div className="grid grid-cols-5 gap-4">
                     {/* Column 1 — Start Here */}
                     <div>
-                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Start Here</h3>
+                      <h3 className="font-heading text-[12px] font-bold uppercase tracking-wider text-[#061846]">Start Here</h3>
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', undefined, 'Veteran Education Overview', 'veterans')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Overview</button></li>
                         <li><button onClick={() => navigate('veterans', 'degree-planning', 'Degree Planning', 'veterans:degree-planning')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Degree Planning</button></li>
@@ -710,7 +710,7 @@ export default function Header({ onNavigate }: Props) {
                     </div>
                     {/* Column 2 — Degree Paths */}
                     <div>
-                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Degree Paths</h3>
+                      <h3 className="font-heading text-[12px] font-bold uppercase tracking-wider text-[#061846]">Degree Paths</h3>
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', 'bachelors-degree', "Bachelor's Degree", 'veterans:bachelors-degree')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Bachelor's & Completion</button></li>
                         <li><button onClick={() => navigate('veterans', 'masters-mba', "Master's & MBA", 'veterans:masters-mba')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Master's & MBA</button></li>
@@ -719,7 +719,7 @@ export default function Header({ onNavigate }: Props) {
                     </div>
                     {/* Column 3 — Education Benefits & Cost */}
                     <div>
-                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Benefits & Cost</h3>
+                      <h3 className="font-heading text-[12px] font-bold uppercase tracking-wider text-[#061846]">Benefits & Cost</h3>
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', 'education-benefits', 'VA Education Benefits', 'veterans:education-benefits')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">VA Education Benefits</button></li>
                         <li><button onClick={() => navigate('veterans', 'yellow-ribbon', 'Yellow Ribbon', 'veterans:yellow-ribbon')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Yellow Ribbon Program</button></li>
@@ -729,7 +729,7 @@ export default function Header({ onNavigate }: Props) {
                     </div>
                     {/* Column 4 — Military Experience & School Selection */}
                     <div>
-                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">School Selection</h3>
+                      <h3 className="font-heading text-[12px] font-bold uppercase tracking-wider text-[#061846]">School Selection</h3>
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', 'military-transfer-credit', 'Military Transfer Credit', 'veterans:military-transfer-credit')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Military & Transfer Credit</button></li>
                         <li><button onClick={() => navigate('veterans', 'choosing-a-school', 'Choosing a School', 'veterans:choosing-a-school')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Choosing the Right School</button></li>
@@ -738,7 +738,7 @@ export default function Header({ onNavigate }: Props) {
                     </div>
                     {/* Column 5 — Resources */}
                     <div>
-                      <h3 className="font-heading text-[11px] font-bold uppercase tracking-wider text-[#061846]">Resources</h3>
+                      <h3 className="font-heading text-[12px] font-bold uppercase tracking-wider text-[#061846]">Resources</h3>
                       <ul className="mt-3 space-y-1.5">
                         <li><button onClick={() => navigate('veterans', 'resources', 'Resource Center', 'veterans:resources')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Resource Center</button></li>
                         <li><button onClick={() => navigate('veterans', 'events', 'Events', 'veterans:events')} className="block w-full rounded-lg px-3 py-2 text-left text-[12px] font-medium text-[#0F172A] transition-colors hover:bg-[#EDF5FF] hover:text-[#0874F9]">Workshops & Events</button></li>
@@ -756,7 +756,7 @@ export default function Header({ onNavigate }: Props) {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-white">YOUR NEXT MISSION: EDUCATION</p>
-                        <p className="text-[11px] text-white/60">Not sure which degree path fits your goals?</p>
+                        <p className="text-[12px] text-white/60">Not sure which degree path fits your goals?</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -902,7 +902,7 @@ export default function Header({ onNavigate }: Props) {
                                 <span className="block truncate text-[13px] font-semibold text-[#0F172A]">
                                   {uni.name}
                                 </span>
-                                <span className="block truncate text-[11px] text-[#64748B]">
+                                <span className="block truncate text-[12px] text-[#64748B]">
                                   {uni.location}
                                 </span>
                               </div>
@@ -937,7 +937,7 @@ export default function Header({ onNavigate }: Props) {
                                 <span className="block truncate text-[13px] font-semibold text-[#0F172A]">
                                   {uni.name}
                                 </span>
-                                <span className="block truncate text-[11px] text-[#64748B]">
+                                <span className="block truncate text-[12px] text-[#64748B]">
                                   {uni.location}
                                 </span>
                               </div>
@@ -1060,7 +1060,7 @@ export default function Header({ onNavigate }: Props) {
                             <BookOpen className="h-4 w-4 shrink-0 text-[#D6A84B]" />
                             <div className="min-w-0 flex-1">
                               <span className="block truncate text-[13px] font-semibold text-[#0F172A]">About UCSG</span>
-                              <span className="block truncate text-[11px] text-[#64748B]">Our story, founder, and values</span>
+                              <span className="block truncate text-[12px] text-[#64748B]">Our story, founder, and values</span>
                             </div>
                           </button>
                           <button
@@ -1101,7 +1101,7 @@ export default function Header({ onNavigate }: Props) {
                             <Star className="h-4 w-4 shrink-0 text-[#D6A84B]" />
                             <span className="text-[13px] font-semibold text-[#0F172A]">Overview</span>
                           </button>
-                          <p className="mt-2 mb-1 px-3 text-[11px] font-bold uppercase tracking-wide text-[#94A3B8]">Degree Paths</p>
+                          <p className="mt-2 mb-1 px-3 text-[12px] font-bold uppercase tracking-wide text-[#94A3B8]">Degree Paths</p>
                           {[
                             { id: 'bachelors-degree', label: "Bachelor's Degree" },
                             { id: 'masters-mba', label: "Master's & MBA" },
@@ -1112,7 +1112,7 @@ export default function Header({ onNavigate }: Props) {
                               <span className="text-[13px] font-medium text-[#334155]">{item.label}</span>
                             </button>
                           ))}
-                          <p className="mt-2 mb-1 px-3 text-[11px] font-bold uppercase tracking-wide text-[#94A3B8]">Resources</p>
+                          <p className="mt-2 mb-1 px-3 text-[12px] font-bold uppercase tracking-wide text-[#94A3B8]">Resources</p>
                           {[
                             { id: 'education-benefits', label: 'VA Education Benefits' },
                             { id: 'yellow-ribbon', label: 'Yellow Ribbon' },

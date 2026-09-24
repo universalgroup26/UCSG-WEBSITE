@@ -259,7 +259,7 @@ export default function AboutUCSGSection() {
 
             {/* Disclaimer */}
             <motion.p
-              className="mt-4 max-w-lg text-[11px] leading-snug text-slate-400"
+              className="mt-4 max-w-lg text-[12px] leading-snug text-slate-400"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"

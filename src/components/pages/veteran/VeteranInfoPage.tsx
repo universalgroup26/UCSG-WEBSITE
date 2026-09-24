@@ -62,7 +62,7 @@ export interface VeteranInfoPageProps {
   /** CTA button text */
   ctaText?: string;
   /** Where the CTA should navigate (default: opens veteran assessment) */
-  ctaHref?: string;
+  ctaHref?: 'assessment' | 'book-consultation' | 'contact';
   /** Optional secondary CTA label */
   secondaryCtaText?: string;
   /** Secondary CTA destination */
@@ -185,7 +185,7 @@ export default function VeteranInfoPage({
               transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
+              <span className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
                 {heroBadge}
               </span>
               <div className="h-px w-8 bg-[#D6A84B]/50" />

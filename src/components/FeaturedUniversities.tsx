@@ -84,7 +84,7 @@ function UniversityCard({
       <p className="text-[13px] font-semibold leading-tight text-[#061846] line-clamp-2 text-center">
         {uni.name}
       </p>
-      <p className="text-[11px] text-[#061846]/50 leading-snug">
+      <p className="text-[12px] text-[#061846]/50 leading-snug">
         {uni.location}
       </p>
     </motion.button>

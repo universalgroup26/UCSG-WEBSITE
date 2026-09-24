@@ -207,7 +207,7 @@ export default function WhoWeAreSection() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
                     <Quote className="h-5 w-5 text-white" />
                   </div>
-                  <span className="inline-block rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest" style={{ backgroundColor: RED, color: 'white' }}>
+                  <span className="inline-block rounded-full px-3 py-0.5 text-[12px] font-bold uppercase tracking-widest" style={{ backgroundColor: RED, color: 'white' }}>
                     Message from Our Founder
                   </span>
                 </div>

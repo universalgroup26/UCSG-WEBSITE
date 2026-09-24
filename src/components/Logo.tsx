@@ -17,7 +17,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
   const sizes = {
     sm: { img: 36, title: 'text-base', sub: 'text-[9px]', badge: 'text-[8px]' },
     md: { img: 44, title: 'text-xl', sub: 'text-[10px]', badge: 'text-[9px]' },
-    lg: { img: 52, title: 'text-lg', sub: 'text-[11px]', badge: 'text-[10px]' },
+    lg: { img: 52, title: 'text-lg', sub: 'text-[12px]', badge: 'text-[10px]' },
     xl: { img: 68, title: 'text-3xl', sub: 'text-sm', badge: 'text-xs' },
   };
 

@@ -468,7 +468,7 @@ export default function VeteranHubPage({ onBack }: Props) {
               transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             >
               <div className="h-px w-8 bg-[#D6A84B]/50" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
+              <span className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
                 FOR VETERANS &amp; MILITARY-CONNECTED STUDENTS
               </span>
               <div className="h-px w-8 bg-[#D6A84B]/50" />
@@ -600,7 +600,7 @@ export default function VeteranHubPage({ onBack }: Props) {
                       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#061846]">
                         <Shield className="h-5 w-5 text-white" aria-hidden="true" />
                       </div>
-                      <span className="inline-block rounded-full bg-[#D6A84B]/10 px-3 py-0.5 text-[11px] font-bold uppercase tracking-widest text-[#D6A84B]">
+                      <span className="inline-block rounded-full bg-[#D6A84B]/10 px-3 py-0.5 text-[12px] font-bold uppercase tracking-widest text-[#D6A84B]">
                         Message from Our Founder
                       </span>
                     </div>
@@ -1266,7 +1266,7 @@ export default function VeteranHubPage({ onBack }: Props) {
             <div className="relative grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div>
                 <motion.span
-                  className="inline-flex items-center gap-2 rounded-full border border-[#D6A84B]/30 bg-[#D6A84B]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#D6A84B]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#D6A84B]/30 bg-[#D6A84B]/10 px-3 py-1 text-[12px] font-bold uppercase tracking-widest text-[#D6A84B]"
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
