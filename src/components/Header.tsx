@@ -80,6 +80,7 @@ const UNIVERSITY_COLUMN_2_IDS: string[] = [
   'windsor-school',
   'indiana-wesleyan',
   'avila-az',
+  'potomac',
 ];
 
 const PROGRAM_LINKS: ProgramLink[] = [
