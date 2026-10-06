@@ -62,7 +62,7 @@ export interface VeteranInfoPageProps {
   /** CTA button text */
   ctaText?: string;
   /** Where the CTA should navigate (default: opens veteran assessment) */
-  ctaHref?: string;
+  ctaHref?: 'assessment' | 'book-consultation' | 'contact';
   /** Optional secondary CTA label */
   secondaryCtaText?: string;
   /** Secondary CTA destination */

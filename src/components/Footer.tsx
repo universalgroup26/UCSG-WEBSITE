@@ -218,6 +218,15 @@ export default function Footer({ onContactClick }: Props) {
                     </span>
                   </div>
                 </li>
+                <li>
+                  <a
+                    href="/jackson-heights"
+                    onClick={() => track.navClick({ nav_type: 'footer', nav_target: 'jackson-heights', nav_text: 'Jackson Heights Office' })}
+                    className="text-sm font-medium text-[#0874F9] transition-colors hover:text-[#0660D4]"
+                  >
+                    Jackson Heights Office →
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
