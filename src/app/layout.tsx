@@ -74,8 +74,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon-512.png", type: "image/png" },
-      { url: "/ucsg-logo.png", type: "image/png" },
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/ucsg-logo.png", type: "image/png", sizes: "640x640" },
     ],
     apple: "/apple-touch-icon.png",
   },
