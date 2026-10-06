@@ -20,13 +20,13 @@ const manrope = Manrope({
 const SITE_URL = "https://www.universalconsultingservices.com";
 const SITE_NAME = "UCSG — Universal Consulting Service Group";
 const SITE_DESCRIPTION =
-  "UCSG helps F-1 students find transfer-friendly U.S. universities, hybrid graduate programs, and Day 1 CPT options. Free assessment and personalized guidance.";
+  "Compare U.S. graduate programs and explore university transfer options with UCSG. Get personalized F-1 student guidance from Jackson Heights, NY.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default:
-      "UCSG — F-1 Student Guidance | U.S. University Transfer & Graduate Programs",
+      "F-1 University Transfer & Graduate Program Guidance | UCSG",
     template: "%s | UCSG",
   },
   description: SITE_DESCRIPTION,

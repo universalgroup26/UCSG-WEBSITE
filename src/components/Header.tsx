@@ -91,7 +91,7 @@ const PROGRAM_LINKS: ProgramLink[] = [
   { label: 'Hybrid Programs' },
   { label: 'Programs by State' },
   { label: 'Programs by Intake' },
-  { label: 'Compare All 45 Programs' },
+  { label: 'Compare All 90+ Programs' },
 ];
 
 const RESOURCE_COLUMN_1: ResourceMenuItem[] = [

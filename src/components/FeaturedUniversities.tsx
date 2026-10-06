@@ -257,7 +257,7 @@ export default function FeaturedUniversities({
     track.ctaClick({
       cta_type: 'program_details_requested',
       cta_source: 'featured_universities',
-      cta_text: 'View All 45 Programs',
+      cta_text: 'View All 90+ Programs',
     });
     window.dispatchEvent(
       new CustomEvent('ucsg-navigate', {
@@ -331,7 +331,7 @@ export default function FeaturedUniversities({
               'active:scale-[0.97]'
             }
           >
-            View All 45 Programs
+            View All 90+ Programs
           </button>
         </motion.div>
       </div>
