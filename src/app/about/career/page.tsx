@@ -6,7 +6,7 @@ const SITE_URL = 'https://www.universalconsultingservices.com';
 export const metadata: Metadata = {
   title: 'Careers',
   description:
-    'Join Universal Consulting Service Group — help F-1 international students achieve their U.S. education goals. Explore career opportunities with UCSG.',
+    'Join Universal Consulting Service Group LLC — help F-1 international students achieve their U.S. education goals. Explore career opportunities with UCSG.',
   alternates: { canonical: `${SITE_URL}/about/career` },
   openGraph: {
     title: 'Careers | UCSG',

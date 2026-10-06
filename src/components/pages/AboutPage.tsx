@@ -486,7 +486,7 @@ function AboutHeroSlider() {
                 <div className="h-px w-8 bg-[#D6A84B]/50" />
               </div>
               <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-                About Universal Consulting <span className="text-[#D6A84B]">Service Group</span>
+                About Universal Consulting <span className="text-[#D6A84B]">Service Group</span> LLC
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
                 Founded by a U.S. Army Veteran, UCSG provides trusted educational
@@ -565,7 +565,7 @@ function AboutHeroSlider() {
               transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               About Universal Consulting{' '}
-              <span className="text-[#D6A84B]">Service Group</span>
+              <span className="text-[#D6A84B]">Service Group</span> LLC
             </motion.h1>
 
             <motion.p
@@ -781,7 +781,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
                 viewport={{ once: true, amount: 0.2 }}
                 custom={1.5}
               >
-                Founder &amp; CEO, Universal Consulting Service Group
+                Founder &amp; CEO, Universal Consulting Service Group LLC
               </motion.p>
 
               {/* Gold accent line */}

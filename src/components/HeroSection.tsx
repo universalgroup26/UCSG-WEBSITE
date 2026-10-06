@@ -59,7 +59,7 @@ const slides: Slide[] = [
     },
     image: {
       src: '/images/ucsg-hero-slide1.png',
-      alt: 'UCSG - Universal Consulting Service Group helping F-1 students find the right U.S. graduate program',
+      alt: 'UCSG - Universal Consulting Service Group LLC helping F-1 students find the right U.S. graduate program',
       priority: true,
       unoptimized: true,
     },

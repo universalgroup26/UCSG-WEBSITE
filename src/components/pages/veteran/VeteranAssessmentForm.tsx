@@ -819,7 +819,7 @@ export default function VeteranAssessmentForm({ onBack }: Props) {
                       className="mt-1 data-[state=checked]:border-[#0874F9] data-[state=checked]:bg-[#0874F9]"
                     />
                     <label htmlFor="veteran-consent" className="text-sm leading-relaxed text-slate-700">
-                      I consent to be contacted by Universal Consulting Service Group about my
+                      I consent to be contacted by Universal Consulting Service Group LLC about my
                       education planning goals via phone, SMS, and email. I understand I can
                       unsubscribe at any time. <span className="text-red-500">*</span>
                     </label>

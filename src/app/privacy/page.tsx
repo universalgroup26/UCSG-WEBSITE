@@ -6,7 +6,7 @@ const SITE_URL = 'https://www.universalconsultingservices.com';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'UCSG Privacy Policy — how Universal Consulting Service Group collects, uses, and protects your data. Covers Meta Pixel, GoHighLevel CRM, Google Analytics, Microsoft Clarity, and your GDPR/CCPA rights.',
+    'UCSG Privacy Policy — how Universal Consulting Service Group LLC collects, uses, and protects your data. Covers Meta Pixel, GoHighLevel CRM, Google Analytics, Microsoft Clarity, and your GDPR/CCPA rights.',
   alternates: { canonical: `${SITE_URL}/privacy` },
   openGraph: {
     title: 'Privacy Policy | UCSG',

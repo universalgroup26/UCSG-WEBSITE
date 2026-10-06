@@ -345,7 +345,7 @@ export default function PrivacyPage({ onBack }: PrivacyPageProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.5 }}
             >
-              How Universal Consulting Service Group collects, uses, and protects
+              How Universal Consulting Service Group LLC collects, uses, and protects
               your information when you visit our website or use our educational
               consulting services for F-1 international students.
             </motion.p>
@@ -465,7 +465,7 @@ export default function PrivacyPage({ onBack }: PrivacyPageProps) {
             >
               <SectionHeading icon={Shield}>Introduction</SectionHeading>
               <p>
-                Universal Consulting Service Group (&ldquo;UCSG,&rdquo; &ldquo;we,&rdquo;
+                Universal Consulting Service Group LLC (&ldquo;UCSG,&rdquo; &ldquo;we,&rdquo;
                 &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is an educational consulting service
                 that helps F-1 international students navigate U.S. university transfers,
                 Day 1 CPT programs, change-of-status pathways, STEM OPT, and graduate
@@ -1020,7 +1020,7 @@ export default function PrivacyPage({ onBack }: PrivacyPageProps) {
               </p>
               <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-5">
                 <p className="font-heading text-base font-bold text-[#061846]">
-                  Universal Consulting Service Group
+                  Universal Consulting Service Group LLC
                 </p>
                 <p className="mt-1.5 text-sm text-gray-600">
                   3707 74th Street, Suite 8 (3rd FL)<br />
@@ -1051,7 +1051,7 @@ export default function PrivacyPage({ onBack }: PrivacyPageProps) {
 
             {/* Footer note */}
             <p className="mt-12 text-center text-xs text-gray-400">
-              &copy; {new Date().getFullYear()} Universal Consulting Service Group. All rights reserved.
+              &copy; {new Date().getFullYear()} Universal Consulting Service Group LLC. All rights reserved.
             </p>
           </article>
         </div>

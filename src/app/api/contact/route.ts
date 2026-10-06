@@ -480,7 +480,7 @@ async function sendEmailNotification(data: {
           </table>
         </div>
         <div style="padding: 16px 32px; background: #f8f9fa; text-align: center;">
-          <p style="margin: 0; font-size: 12px; color: #94a3b8;">UCSG — Universal Consulting Service Group</p>
+          <p style="margin: 0; font-size: 12px; color: #94a3b8;">UCSG — Universal Consulting Service Group LLC</p>
         </div>
       </div>
     `;

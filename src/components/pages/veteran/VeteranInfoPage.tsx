@@ -9,7 +9,7 @@ import { track } from '@/lib/analytics';
 /* ------------------------------------------------------------------ */
 
 export const VETERAN_COMPLIANCE_DISCLOSURE =
-  'Universal Consulting Service Group (UCSG) is an independent education consulting organization. ' +
+  'Universal Consulting Service Group LLC (UCSG) is an independent education consulting organization. ' +
   'UCSG is not affiliated with, endorsed by, or sponsored by the U.S. Department of Veterans Affairs (VA), ' +
   'the U.S. Department of Defense (DoD), or any branch of the U.S. Armed Forces. ' +
   'References to VA education benefits, the Post-9/11 GI Bill®, the Yellow Ribbon Program, and Veterans Readiness & Employment (VR&E) ' +
@@ -62,7 +62,7 @@ export interface VeteranInfoPageProps {
   /** CTA button text */
   ctaText?: string;
   /** Where the CTA should navigate (default: opens veteran assessment) */
-  ctaHref?: string;
+  ctaHref?: 'assessment' | 'book-consultation' | 'contact';
   /** Optional secondary CTA label */
   secondaryCtaText?: string;
   /** Secondary CTA destination */

@@ -159,7 +159,7 @@ export default function WhoWeAreSection() {
         {/* Sub-heading */}
         <ScrollReveal delay={0.15} className="mx-auto mt-4 max-w-2xl text-center">
           <p className="text-base leading-relaxed text-white/75 md:text-lg">
-            Universal Consulting Service Group connects international students to
+            Universal Consulting Service Group LLC connects international students to
             affordable, accredited universities with hybrid programs,{' '}
             <strong className="font-bold text-white">real-world CPT/OPT experience</strong>,
             and a clear path to career success in America.

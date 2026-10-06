@@ -72,7 +72,7 @@ export default function Footer({ onContactClick }: Props) {
             <div className="sm:col-span-2 lg:col-span-1">
               <Logo variant="light" size="sm" compact />
               <p className="mt-2 text-sm font-semibold text-white">
-                Universal Consulting Service Group
+                Universal Consulting Service Group LLC
               </p>
               <p className="mt-3 text-base leading-relaxed text-white/70">
                 Educational guidance, program research, and student support for
@@ -230,7 +230,7 @@ export default function Footer({ onContactClick }: Props) {
           <div className="flex flex-col gap-3 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
             <div className="flex flex-col gap-1">
               <p className="text-sm text-white/80">
-                &copy; {currentYear} Universal Consulting Service Group. All rights
+                &copy; {currentYear} Universal Consulting Service Group LLC. All rights
                 reserved.
               </p>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">

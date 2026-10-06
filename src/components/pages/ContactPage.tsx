@@ -224,7 +224,7 @@ export default function ContactPage({ onBack }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.5 }}
             >
-              Get in touch with UCSG — Universal Consulting Service Group. We&apos;re here to help you with your US education journey.
+              Get in touch with UCSG — Universal Consulting Service Group LLC. We&apos;re here to help you with your US education journey.
             </motion.p>
             <motion.div
               className="mt-6 flex items-center justify-center gap-2 text-sm text-white/60"

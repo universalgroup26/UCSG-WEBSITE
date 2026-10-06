@@ -18,7 +18,7 @@ const manrope = Manrope({
 });
 
 const SITE_URL = "https://www.universalconsultingservices.com";
-const SITE_NAME = "UCSG — Universal Consulting Service Group";
+const SITE_NAME = "UCSG — Universal Consulting Service Group LLC";
 const SITE_DESCRIPTION =
   "Compare U.S. graduate programs and explore university transfer options with UCSG. Get personalized F-1 student guidance from Jackson Heights, NY.";
 
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   authors: [
     { name: "Joy Chowdhury", url: "https://www.linkedin.com/company/81566580/" },
   ],
-  creator: "UCSG — Universal Consulting Service Group",
-  publisher: "UCSG — Universal Consulting Service Group",
+  creator: "UCSG — Universal Consulting Service Group LLC",
+  publisher: "UCSG — Universal Consulting Service Group LLC",
   robots: {
     index: true,
     follow: true,
@@ -59,13 +59,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "UCSG — Universal Consulting Service Group | F-1 Student Guidance",
+        alt: "UCSG — Universal Consulting Service Group LLC | F-1 Student Guidance",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UCSG — Universal Consulting Service Group",
+    title: "UCSG — Universal Consulting Service Group LLC",
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
@@ -107,7 +107,7 @@ export default function RootLayout({
       {
         "@type": ["LocalBusiness", "EducationalOrganization"],
         "@id": `${SITE_URL}/#business`,
-        name: "Universal Consulting Service Group",
+        name: "Universal Consulting Service Group LLC",
         alternateName: "UCSG",
         url: SITE_URL,
         logo: `${SITE_URL}/ucsg-logo.png`,
@@ -247,7 +247,7 @@ export default function RootLayout({
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
-        name: "UCSG — Universal Consulting Service Group",
+        name: "UCSG — Universal Consulting Service Group LLC",
         publisher: { "@id": `${SITE_URL}/#business` },
         potentialAction: {
           "@type": "SearchAction",
@@ -258,7 +258,7 @@ export default function RootLayout({
       {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
-        name: "Universal Consulting Service Group",
+        name: "Universal Consulting Service Group LLC",
         alternateName: "UCSG",
         url: SITE_URL,
         logo: `${SITE_URL}/ucsg-logo.png`,

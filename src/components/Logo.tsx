@@ -63,7 +63,7 @@ export default function Logo({ variant = 'dark', size = 'md', showText = false, 
             UCSG
           </span>
           <span className={`mt-0.5 font-medium tracking-wide ${subColor}`}>
-            Universal Consulting Service Group
+            Universal Consulting Service Group LLC
           </span>
           {showBadge && (
             <span
