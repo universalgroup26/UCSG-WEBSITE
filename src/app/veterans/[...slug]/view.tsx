@@ -9,6 +9,10 @@ import VeteranInfoPage from '@/components/pages/veteran/VeteranInfoPage';
 import { track } from '@/lib/analytics';
 
 // Content for the routes that use VeteranInfoPage (shared layout)
+const CAMPUS_IMG = '/images/hero-veteran-campus.jpg?v=1';
+const PLAN_IMG = '/images/hero-veteran-plan.jpg?v=1';
+const FUTURE_IMG = '/images/hero-veteran-future.jpg?v=1';
+
 const INFO_PAGE_CONTENT: Record<string, {
   eyebrow: string;
   headline: string;
@@ -16,8 +20,10 @@ const INFO_PAGE_CONTENT: Record<string, {
   children: React.ReactNode;
   ctaText: string;
   ctaHref: string;
+  heroImage?: string;
 }> = {
   'degree-planning': {
+    heroImage: CAMPUS_IMG,
     eyebrow: 'VETERAN DEGREE PLANNING',
     headline: 'Build a Clear Plan for Your Next Degree',
     subheadline: 'Review your education background, compare verified program information, understand costs, and select your next step with structured guidance.',
@@ -39,6 +45,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'education-benefits': {
+    heroImage: PLAN_IMG,
     eyebrow: 'EDUCATION BENEFITS',
     headline: 'Understand the Resources Before Making a Decision',
     subheadline: 'Benefit eligibility and payments are determined by the appropriate government agency, not UCSG. We help you find official information.',
@@ -59,6 +66,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'book-consultation',
   },
   'yellow-ribbon': {
+    heroImage: PLAN_IMG,
     eyebrow: 'YELLOW RIBBON PROGRAM',
     headline: 'Yellow Ribbon Program: Questions to Ask a School',
     subheadline: 'The Yellow Ribbon Program may help eligible students with tuition costs. Eligibility is determined by the VA.',
@@ -80,6 +88,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'program-comparison',
   },
   'vre': {
+    heroImage: PLAN_IMG,
     eyebrow: 'VR&E / CHAPTER 31',
     headline: 'Veteran Readiness & Employment (VR&E) Education Planning',
     subheadline: 'VR&E (Chapter 31) helps eligible veterans with service-connected disabilities prepare for, find, and maintain suitable employment.',
@@ -101,6 +110,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'book-consultation',
   },
   'cost-planning': {
+    heroImage: PLAN_IMG,
     eyebrow: 'COST PLANNING',
     headline: 'Education Cost Planning for Veterans',
     subheadline: 'Understand total degree cost: tuition, fees, living expenses, and benefit verification.',
@@ -122,6 +132,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'military-transfer-credit': {
+    heroImage: PLAN_IMG,
     eyebrow: 'MILITARY EXPERIENCE',
     headline: 'Your Previous Experience May Matter',
     subheadline: 'Institutions establish their own policies regarding military training and transfer credit.',
@@ -142,6 +153,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'book-consultation',
   },
   'choosing-a-school': {
+    heroImage: PLAN_IMG,
     eyebrow: 'SCHOOL SELECTION',
     headline: 'Choosing the Right School as a Veteran',
     subheadline: 'Compare schools by degree fit, accreditation, program approval, cost, and veteran services.',
@@ -164,6 +176,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'program-comparison',
   },
   'program-comparison': {
+    heroImage: PLAN_IMG,
     eyebrow: 'PROGRAM COMPARISON',
     headline: 'Compare Veteran Education Programs',
     subheadline: 'Side-by-side comparison framework for veterans.',
@@ -197,6 +210,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'resources': {
+    heroImage: FUTURE_IMG,
     eyebrow: 'RESOURCE CENTER',
     headline: 'Veteran Education Resource Center',
     subheadline: 'Browse veteran education guides covering college comparison, VA benefits, transfer credit, and degree planning.',
@@ -233,6 +247,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'events': {
+    heroImage: FUTURE_IMG,
     eyebrow: 'WORKSHOPS & EVENTS',
     headline: 'Veteran Education Workshops & Events',
     subheadline: 'Attend the YOUR NEXT MISSION: EDUCATION workshop.',
@@ -256,6 +271,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'faq': {
+    heroImage: FUTURE_IMG,
     eyebrow: 'FAQ',
     headline: 'Veteran Education FAQ',
     subheadline: 'Answers to common questions about veteran education planning.',
@@ -279,6 +295,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     ctaHref: 'assessment',
   },
   'book-consultation': {
+    heroImage: CAMPUS_IMG,
     eyebrow: 'BOOK A CONSULTATION',
     headline: 'Book a Veteran Education Consultation',
     subheadline: 'Discuss your degree goals and next steps with an education advisor. Free, no obligation.',
@@ -317,6 +334,7 @@ function BookConsultationView({ content }: { content: typeof INFO_PAGE_CONTENT[s
       subheadline={content.subheadline}
       ctaText={content.ctaText}
       ctaHref={content.ctaHref}
+      heroImage={content.heroImage}
     >
       {content.children}
     </VeteranInfoPage>
@@ -353,6 +371,7 @@ export default function VeteranSlugView({ slug }: { slug: string }) {
       subheadline={content.subheadline}
       ctaText={content.ctaText}
       ctaHref={content.ctaHref}
+      heroImage={content.heroImage}
     >
       {content.children}
     </VeteranInfoPage>

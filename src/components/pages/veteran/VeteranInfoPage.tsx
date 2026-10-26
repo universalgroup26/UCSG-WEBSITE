@@ -71,6 +71,8 @@ export interface VeteranInfoPageProps {
   onBack?: () => void;
   /** Optional page id for analytics */
   pageId?: string;
+  /** Optional hero background image URL */
+  heroImage?: string;
 }
 
 export default function VeteranInfoPage({
@@ -85,6 +87,7 @@ export default function VeteranInfoPage({
   secondaryCtaHref = 'book-consultation',
   onBack,
   pageId,
+  heroImage,
 }: VeteranInfoPageProps) {
   const handleBack = () => {
     if (onBack) return onBack();
@@ -163,6 +166,13 @@ export default function VeteranInfoPage({
 
       {/* ─────────── Hero ─────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#061846] via-[#092B68] to-[#061846]">
+        {/* Optional hero background image with navy overlay */}
+        {heroImage && (
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            <img src={heroImage} alt="" className="h-full w-full object-cover opacity-25" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#061846]/90 via-[#092B68]/85 to-[#061846]/95" />
+          </div>
+        )}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
           style={{
