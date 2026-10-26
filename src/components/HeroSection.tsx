@@ -29,6 +29,8 @@ interface Slide {
     label: string;
     type: 'assessment' | 'navigate' | 'tel';
     tel?: string;
+    navigateView?: string;
+    navigateId?: string;
   };
   image: {
     src: string;
@@ -389,7 +391,15 @@ export default function HeroSection({ onContactClick }: Props) {
           window.location.href = `tel:${slide.secondaryCta.tel}`;
           break;
         case 'navigate':
-          onContactClick?.();
+          if (slide.secondaryCta.navigateView) {
+            window.dispatchEvent(
+              new CustomEvent('ucsg-navigate', {
+                detail: { view: slide.secondaryCta.navigateView, id: slide.secondaryCta.navigateId },
+              }),
+            );
+          } else {
+            onContactClick?.();
+          }
           break;
       }
     },
