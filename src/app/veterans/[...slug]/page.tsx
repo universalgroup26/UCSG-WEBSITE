@@ -10,6 +10,12 @@ const VETERAN_PAGES: Record<string, { title: string; description: string }> = {
     title: 'Veteran Degree Planning',
     description: 'Build a clear degree plan: review your education background, compare programs, understand costs, and select your next step with UCSG veteran education planning.',
   },
+  // Alias — older menu/anchor links reference "degree-planning-guide"; serve
+  // the same metadata as 'degree-planning' so the URL does not 404.
+  'degree-planning-guide': {
+    title: 'Veteran Degree Planning',
+    description: 'Build a clear degree plan: review your education background, compare programs, understand costs, and select your next step with UCSG veteran education planning.',
+  },
   'bachelors-degree': {
     title: "Bachelor's & Degree Completion Options for Veterans",
     description: 'Finish your bachelor\'s degree with degree-completion planning, military learning evaluation, and program comparison tailored for veterans.',
@@ -120,5 +126,9 @@ export default async function VeteranSlugRoute({
   if (!pageSlug || !VETERAN_PAGES[pageSlug]) {
     notFound();
   }
-  return <VeteranSlugView slug={pageSlug} />;
+  // Normalize the legacy "degree-planning-guide" alias to the canonical
+  // "degree-planning" slug so VeteranSlugView finds the matching content in
+  // INFO_PAGE_CONTENT (where the body copy lives under 'degree-planning').
+  const viewSlug = pageSlug === 'degree-planning-guide' ? 'degree-planning' : pageSlug;
+  return <VeteranSlugView slug={viewSlug} />;
 }

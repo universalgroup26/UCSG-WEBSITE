@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 import VeteranBachelorsPage from '@/components/pages/veteran/VeteranBachelorsPage';
 import VeteranMastersPage from '@/components/pages/veteran/VeteranMastersPage';
 import VeteranOnlineHybridPage from '@/components/pages/veteran/VeteranOnlineHybridPage';
@@ -143,6 +144,498 @@ const PLAN_IMG = '/images/hero-veteran-plan.jpg?v=1';
 const FUTURE_IMG = '/images/hero-veteran-future.jpg?v=1';
 
 /* ------------------------------------------------------------------ */
+/*  Program Comparison Worksheet (interactive — in-memory only)       */
+/* ------------------------------------------------------------------ */
+type FieldStatus = 'confirmed' | 'estimated' | 'pending';
+type YesNoUnknown = 'yes' | 'no' | 'unknown';
+
+interface ProgramData {
+  id: string;
+  label: string;
+  programName: string;
+  institution: string;
+  degreeLevel: string;
+  deliveryFormat: string;
+  accreditation: string;
+  tuitionPerCredit: string;
+  tuitionPerCreditStatus: FieldStatus;
+  totalCredits: string;
+  totalCreditsStatus: FieldStatus;
+  totalEstimatedCost: string;
+  totalEstimatedCostStatus: FieldStatus;
+  transferCredits: string;
+  transferCreditsStatus: FieldStatus;
+  programLength: string;
+  programLengthStatus: FieldStatus;
+  vaApproved: YesNoUnknown;
+  vaApprovedStatus: FieldStatus;
+  veteranServices: YesNoUnknown;
+  sourceUrl: string;
+  lastVerifiedDate: string;
+}
+
+const DEGREE_LEVELS = ["Bachelor's", "Master's", 'MBA', 'Doctoral', 'Certificate'] as const;
+const DELIVERY_FORMATS = ['Online', 'Hybrid', 'On-Campus'] as const;
+const YNU_OPTIONS: { value: YesNoUnknown; label: string }[] = [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' },
+  { value: 'unknown', label: 'Unknown' },
+];
+const STATUS_OPTIONS: { value: FieldStatus; label: string }[] = [
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'estimated', label: 'Estimated' },
+  { value: 'pending', label: 'Pending' },
+];
+
+function statusBadgeClass(s: FieldStatus) {
+  switch (s) {
+    case 'confirmed':
+      return 'bg-[#39C5E8]/15 text-[#0E7C9B] border-[#39C5E8]';
+    case 'estimated':
+      return 'bg-[#D6A84B]/15 text-[#8A6B26] border-[#D6A84B]';
+    case 'pending':
+    default:
+      return 'bg-gray-100 text-gray-500 border-gray-300';
+  }
+}
+
+function blankProgram(label: string): ProgramData {
+  return {
+    id: `${label}-${Math.random().toString(36).slice(2, 8)}`,
+    label,
+    programName: '',
+    institution: '',
+    degreeLevel: '',
+    deliveryFormat: '',
+    accreditation: '',
+    tuitionPerCredit: '',
+    tuitionPerCreditStatus: 'pending',
+    totalCredits: '',
+    totalCreditsStatus: 'pending',
+    totalEstimatedCost: '',
+    totalEstimatedCostStatus: 'pending',
+    transferCredits: '',
+    transferCreditsStatus: 'pending',
+    programLength: '',
+    programLengthStatus: 'pending',
+    vaApproved: 'unknown',
+    vaApprovedStatus: 'pending',
+    veteranServices: 'unknown',
+    sourceUrl: '',
+    lastVerifiedDate: '',
+  };
+}
+
+const INPUT_CLS =
+  'h-9 w-full rounded-md border border-gray-200 bg-white px-2 text-sm text-[#071B35] focus:border-[#39C5E8] focus:outline-none focus:ring-2 focus:ring-[#39C5E8]/30';
+const LABEL_CLS = 'text-[11px] font-semibold uppercase tracking-wide text-gray-500';
+
+function StatusBadge({ status }: { status: FieldStatus }) {
+  const label = STATUS_OPTIONS.find((o) => o.value === status)?.label ?? 'Pending';
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${statusBadgeClass(
+        status,
+      )}`}
+    >
+      {label}
+    </span>
+  );
+}
+
+function StatusSelect({
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  value: FieldStatus;
+  onChange: (v: FieldStatus) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <select
+      aria-label={ariaLabel}
+      value={value}
+      onChange={(e) => onChange(e.target.value as FieldStatus)}
+      className={`${INPUT_CLS} w-24`}
+    >
+      {STATUS_OPTIONS.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+}) {
+  return (
+    <div>
+      <label className={LABEL_CLS}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`mt-1 ${INPUT_CLS}`}
+      />
+    </div>
+  );
+}
+
+function FieldWithStatus({
+  label,
+  value,
+  status,
+  onValueChange,
+  onStatusChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  status: FieldStatus;
+  onValueChange: (v: string) => void;
+  onStatusChange: (v: FieldStatus) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2">
+        <label className={LABEL_CLS}>{label}</label>
+        <StatusBadge status={status} />
+      </div>
+      <div className="mt-1 flex items-center gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onValueChange(e.target.value)}
+          placeholder={placeholder}
+          className={INPUT_CLS}
+        />
+        <StatusSelect value={status} onChange={onStatusChange} ariaLabel={`${label} status`} />
+      </div>
+    </div>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly string[];
+}) {
+  return (
+    <div>
+      <label className={LABEL_CLS}>{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`mt-1 ${INPUT_CLS}`}
+      >
+        <option value="">—</option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function ProgramComparisonWorksheet() {
+  const [programs, setPrograms] = useState<ProgramData[]>([
+    blankProgram('Program 1'),
+    blankProgram('Program 2'),
+  ]);
+  const [activeMobile, setActiveMobile] = useState(0);
+
+  const updateProgram = (id: string, updater: (p: ProgramData) => ProgramData) => {
+    setPrograms((prev) => prev.map((p) => (p.id === id ? updater(p) : p)));
+  };
+
+  const addProgram = () => {
+    setPrograms((prev) =>
+      prev.length >= 4 ? prev : [...prev, blankProgram(`Program ${prev.length + 1}`)],
+    );
+  };
+
+  const removeProgram = (id: string) => {
+    setPrograms((prev) => {
+      if (prev.length <= 2) return prev;
+      return prev
+        .filter((p) => p.id !== id)
+        .map((p, i) => ({ ...p, label: `Program ${i + 1}` }));
+    });
+    setActiveMobile((i) => Math.max(0, Math.min(i, programs.length - 2)));
+  };
+
+  const clearAll = () => {
+    if (typeof window === 'undefined') return;
+    const ok = window.confirm('Clear all worksheet data? This cannot be undone.');
+    if (!ok) return;
+    setPrograms([blankProgram('Program 1'), blankProgram('Program 2')]);
+    setActiveMobile(0);
+  };
+
+  const printWorksheet = () => {
+    if (typeof window !== 'undefined') window.print();
+  };
+
+  return (
+    <div className="print-container mt-6">
+      <div className="flex flex-wrap items-center gap-3 print:hidden">
+        <button
+          type="button"
+          onClick={addProgram}
+          disabled={programs.length >= 4}
+          className="inline-flex items-center rounded-md bg-[#071B35] px-4 py-2 text-sm font-medium text-white hover:bg-[#0d2a5a] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          + Add Program
+        </button>
+        <button
+          type="button"
+          onClick={clearAll}
+          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-[#071B35] hover:bg-gray-50"
+        >
+          Clear All
+        </button>
+        <button
+          type="button"
+          onClick={printWorksheet}
+          className="inline-flex items-center rounded-md border border-[#39C5E8] bg-[#39C5E8]/10 px-4 py-2 text-sm font-medium text-[#0E7C9B] hover:bg-[#39C5E8]/20"
+        >
+          Print Worksheet
+        </button>
+        <span className="ml-auto text-xs text-gray-500">
+          {programs.length} of 4 programs · In-memory only
+        </span>
+      </div>
+
+      <div className="mt-4 sm:hidden print:hidden">
+        <label htmlFor="active-mobile" className={LABEL_CLS}>
+          Viewing
+        </label>
+        <select
+          id="active-mobile"
+          value={activeMobile}
+          onChange={(e) => setActiveMobile(Number(e.target.value))}
+          className={`ml-2 w-40 ${INPUT_CLS}`}
+        >
+          {programs.map((p, i) => (
+            <option key={p.id} value={i}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 print:grid-cols-2 print:gap-2">
+        {programs.map((p, idx) => {
+          const showOnMobile = idx === activeMobile;
+          return (
+            <div
+              key={p.id}
+              className={`rounded-lg border border-gray-200 bg-white p-4 print:break-inside-avoid ${
+                showOnMobile ? 'block' : 'hidden sm:block print:block'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-gray-200 pb-2">
+                <span className="font-heading text-sm font-semibold text-[#071B35]">
+                  {p.label}
+                </span>
+                {programs.length > 2 ? (
+                  <button
+                    type="button"
+                    onClick={() => removeProgram(p.id)}
+                    className="text-xs text-gray-400 hover:text-red-500 print:hidden"
+                    aria-label={`Remove ${p.label}`}
+                  >
+                    Remove
+                  </button>
+                ) : null}
+              </div>
+
+              <div className="mt-3 space-y-3">
+                <TextField
+                  label="Program Name"
+                  value={p.programName}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, programName: v }))}
+                  placeholder="e.g., BS Computer Science"
+                />
+                <TextField
+                  label="Institution"
+                  value={p.institution}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, institution: v }))}
+                  placeholder="School name"
+                />
+                <SelectField
+                  label="Degree Level"
+                  value={p.degreeLevel}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, degreeLevel: v }))}
+                  options={DEGREE_LEVELS}
+                />
+                <SelectField
+                  label="Delivery Format"
+                  value={p.deliveryFormat}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, deliveryFormat: v }))}
+                  options={DELIVERY_FORMATS}
+                />
+                <TextField
+                  label="Accreditation"
+                  value={p.accreditation}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, accreditation: v }))}
+                  placeholder="e.g., Regional · ABET"
+                />
+                <FieldWithStatus
+                  label="Tuition per Credit"
+                  value={p.tuitionPerCredit}
+                  status={p.tuitionPerCreditStatus}
+                  onValueChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, tuitionPerCredit: v }))
+                  }
+                  onStatusChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, tuitionPerCreditStatus: v }))
+                  }
+                  placeholder="$ ___"
+                />
+                <FieldWithStatus
+                  label="Total Credits"
+                  value={p.totalCredits}
+                  status={p.totalCreditsStatus}
+                  onValueChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, totalCredits: v }))}
+                  onStatusChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, totalCreditsStatus: v }))
+                  }
+                  placeholder="e.g., 120"
+                />
+                <FieldWithStatus
+                  label="Total Estimated Cost"
+                  value={p.totalEstimatedCost}
+                  status={p.totalEstimatedCostStatus}
+                  onValueChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, totalEstimatedCost: v }))
+                  }
+                  onStatusChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, totalEstimatedCostStatus: v }))
+                  }
+                  placeholder="$ ___"
+                />
+                <FieldWithStatus
+                  label="Transfer Credits Accepted"
+                  value={p.transferCredits}
+                  status={p.transferCreditsStatus}
+                  onValueChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, transferCredits: v }))
+                  }
+                  onStatusChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, transferCreditsStatus: v }))
+                  }
+                  placeholder="Max credits"
+                />
+                <FieldWithStatus
+                  label="Program Length"
+                  value={p.programLength}
+                  status={p.programLengthStatus}
+                  onValueChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, programLength: v }))}
+                  onStatusChange={(v) =>
+                    updateProgram(p.id, (pp) => ({ ...pp, programLengthStatus: v }))
+                  }
+                  placeholder="e.g., 24 months"
+                />
+                <div>
+                  <label className={LABEL_CLS}>VA-Approved</label>
+                  <div className="mt-1 flex items-center gap-2">
+                    <select
+                      value={p.vaApproved}
+                      onChange={(e) =>
+                        updateProgram(p.id, (pp) => ({
+                          ...pp,
+                          vaApproved: e.target.value as YesNoUnknown,
+                        }))
+                      }
+                      className={INPUT_CLS}
+                    >
+                      {YNU_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                    <StatusSelect
+                      value={p.vaApprovedStatus}
+                      onChange={(v) =>
+                        updateProgram(p.id, (pp) => ({ ...pp, vaApprovedStatus: v }))
+                      }
+                      ariaLabel="VA-Approved status"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className={LABEL_CLS}>Veteran Services</label>
+                  <select
+                    value={p.veteranServices}
+                    onChange={(e) =>
+                      updateProgram(p.id, (pp) => ({
+                        ...pp,
+                        veteranServices: e.target.value as YesNoUnknown,
+                      }))
+                    }
+                    className={`mt-1 ${INPUT_CLS}`}
+                  >
+                    {YNU_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <TextField
+                  label="Source URL"
+                  value={p.sourceUrl}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, sourceUrl: v }))}
+                  placeholder="https://"
+                  type="url"
+                />
+                <TextField
+                  label="Last Verified Date"
+                  value={p.lastVerifiedDate}
+                  onChange={(v) => updateProgram(p.id, (pp) => ({ ...pp, lastVerifiedDate: v }))}
+                  placeholder="e.g., 2024-06-15"
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 text-xs text-gray-500 print:hidden">
+        Worksheet data is held in your browser memory only. Nothing is transmitted or saved
+        unless you print this page. Use explicit &ldquo;Unknown&rdquo; / &ldquo;&mdash;&rdquo;
+        values; never invent school data.
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  INFO_PAGE_CONTENT — expanded body for each veteran sub-page       */
 /* ------------------------------------------------------------------ */
 const INFO_PAGE_CONTENT: Record<string, {
@@ -162,7 +655,7 @@ const INFO_PAGE_CONTENT: Record<string, {
     eyebrow: 'VETERAN DEGREE PLANNING',
     headline: 'Build a Clear Plan for Your Next Degree',
     subheadline:
-      'Review your education background, compare verified program information, understand costs, and select your next step with a structured veteran education roadmap.',
+      'Review your education background, compare verified programs, and map your path forward with structured guidance.',
     children: (
       <Body>
         <Section>
@@ -183,7 +676,7 @@ const INFO_PAGE_CONTENT: Record<string, {
             the right answer for <em>your</em> situation.
           </Lead>
           <Callout>
-            <p className="text-sm text-[#061846]">
+            <p className="text-sm text-[#071B35]">
               UCSG is an independent education consulting organization. We do not determine VA
               benefit eligibility, guarantee admission, guarantee transfer credit, or guarantee
               employment outcomes. Always verify program details directly with the institution and
@@ -221,7 +714,7 @@ const INFO_PAGE_CONTENT: Record<string, {
                       href="https://jst.doded.mil/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#0874F9] hover:underline"
+                      className="text-[#39C5E8] hover:underline"
                     >
                       Joint Services Transcript (JST)
                     </a>{' '}
@@ -242,7 +735,7 @@ const INFO_PAGE_CONTENT: Record<string, {
                       href="https://www.va.gov/school-finding/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#0874F9] hover:underline"
+                      className="text-[#39C5E8] hover:underline"
                     >
                       School Comparison Tool
                     </a>{' '}
@@ -298,7 +791,7 @@ const INFO_PAGE_CONTENT: Record<string, {
           <div className="overflow-x-auto mt-4">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#061846] text-white">
+                <tr className="bg-[#071B35] text-white">
                   <th className="text-left p-3">Degree Level</th>
                   <th className="text-left p-3">Typical Credits</th>
                   <th className="text-left p-3">Typical Length</th>
@@ -307,31 +800,31 @@ const INFO_PAGE_CONTENT: Record<string, {
               </thead>
               <tbody>
                 <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Associate</td>
+                  <td className="p-3 font-semibold text-[#071B35]">Associate</td>
                   <td className="p-3">~60</td>
                   <td className="p-3">~2 years full-time</td>
                   <td className="p-3">Building a foundation or transferring to a 4-year program</td>
                 </tr>
                 <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Bachelor&apos;s</td>
+                  <td className="p-3 font-semibold text-[#071B35]">Bachelor&apos;s</td>
                   <td className="p-3">~120</td>
                   <td className="p-3">~4 years (less with transfer credit)</td>
                   <td className="p-3">Entering or re-entering a civilian career that requires a 4-year degree</td>
                 </tr>
                 <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Master&apos;s / MBA</td>
+                  <td className="p-3 font-semibold text-[#071B35]">Master&apos;s / MBA</td>
                   <td className="p-3">~30–60</td>
                   <td className="p-3">~1–2 years</td>
                   <td className="p-3">Pivoting careers or moving into management after some civilian work experience</td>
                 </tr>
                 <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Doctoral / Professional</td>
+                  <td className="p-3 font-semibold text-[#071B35]">Doctoral / Professional</td>
                   <td className="p-3">Varies widely</td>
                   <td className="p-3">~3–7 years</td>
                   <td className="p-3">Specialized research, teaching, or licensed professional practice</td>
                 </tr>
                 <tr className="even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Undergraduate Certificate</td>
+                  <td className="p-3 font-semibold text-[#071B35]">Undergraduate Certificate</td>
                   <td className="p-3">~12–30</td>
                   <td className="p-3">~6 months–1 year</td>
                   <td className="p-3">Targeted skill-building or stacking toward a degree</td>
@@ -353,11 +846,11 @@ const INFO_PAGE_CONTENT: Record<string, {
         </Section>
 
         <Section>
-          <H2 id="questions-dso">Questions to Ask Your DSO or School Certifying Official</H2>
+          <H2 id="questions-sco">Questions to Ask Your School Certifying Official (SCO)</H2>
           <Lead>
-            A Designated School Official (DSO) for F-1 students or a School Certifying Official
-            (SCO) for VA benefits handles the paperwork that connects your benefits to your
-            enrollment. Bring these questions to your first conversation.
+            A School Certifying Official (SCO) handles the paperwork that connects your VA
+            education benefits to your enrollment. Bring these questions to your first
+            conversation.
           </Lead>
           <CheckList
             items={[
@@ -382,7 +875,7 @@ const INFO_PAGE_CONTENT: Record<string, {
           </Lead>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">For institution applications</h3>
+              <h3 className="font-heading font-semibold text-[#071B35]">For institution applications</h3>
               <ul className="mt-2 ml-4 list-disc text-sm text-gray-700 space-y-1">
                 <li>Prior college transcripts (official)</li>
                 <li>JST transcript (Joint Services Transcript)</li>
@@ -393,7 +886,7 @@ const INFO_PAGE_CONTENT: Record<string, {
               </ul>
             </div>
             <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">For VA benefit paperwork</h3>
+              <h3 className="font-heading font-semibold text-[#071B35]">For VA benefit paperwork</h3>
               <ul className="mt-2 ml-4 list-disc text-sm text-gray-700 space-y-1">
                 <li>DD-214 (only for direct VA submission — UCSG never requests this)</li>
                 <li>VA Certificate of Eligibility (COE)</li>
@@ -404,7 +897,7 @@ const INFO_PAGE_CONTENT: Record<string, {
             </div>
           </div>
           <Callout>
-            <p className="text-sm text-[#061846]">
+            <p className="text-sm text-[#071B35]">
               UCSG&apos;s veteran degree planning process and our free assessment do{' '}
               <strong>not</strong> request, collect, or store DD-214 forms, SSN, VA claim numbers,
               disability ratings, or medical/bank information. Those are submitted directly to the
@@ -480,7 +973,7 @@ const INFO_PAGE_CONTENT: Record<string, {
         </Section>
       </Body>
     ),
-    ctaText: 'START MY DEGREE ASSESSMENT',
+    ctaText: 'BUILD MY DEGREE PLAN',
     ctaHref: 'assessment',
   },
 
@@ -496,265 +989,180 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            <strong>VA education benefits</strong> can help eligible veterans, service members, and
-            qualified family members cover tuition, fees, housing, books, and in some cases
-            on-the-job training or apprenticeship costs. The U.S. Department of Veterans Affairs
-            determines all eligibility, entitlement, and payment decisions — not UCSG. This
-            veteran education benefits guide points you to official sources, the questions to ask
-            the VA, and the steps to apply.
+          <h2 id="understand-resources" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Understand the Resources Before Making a Decision
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            VA education benefits can help eligible veterans, service members, and their families
+            cover education costs. The U.S. Department of Veterans Affairs determines eligibility
+            and benefit amounts &mdash; not UCSG.
           </p>
-          <Lead>
-            Several different programs exist under the umbrella commonly called &quot;the GI
-            Bill.&quot; Each has different eligibility rules, payment structures, and use-by dates.
-            Understanding the differences before you commit to a program helps you avoid surprises
-            later — for example, discovering a benefit doesn&apos;t cover the format you chose, or
-            that you&apos;re past the delimiting date.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
+          <div className="mt-4 bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg">
+            <p className="text-sm text-[#071B35] font-sans">
               UCSG is not affiliated with, endorsed by, or sponsored by the U.S. Department of
-              Veterans Affairs, the Department of Defense, or any branch of the U.S. Armed Forces.
-              Use of &quot;GI Bill®&quot; is a registered trademark of the U.S. Department of
-              Veterans Affairs; UCSG makes no claim of affiliation.
+              Veterans Affairs. &quot;GI Bill&reg;&quot; is a registered trademark of the U.S.
+              Department of Veterans Affairs; UCSG makes no claim of affiliation.
             </p>
-          </Callout>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="benefit-programs">Benefit Programs at a Glance</H2>
-          <Lead>
-            The table below summarizes the main VA education benefit programs. Always confirm
-            current rules and amounts at va.gov/education.
-          </Lead>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-[#061846] text-white">
-                  <th className="text-left p-3">Program</th>
-                  <th className="text-left p-3">Chapter</th>
-                  <th className="text-left p-3">General Purpose</th>
-                  <th className="text-left p-3">Official Source</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Post-9/11 GI Bill®</td>
-                  <td className="p-3">Chapter 33</td>
-                  <td className="p-3">Tuition, fees, housing, books for veterans with qualifying post-9/11 service</td>
-                  <td className="p-3">
-                    <a href="https://www.va.gov/education/about-gi-bill-benefits/post-9-11-gi-bill/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov</a>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Montgomery GI Bill® (MGIB)</td>
-                  <td className="p-3">Chapter 30</td>
-                  <td className="p-3">Monthly education benefit for veterans with qualifying active-duty service and contributions</td>
-                  <td className="p-3">
-                    <a href="https://www.va.gov/education/about-gi-bill-benefits/montgomery-gi-bill/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov</a>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">VR&amp;E</td>
-                  <td className="p-3">Chapter 31</td>
-                  <td className="p-3">Veteran Readiness &amp; Employment for veterans with service-connected disabilities</td>
-                  <td className="p-3">
-                    <a href="https://www.va.gov/education/about-vre-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov</a>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">DEA (Survivors &amp; Dependents)</td>
-                  <td className="p-3">Chapter 35</td>
-                  <td className="p-3">Education and training for eligible dependents and survivors</td>
-                  <td className="p-3">
-                    <a href="https://www.va.gov/education/survivor-dependent-benefits/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov</a>
-                  </td>
-                </tr>
-                <tr className="even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Yellow Ribbon Program</td>
-                  <td className="p-3">Part of Ch. 33</td>
-                  <td className="p-3">Helps cover tuition above the Post-9/11 national maximum at participating schools</td>
-                  <td className="p-3">
-                    <a href="https://www.va.gov/education/yellow-ribbon-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Eligibility, payment rates, and use-by dates are set by the VA and change periodically.
-            Always confirm current rules at va.gov/education.
+          <h2 id="official-va-resources" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Official VA Resources
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Start with these official VA sources before reading third-party guides.
           </p>
-          <div className="mt-4">
-            <InternalLink id="yellow-ribbon">Read our Yellow Ribbon Program guide →</InternalLink>
-            <span className="mx-2 text-gray-300">|</span>
-            <InternalLink id="vre">Read our VR&amp;E (Chapter 31) guide →</InternalLink>
-          </div>
-        </Section>
-
-        <Section>
-          <H2 id="how-to-apply">How to Apply — Step by Step</H2>
-          <Lead>
-            The VA application process varies slightly by program, but the broad sequence below
-            applies to most VA education benefits.
-          </Lead>
-          <Steps
-            items={[
-              {
-                title: 'Confirm your eligibility category',
-                body: (
-                  <span>
-                    Review the eligibility criteria on va.gov/education for the specific program
-                    (Chapter 33, 30, 31, or 35). The VA — not UCSG — determines eligibility.
-                  </span>
-                ),
-              },
-              {
-                title: 'Gather your service documentation',
-                body: (
-                  <span>
-                    This typically includes your DD-214 (which you submit directly to the VA — UCSG
-                    does not collect this), service dates, and dependent information if applicable.
-                    Apply through the VA&apos;s eBenefits portal or VA.gov.
-                  </span>
-                ),
-              },
-              {
-                title: 'Submit your application to the VA',
-                body: (
-                  <span>
-                    Most applications can be completed online at va.gov/education/apply-for-education-benefits.
-                    The VA issues a Certificate of Eligibility (COE) once your application is
-                    approved — keep this document.
-                  </span>
-                ),
-              },
-              {
-                title: 'Take your COE to your School Certifying Official',
-                body: (
-                  <span>
-                    Once you register for classes at an approved institution, hand your COE to the
-                    SCO so they can certify your enrollment to the VA. This is what triggers tuition
-                    payment and (where applicable) housing allowance.
-                  </span>
-                ),
-              },
-              {
-                title: 'Verify enrollment as required',
-                body: (
-                  <span>
-                    Some programs require monthly enrollment verification (e.g., Post-9/11 GI Bill
-                    for online-only students). Verify on time to avoid payment delays.
-                  </span>
-                ),
-              },
-              {
-                title: 'Report any enrollment changes immediately',
-                body: (
-                  <span>
-                    If you drop a class, change programs, withdraw, or graduate, tell your SCO right
-                    away. Delays can result in overpayments that the VA will recoup.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="questions-va">Questions to Ask the VA</H2>
-          <Lead>
-            Call the VA Education Service at 1-888-442-4551 or use the Ask VA tool at va.gov. These
-            questions help clarify your specific situation.
-          </Lead>
-          <CheckList
-            items={[
-              'Which education benefit program am I currently eligible for?',
-              'How much entitlement do I have remaining (in months)?',
-              'What is my delimiting date — the deadline by which I must use my benefit?',
-              'Am I eligible to transfer entitlement to a spouse or dependent? If so, what is the process?',
-              'Does my benefit cover the specific program format I\'m considering (online, hybrid, on-campus)?',
-              'Will my housing allowance change based on my enrollment intensity (full-time vs. part-time)?',
-              'Am I eligible for the Yellow Ribbon Program?',
-              'What happens to my benefit if I change programs or transfer schools mid-degree?',
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Can UCSG tell me whether I qualify for the Post-9/11 GI Bill®?',
-                a: (
-                  <span>
-                    No. Eligibility is determined solely by the VA. UCSG points you to the official
-                    eligibility criteria at va.gov/education and helps you prepare the questions to
-                    ask the VA — but we do not make eligibility determinations.
-                  </span>
-                ),
-              },
-              {
-                q: 'How much will my GI Bill® pay per month?',
-                a: (
-                  <span>
-                    Payment rates vary by program, enrollment intensity, school type, and (for
-                    Post-9/11) the ZIP code of your school. Current rates are published at
-                    va.gov/education and updated annually. UCSG does not quote VA payment amounts.
-                  </span>
-                ),
-              },
-              {
-                q: 'Can I use my GI Bill® benefits for an online degree?',
-                a: (
-                  <span>
-                    Yes — Post-9/11 GI Bill® benefits can be used at approved online programs, with
-                    a different housing allowance structure than on-campus enrollment. Confirm
-                    current rules and the program&apos;s approval status with the VA and your
-                    institution&apos;s SCO before enrolling.
-                  </span>
-                ),
-              },
-              {
-                q: 'What if I have benefits under more than one program?',
-                a: (
-                  <span>
-                    The VA has rules for using multiple benefits (you generally cannot receive
-                    benefits from two programs for the same courses simultaneously). The VA makes
-                    the final determination on which benefit applies — discuss your specific case
-                    with the VA Education Service. See our{' '}
-                    <InternalLink id="vre">VR&amp;E vs Post-9/11 comparison</InternalLink>.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="official-resources">Official Resources</H2>
-          <Lead>Start with these official VA sources before reading third-party guides.</Lead>
-          <ul className="ml-6 space-y-3 list-disc text-gray-700">
+          <ul className="mt-4 space-y-3">
             <li>
-              <a href="https://www.va.gov/education/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">VA Education and Training Benefits</a> — main hub for all VA education programs.
+              <a href="https://www.va.gov/education/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">VA Education and Training Benefits &rarr;</a>
+              <span className="text-gray-600"> &mdash; main hub for all VA education programs.</span>
             </li>
             <li>
-              <a href="https://www.va.gov/education/about-gi-bill-benefits/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">About GI Bill® Benefits</a> — overview of the Post-9/11 and Montgomery GI Bill®.
+              <a href="https://www.va.gov/education/about-gi-bill-benefits/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">About GI Bill&reg; Benefits &rarr;</a>
+              <span className="text-gray-600"> &mdash; overview of Post-9/11 and Montgomery GI Bill&reg;.</span>
             </li>
             <li>
-              <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">VA School Comparison Tool</a> — check whether a school and program are VA-approved.
+              <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">VA School Comparison Tool &rarr;</a>
+              <span className="text-gray-600"> &mdash; verify whether a school and program are VA-approved.</span>
             </li>
             <li>
-              <a href="https://www.va.gov/education/yellow-ribbon-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">Yellow Ribbon Program</a> — official program information.
-            </li>
-            <li>
-              <a href="https://www.va.gov/education/about-vre-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">VR&amp;E (Chapter 31)</a> — official Veteran Readiness &amp; Employment program page.
-            </li>
-            <li>
-              <a href="https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">Principles of Excellence</a> — VA program that recognizes institutions committed to veteran student success.
+              <a href="https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">Principles of Excellence &rarr;</a>
+              <span className="text-gray-600"> &mdash; VA program recognizing institutions committed to veteran student success.</span>
             </li>
           </ul>
+        </Section>
+
+        <Section>
+          <h2 id="questions-va" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Questions to Ask the VA
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Call the VA Education Service at 1-888-442-4551 or use the Ask VA tool at va.gov.
+            These questions help clarify your specific situation.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {[
+              'Which education benefit am I eligible for?',
+              'How much tuition assistance can I receive?',
+              'Am I eligible for a monthly housing allowance?',
+              'Does my chosen program qualify for benefits?',
+              'How do I transfer benefits to a dependent?',
+              'What is my remaining entitlement period?',
+              'How does enrollment status (full-time vs part-time) affect my benefits?',
+              'What happens if I change programs or schools?',
+            ].map((q) => (
+              <li key={q} className="flex gap-2 text-gray-700 font-sans">
+                <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="school-certification-preparation" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            School Certification Preparation
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Once the VA issues your Certificate of Eligibility (COE), your school&apos;s School
+            Certifying Official (SCO) coordinates certification. The steps below outline the
+            process.
+          </p>
+          <ol className="mt-4 space-y-5 list-none p-0">
+            {[
+              'Obtain your Certificate of Eligibility (COE) from the VA',
+              "Provide COE to your school's School Certifying Official (SCO)",
+              'Confirm the program is VA-approved',
+              'Verify your enrollment status each term',
+              'Report any changes in enrollment immediately',
+            ].map((step, i) => (
+              <li key={step} className="flex gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#39C5E8] text-white font-bold font-heading">
+                  {i + 1}
+                </div>
+                <div className="pt-1 text-gray-700 font-sans">{step}</div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section>
+          <h2 id="cost-planning-link" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Cost Planning
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Understanding total education cost goes beyond tuition. Consider fees, books,
+            housing, and transportation.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'cost-planning' } }))}
+            className="mt-2 text-[#39C5E8] hover:underline font-medium"
+          >
+            Cost Planning Guide &rarr;
+          </button>
+        </Section>
+
+        <Section>
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="mt-4 space-y-3">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Does UCSG determine my VA benefit eligibility?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. The VA determines eligibility and benefit amounts. UCSG helps you find
+                official information and understand your options.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>How do I apply for VA education benefits?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                Apply through the VA website at va.gov/education or visit a VA regional office.
+                You&apos;ll need your DD-214 (which you provide to the VA, NOT to UCSG).
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What is a Certificate of Eligibility?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                A COE is the VA&apos;s official document confirming your benefit eligibility.
+                Your school&apos;s SCO uses it to certify your enrollment.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can I use benefits at any school?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                Only at VA-approved programs. Use the VA School Comparison Tool to verify program
+                approval status.
+              </p>
+            </details>
+          </div>
+        </Section>
+
+        <Section>
+          <p className="text-gray-700 font-sans">
+            Ready to take the next step?{' '}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Start your veteran assessment &rarr;
+            </button>
+          </p>
           <SourceNote />
         </Section>
       </Body>
@@ -775,273 +1183,186 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            The <strong>Yellow Ribbon Program</strong> is a provision of the Post-9/11 GI Bill®
-            (Chapter 33) that can help cover tuition and fees above the annual national maximum at
-            participating degree-granting institutions. The VA determines eligibility; participating
-            schools set their own contribution amounts and the number of students they accept each
-            year. This page explains how the program works, who is eligible, the questions to ask
-            schools, and how participating vs. non-participating schools compare.
+          <h2 id="what-is-yellow-ribbon" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            What Is the Yellow Ribbon Program?
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            The Yellow Ribbon Program is a provision that can help eligible students with
+            qualifying uncovered tuition and fees at participating institutions. The VA determines
+            eligibility, and participating schools set their own contribution amounts.
           </p>
-          <Lead>
-            Yellow Ribbon is not a separate benefit — it&apos;s a partnership between the VA and
-            the school. The school contributes a fixed dollar amount; the VA matches that amount,
-            dollar-for-dollar, up to the remaining balance of tuition and fees (or up to the
-            school&apos;s annual cap on Yellow Ribbon funds, whichever comes first).
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              UCSG does not determine Yellow Ribbon eligibility, contribution amounts, or school
-              participation. Always verify current program details at{' '}
-              <a
-                href="https://www.va.gov/education/yellow-ribbon-program/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#0874F9] hover:underline"
-              >
-                va.gov/education/yellow-ribbon-program
-              </a>
-              .
-            </p>
-          </Callout>
-        </Section>
-
-        <Section>
-          <H2 id="what-yellow-ribbon-is-not">What Yellow Ribbon Is — and What It Is Not</H2>
-          <Lead>
-            Before diving into mechanics, it&apos;s worth clarifying common misconceptions. The
-            Yellow Ribbon Program is often confused with a guaranteed full-ride scholarship —
-            it is not.
-          </Lead>
-          <CheckList
-            items={[
-              'Yellow Ribbon is a provision of the Post-9/11 GI Bill® (Chapter 33) — not a separate benefit, and not available under the Montgomery GI Bill® (Chapter 30)',
-              'Participation is voluntary for schools — many regionally accredited institutions participate, but not all',
-              'Contribution amounts and slot counts are set by each school, not by the VA',
-              'It only applies when tuition and fees exceed the Post-9/11 national maximum for that academic year',
-              'It does not cover non-tuition costs like housing, transportation, or personal expenses',
-              'Yellow Ribbon slots are limited and typically first-come, first-served — applying early matters',
-              'Even at participating schools, you may not receive a slot if annual limits are already reached',
-            ]}
-          />
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              Confirm current Yellow Ribbon participation, contribution amounts, and slot
-              availability directly with the institution&apos;s School Certifying Official — and
-              verify your personal entitlement at the VA. UCSG does not administer or guarantee
-              Yellow Ribbon participation.
-            </p>
-          </Callout>
-        </Section>
-
-        <Section>
-          <H2 id="how-it-works">How the Yellow Ribbon Program Works</H2>
-          <Lead>The Yellow Ribbon Program operates as a matched contribution:</Lead>
-          <Steps
-            items={[
-              {
-                title: 'You enroll at a participating institution',
-                body: (
-                  <span>
-                    Only institutions that have signed a Yellow Ribbon agreement with the VA
-                    participate. Participation is voluntary and renewed annually — confirm with
-                    the school each academic year.
-                  </span>
-                ),
-              },
-              {
-                title: 'The school contributes a fixed amount',
-                body: (
-                  <span>
-                    The institution sets its own per-student contribution amount and the maximum
-                    number of students per academic year. These limits are published in the VA&apos;s
-                    Yellow Ribbon school search tool.
-                  </span>
-                ),
-              },
-              {
-                title: 'The VA matches the school\'s contribution',
-                body: (
-                  <span>
-                    The VA matches dollar-for-dollar up to the remaining tuition and fee balance,
-                    or up to the school&apos;s annual cap — whichever is reached first.
-                  </span>
-                ),
-              },
-              {
-                title: 'You must be entitled at the 100% level',
-                body: (
-                  <span>
-                    Yellow Ribbon is generally available only to veterans and dependents entitled
-                    at the 100% Post-9/11 GI Bill® rate. The VA determines your entitlement
-                    percentage.
-                  </span>
-                ),
-              },
-              {
-                title: 'Funds are first-come, first-served',
-                body: (
-                  <span>
-                    Once a school&apos;s annual slots are filled, no additional students are
-                    accepted for that year — even if you are otherwise eligible. Apply and enroll
-                    early in the school&apos;s cycle.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="who-is-eligible">Who Is Eligible</H2>
-          <Lead>
-            Eligibility is determined by the VA, not by UCSG or by the school. The general categories
-            below are a starting point — confirm your specific eligibility with the VA.
-          </Lead>
-          <CheckList
-            items={[
-              'Veterans entitled at the 100% Post-9/11 GI Bill® rate (the VA determines this)',
-              'Service members entitled at the 100% Post-9/11 rate (with certain limitations — confirm with the VA)',
-              'Spouses or dependents receiving transferred Post-9/11 entitlement (with limitations)',
-              'Survivors/dependents under the Fry Scholarship (Chapter 33) in some cases — confirm with VA',
-              'Active-duty service members and their spouses typically are not eligible for the housing or Yellow Ribbon portions — confirm with VA',
-            ]}
-          />
-          <p className="text-xs text-gray-500 mt-3">
-            Eligibility rules can change. Confirm current rules at va.gov/education/yellow-ribbon-program.
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            The program is not a single-purpose tuition benefit limited to one situation. It may
+            apply to more than one kind of uncovered cost, depending on the school type and your
+            eligibility. The scenarios below describe what the VA identifies as qualifying costs —
+            the VA, not UCSG and not the school, makes the final eligibility determination.
           </p>
         </Section>
 
         <Section>
-          <H2 id="comparison">Participating vs. Non-Participating Schools</H2>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-[#061846] text-white">
-                  <th className="text-left p-3">Factor</th>
-                  <th className="text-left p-3">Participating School</th>
-                  <th className="text-left p-3">Non-Participating School</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Yellow Ribbon available?</td>
-                  <td className="p-3">Yes — for eligible students above the national cap</td>
-                  <td className="p-3">No — student is responsible for any tuition above the cap</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">School contribution</td>
-                  <td className="p-3">School-defined; published in VA Yellow Ribbon tool</td>
-                  <td className="p-3">N/A</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">VA match</td>
-                  <td className="p-3">Dollar-for-dollar up to remaining balance or annual cap</td>
-                  <td className="p-3">N/A</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Annual slot limits</td>
-                  <td className="p-3">School-defined; first-come, first-served</td>
-                  <td className="p-3">N/A</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Out-of-pocket risk</td>
-                  <td className="p-3">Lower (but not zero — depends on caps and slot availability)</td>
-                  <td className="p-3">Higher if tuition exceeds the Post-9/11 national maximum</td>
-                </tr>
-                <tr className="even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Who decides?</td>
-                  <td className="p-3">VA + school jointly</td>
-                  <td className="p-3">Student responsible for difference</td>
-                </tr>
-              </tbody>
-            </table>
+          <h2 id="qualifying-costs" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            What Costs Yellow Ribbon May Help With
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Under the VA&apos;s explanation of the program, Yellow Ribbon may help with tuition and
+            fees that the Post-9/11 GI Bill&reg; does not fully cover. The two common scenarios are:
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border-l-4 border-[#39C5E8] bg-[#F8FAFC] p-4 sm:p-5">
+              <h3 className="font-heading font-semibold text-[#071B35]">Public school non-resident tuition</h3>
+              <p className="text-sm text-gray-700 font-sans mt-2 leading-relaxed">
+                At a public school, you may be charged non-resident tuition above the annual
+                national maximum for the Post-9/11 GI Bill&reg;. Yellow Ribbon may help with that
+                uncovered portion at participating public institutions.
+              </p>
+            </div>
+            <div className="rounded-lg border-l-4 border-[#D6A84B] bg-[#F8FAFC] p-4 sm:p-5">
+              <h3 className="font-heading font-semibold text-[#071B35]">Private school tuition &amp; fees</h3>
+              <p className="text-sm text-gray-700 font-sans mt-2 leading-relaxed">
+                At a private school, tuition and fees above the annual national maximum for the
+                Post-9/11 GI Bill&reg; may be partially covered by Yellow Ribbon at participating
+                institutions.
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            The Post-9/11 national maximum changes annually — confirm the current cap at va.gov.
+          <ul className="mt-4 space-y-2">
+            <li className="flex gap-2 text-gray-700 font-sans">
+              <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+              <span>The school must participate in the Yellow Ribbon Program &mdash; not every institution does.</span>
+            </li>
+            <li className="flex gap-2 text-gray-700 font-sans">
+              <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+              <span>The participating school contributes a portion; the VA matches that contribution. Amounts are set by the school, not by UCSG.</span>
+            </li>
+            <li className="flex gap-2 text-gray-700 font-sans">
+              <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+              <span>Eligibility is determined by the VA &mdash; not by UCSG and not by the school.</span>
+            </li>
+          </ul>
+          <div className="mt-4 bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg">
+            <p className="text-sm text-[#071B35] font-sans">
+              UCSG does not determine Yellow Ribbon eligibility or award amounts. Verify with the
+              VA and the institution.
+            </p>
+          </div>
+        </Section>
+
+        <Section>
+          <h2 id="how-schools-va-contribute" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            How Schools and the VA Contribute
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            At participating schools, the institution contributes a portion and the VA matches it.
+            This is coordinated through the school&apos;s financial aid office and the VA. Contribution
+            amounts, the number of eligible students per year, and program-level availability are
+            all set by the participating school.
           </p>
         </Section>
 
         <Section>
-          <H2 id="questions-schools">Questions to Ask Schools</H2>
-          <Lead>
+          <h2 id="school-checklist" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            School-Specific Checklist
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
             Bring these questions to your admissions and School Certifying Official (SCO)
-            conversations. Get answers in writing where possible.
-          </Lead>
-          <CheckList
-            items={[
-              'Does your institution currently participate in the Yellow Ribbon Program for the upcoming academic year?',
-              'What is the annual contribution amount per student at your institution?',
-              'How many Yellow Ribbon slots does the institution offer per academic year?',
-              'Does the Yellow Ribbon contribution apply to my specific degree program (undergraduate, graduate, professional)?',
-              'Are Yellow Ribbon slots awarded first-come, first-served, or do you use a different allocation method?',
-              'Once I am awarded a Yellow Ribbon slot, is it renewable for subsequent years, or do I need to re-apply annually?',
-              'What happens if I lose eligibility mid-year — am I responsible for the remaining balance?',
-              'How does Yellow Ribbon interact with your institution\'s institutional scholarships or tuition discounts for veterans?',
-            ]}
-          />
+            conversations.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {[
+              'Does the school participate in the Yellow Ribbon Program?',
+              'How many Yellow Ribbon spots are available per year?',
+              "What is the school's contribution amount?",
+              'Is the contribution matched by the VA?',
+              'Does it cover my specific degree program?',
+              'Are there program-level or college-level limits?',
+              'Is the contribution guaranteed for all years of enrollment?',
+              'What happens if I change programs?',
+            ].map((q) => (
+              <li key={q} className="flex gap-2 text-gray-700 font-sans">
+                <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
         </Section>
 
         <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Will every school that participates in Yellow Ribbon cover my full tuition?',
-                a: (
-                  <span>
-                    Not necessarily. The school sets both the contribution amount and the annual
-                    slot count. If tuition exceeds the combined Post-9/11 national maximum + school
-                    contribution + VA match, you remain responsible for the difference.
-                  </span>
-                ),
-              },
-              {
-                q: 'Can I receive Yellow Ribbon at an online-only program?',
-                a: (
-                  <span>
-                    Yellow Ribbon eligibility depends on program approval, institution
-                    participation, and your VA-determined entitlement. Confirm with the VA and
-                    the institution directly — UCSG does not make program-level determinations.
-                  </span>
-                ),
-              },
-              {
-                q: 'Is Yellow Ribbon guaranteed for the entire length of my program?',
-                a: (
-                  <span>
-                    Generally, participation is renewed annually by the school and the VA. Slots
-                    are not guaranteed beyond the current academic year. Ask the school about
-                    renewal policy and confirm annually with the VA.
-                  </span>
-                ),
-              },
-              {
-                q: 'Does UCSG help me apply for Yellow Ribbon?',
-                a: (
-                  <span>
-                    UCSG helps you identify participating schools and prepare the questions to ask
-                    your SCO. We do not administer or guarantee Yellow Ribbon participation — the VA
-                    and the school jointly handle the program. See our{' '}
-                    <InternalLink id="education-benefits">education benefits guide</InternalLink>{' '}
-                    for the broader VA education benefits landscape.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <h2 id="remaining-cost" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Understanding Remaining Cost
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Even with Yellow Ribbon participation, you may have remaining costs. Consider tuition,
+            fees, books, housing, and transportation.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'cost-planning' } }))}
+            className="mt-2 text-[#39C5E8] hover:underline font-medium"
+          >
+            Cost Planning Guide &rarr;
+          </button>
         </Section>
 
         <Section>
-          <H2 id="official-source">Official Source</H2>
-          <p>
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="mt-4 space-y-3">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is Yellow Ribbon the same as full tuition coverage?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. The program may help with costs but does not guarantee full tuition coverage.
+                Amounts vary by school and program.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is Yellow Ribbon a housing allowance?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. Yellow Ribbon helps with tuition/fees. Housing allowance is a separate benefit
+                determined by the VA.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Who is eligible for Yellow Ribbon?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                Eligibility is determined by the VA. Only certain veterans and dependents qualify.
+                Check with the VA for your status.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can I use Yellow Ribbon at any school?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. Only participating schools offer the program. Use the VA School Comparison Tool
+                to check.
+              </p>
+            </details>
+          </div>
+        </Section>
+
+        <Section>
+          <h2 id="official-source" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Official Source
+          </h2>
+          <p className="mt-3">
             <a
               href="https://www.va.gov/education/yellow-ribbon-program/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#0874F9] hover:underline font-medium"
+              className="text-[#39C5E8] hover:underline font-medium"
             >
-              Official VA Yellow Ribbon Program Information →
+              Official VA Yellow Ribbon Program Information &rarr;
             </a>
           </p>
           <SourceNote />
@@ -1064,273 +1385,173 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            <strong>Veteran Readiness &amp; Employment (VR&amp;E)</strong>, formerly called
-            Vocational Rehabilitation, is the VA program (Chapter 31) that helps eligible veterans
-            with service-connected disabilities prepare for, find, and maintain suitable employment
-            — or, where employment is not feasible, achieve independence in daily living. The program
-            may include comprehensive evaluation, vocational exploration, education and training,
-            on-the-job training, apprenticeships, and employment services.
+          <h2 id="what-is-vre" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            What Is VR&amp;E (Chapter 31)?
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            Veteran Readiness &amp; Employment (VR&amp;E), formerly Vocational Rehabilitation,
+            helps eligible veterans with service-connected disabilities. The program may include
+            education, training, and employment services.
           </p>
-          <Lead>
-            If you have a service-connected disability rating and an employment handicap, VR&amp;E
-            may cover tuition, fees, books, supplies, and (in some cases) a monthly subsistence
-            allowance. The VA determines eligibility and approves a customized rehabilitation plan.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              UCSG does not determine VR&amp;E eligibility, approve rehabilitation plans, or
-              guarantee VR&amp;E funding. Always confirm current program details at{' '}
-              <a
-                href="https://www.va.gov/education/about-vre-program/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#0874F9] hover:underline"
-              >
-                va.gov/education/about-vre-program
-              </a>
-              .
+        </Section>
+
+        <Section>
+          <h2 id="official-va-process" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            The Official VA Process
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            The VA determines eligibility, entitlement, and plan approval through a structured
+            process. UCSG does not administer any step of the VA process.
+          </p>
+          <ol className="mt-4 space-y-5 list-none p-0">
+            {[
+              'Apply through the VA (eBenefits or VA.gov)',
+              'Attend a comprehensive evaluation',
+              'Work with a VR&E counselor to develop a rehabilitation plan',
+              'Receive a plan approval (not all plans are approved)',
+              'Begin education/training per the approved plan',
+              'Receive ongoing support and employment services',
+            ].map((step, i) => (
+              <li key={step} className="flex gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#39C5E8] text-white font-bold font-heading">
+                  {i + 1}
+                </div>
+                <div className="pt-1 text-gray-700 font-sans">{step}</div>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section>
+          <h2 id="career-prep-checklist" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Career Preparation Checklist
+          </h2>
+          <ul className="mt-4 space-y-2">
+            {[
+              'Identify your career goals before meeting with VR&E',
+              'Research programs that align with your employment objectives',
+              'Understand the difference between entitlement and plan approval',
+              'Ask about subsistence allowance during training',
+              'Clarify what happens if your plan is not approved',
+              'Discuss transition to employment after training',
+            ].map((q) => (
+              <li key={q} className="flex gap-2 text-gray-700 font-sans">
+                <CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0" aria-hidden="true" />
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="school-comparison-guidance" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            School Comparison Guidance
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            If your VR&amp;E plan includes education, compare schools using the same factors as
+            any veteran: accreditation, program approval, cost, format, and veteran services.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'choosing-a-school' } }))}
+            className="mt-2 text-[#39C5E8] hover:underline font-medium"
+          >
+            Choosing a School Guide &rarr;
+          </button>
+        </Section>
+
+        <Section>
+          <h2 id="ucsg-role" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            UCSG&apos;s Role
+          </h2>
+          <p className="mt-3 text-gray-700 font-sans leading-relaxed">
+            UCSG provides educational information and helps you prepare for conversations with
+            your VR&amp;E counselor. We do not determine VR&amp;E eligibility, entitlement, or
+            plan approval. The VA makes all determinations.
+          </p>
+          <div className="mt-4 bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg">
+            <p className="text-sm text-[#071B35] font-sans">
+              <strong>Distinguish three separate VA decisions:</strong> eligibility to APPLY
+              (determined by the VA based on your service-connected disability rating),
+              entitlement (whether you qualify for VR&amp;E services), and plan approval
+              (whether your specific education plan is accepted). Each step is decided by the VA &mdash;
+              not by UCSG and not by the school.
             </p>
-          </Callout>
-        </Section>
-
-        <Section>
-          <H2 id="who-qualifies">Who Qualifies for VR&amp;E</H2>
-          <Lead>
-            Eligibility is determined by the VA. The general categories below are a starting
-            point — confirm your specific eligibility with the VA Regional Office or your VA
-            Vocational Rehabilitation Counselor (VRC).
-          </Lead>
-          <CheckList
-            items={[
-              'Veterans with a service-connected disability rating of at least 10% (VA determines the rating)',
-              'Veterans who received an other-than-dishonorable discharge (VA makes the formal determination)',
-              'Veterans within the basic period of eligibility (generally 12 years from the date of separation or notification of the rating)',
-              'Veterans whose disability creates an employment handicap (the VA evaluates this)',
-              'Service members pending separation who may be eligible in limited circumstances — confirm with VA',
-            ]}
-          />
-          <p className="text-xs text-gray-500 mt-3">
-            Time limits and extension rules can change — confirm current rules with the VA.
-          </p>
-        </Section>
-
-        <Section>
-          <H2 id="services-included">What Services Are Included</H2>
-          <Lead>
-            VR&amp;E is structured around five tracks. The VA assigns a track based on your
-            evaluation and rehabilitation plan.
-          </Lead>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Reemployment Track</h3>
-              <p className="text-sm text-gray-600 mt-1">Help returning to a former employer with reasonable accommodations.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Rapid Access to Employment</h3>
-              <p className="text-sm text-gray-600 mt-1">For veterans with transferable skills who need help finding work.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Self-Employment</h3>
-              <p className="text-sm text-gray-600 mt-1">For veterans whose disabilities make traditional employment challenging.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Employment Through Long-Term Services</h3>
-              <p className="text-sm text-gray-600 mt-1">Includes education, on-the-job training, and apprenticeships.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4 sm:col-span-2">
-              <h3 className="font-heading font-semibold text-[#061846]">Independent Living Services</h3>
-              <p className="text-sm text-gray-600 mt-1">For veterans whose disabilities make employment infeasible; focuses on independence in daily living.</p>
-            </div>
           </div>
-          <p className="text-xs text-gray-500 mt-3">
-            Track assignment is made by the VA. UCSG does not determine track selection.
-          </p>
-        </Section>
-
-        <Section>
-          <H2 id="how-to-apply">How to Apply</H2>
-          <Steps
-            items={[
-              {
-                title: 'Confirm basic eligibility',
-                body: (
-                  <span>
-                    Verify your service-connected disability rating and discharge status with the
-                    VA before applying. The VA makes the formal eligibility determination.
-                  </span>
-                ),
-              },
-              {
-                title: 'Submit your application',
-                body: (
-                  <span>
-                    Apply online at va.gov/education/about-vre-program or contact your regional VA
-                    office. You can also submit VA Form 28-8832 (Application for Vocational
-                    Rehabilitation).
-                  </span>
-                ),
-              },
-              {
-                title: 'Attend a comprehensive evaluation',
-                body: (
-                  <span>
-                    A Vocational Rehabilitation Counselor (VRC) evaluates your interests,
-                    aptitudes, abilities, transferable skills, and the impact of your
-                    service-connected disabilities on employment.
-                  </span>
-                ),
-              },
-              {
-                title: 'Co-develop your rehabilitation plan',
-                body: (
-                  <span>
-                    If found entitled, you and the VRC develop an Individualized Written
-                    Rehabilitation Plan (IWRP) that specifies your training objective, services,
-                    and timeline.
-                  </span>
-                ),
-              },
-              {
-                title: 'Enroll in approved training or education',
-                body: (
-                  <span>
-                    Only VA-approved programs and institutions are eligible. Your VRC must approve
-                    your school, program, and enrollment before classes begin.
-                  </span>
-                ),
-              },
-              {
-                title: 'Maintain progress and re-evaluate as needed',
-                body: (
-                  <span>
-                    The VA tracks your academic progress. Report changes in enrollment, program, or
-                    disability status to your VRC immediately.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="vre-vs-post911">VR&amp;E vs. Post-9/11 GI Bill®</H2>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-[#061846] text-white">
-                  <th className="text-left p-3">Factor</th>
-                  <th className="text-left p-3">VR&amp;E (Chapter 31)</th>
-                  <th className="text-left p-3">Post-9/11 GI Bill® (Chapter 33)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Primary purpose</td>
-                  <td className="p-3">Employment readiness for veterans with service-connected disabilities</td>
-                  <td className="p-3">Education benefit for veterans with qualifying post-9/11 service</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Eligibility basis</td>
-                  <td className="p-3">Service-connected disability + employment handicap</td>
-                  <td className="p-3">Length and characterization of qualifying post-9/11 service</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Tuition &amp; fees</td>
-                  <td className="p-3">Generally fully covered for VA-approved programs</td>
-                  <td className="p-3">Up to the national maximum per academic year</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Monthly housing</td>
-                  <td className="p-3">Monthly subsistence allowance (VA-determined rate)</td>
-                  <td className="p-3">Monthly housing allowance based on school ZIP code</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Books &amp; supplies</td>
-                  <td className="p-3">Generally covered as part of the rehabilitation plan</td>
-                  <td className="p-3">Annual books &amp; supplies stipend</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Plan approval</td>
-                  <td className="p-3">VRC must approve the program &amp; enrollment</td>
-                  <td className="p-3">SCO certifies enrollment to VA</td>
-                </tr>
-                <tr className="even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Who decides?</td>
-                  <td className="p-3">VA Vocational Rehabilitation Counselor</td>
-                  <td className="p-3">VA Education Service</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="mt-4 bg-[#F8FAFC] border-l-4 border-[#D6A84B] p-4 sm:p-5 rounded-r-lg">
+            <p className="text-sm text-[#071B35] font-sans">
+              <strong>Time limits:</strong> Veterans discharged on or after January 1, 2013, do
+              not have a 12-year basic eligibility limitation. Veterans discharged before that date
+              may have a 12-year basic eligibility period measured from their discharge date &mdash;
+              verify your specific timeframe with the VA.
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Both programs are administered by the VA. UCSG does not determine eligibility, rates,
-            or coverage for either program.
-          </p>
         </Section>
 
         <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Can I use VR&E and the Post-9/11 GI Bill® at the same time?',
-                a: (
-                  <span>
-                    Generally you cannot receive benefits from both programs simultaneously for the
-                    same courses. The VA determines which benefit applies and may require an election
-                    between programs. Discuss your specific case with the VA — UCSG does not make
-                    this determination.
-                  </span>
-                ),
-              },
-              {
-                q: 'Does UCSG approve VR&E rehabilitation plans?',
-                a: (
-                  <span>
-                    No. Only the VA, through your Vocational Rehabilitation Counselor, approves
-                    rehabilitation plans, training objectives, and enrollment. UCSG helps you
-                    prepare for the conversation and ask the right questions — but is not a party
-                    to the plan.
-                  </span>
-                ),
-              },
-              {
-                q: 'What if I disagree with the VA\'s VR&E eligibility decision?',
-                a: (
-                  <span>
-                    The VA has a formal appeals process for eligibility and other determinations.
-                    Details are at va.gov. UCSG is not a representative in VA appeals — we
-                    recommend contacting a Veterans Service Organization (VSO) for representation.
-                  </span>
-                ),
-              },
-              {
-                q: 'Does UCSG help me choose between VR&E and the Post-9/11 GI Bill®?',
-                a: (
-                  <span>
-                    UCSG helps you understand the differences and prepare the questions to ask the
-                    VA — but we do not make the election for you. The VA determines your eligibility
-                    for each program; you (with VA guidance) decide which to use. See our{' '}
-                    <InternalLink id="education-benefits">education benefits guide</InternalLink>{' '}
-                    for more.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="mt-4 space-y-3">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Am I automatically entitled to VR&E?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. Having a service-connected disability makes you eligible to apply, but
+                entitlement and plan approval are determined by the VA through evaluation.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Does VR&E cover any program I want?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                Your rehabilitation plan must be approved by your VR&amp;E counselor. The plan
+                must align with your employment goals and be feasible.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is VR&E the same as the GI Bill&reg;?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                No. VR&amp;E (Chapter 31) is for veterans with service-connected disabilities.
+                The GI Bill&reg; (Chapter 33) is a separate program. You may qualify for both but
+                typically use one at a time.
+              </p>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is there a time limit to use VR&E?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <p className="mt-3 text-gray-600 font-sans leading-relaxed">
+                It depends on your discharge date. Veterans discharged on or after January 1,
+                2013, do not have a 12-year basic eligibility limitation. Veterans discharged
+                before that date may have a 12-year basic eligibility period measured from their
+                discharge date. Do not assume a universal timeframe &mdash; verify your specific
+                situation with the VA.
+              </p>
+            </details>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="official-source">Official Source</H2>
-          <p>
+          <h2 id="official-source" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Official Source
+          </h2>
+          <p className="mt-3">
             <a
               href="https://www.va.gov/education/about-vre-program/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#0874F9] hover:underline font-medium"
+              className="text-[#39C5E8] hover:underline font-medium"
             >
-              Official VR&amp;E Program Information →
+              Official VR&amp;E Program Information &rarr;
             </a>
           </p>
           <SourceNote />
@@ -1353,244 +1574,190 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            <strong>Veteran education cost planning</strong> means looking beyond the per-credit
-            tuition rate. The true cost of a degree includes tuition, mandatory fees, books and
-            supplies, housing and living expenses, transportation, and the opportunity cost of
-            time in school. This page gives you a college cost planning framework, a cost breakdown
-            template you can copy, hidden-cost watchlists, and step-by-step instructions for
-            comparing total degree cost across institutions.
+          <h2 id="total-cost" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Understanding Total Education Cost
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Education cost goes beyond tuition. Consider mandatory fees, books, housing,
+            transportation, and opportunity cost. Use this framework to compare programs side by side.
           </p>
-          <Lead>
-            VA education benefits may offset some costs for eligible veterans — but the VA
-            determines benefit eligibility, payment amounts, and program approval status. UCSG does
-            not quote VA payment rates.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              Tuition is only one component of total degree cost. Always model the full cost
-              picture before choosing a program — and always verify program details and pricing
-              directly with the institution.
-            </p>
-          </Callout>
         </Section>
 
         <Section>
-          <H2 id="cost-breakdown-template">Cost Breakdown Template</H2>
-          <Lead>
-            Copy this template into a spreadsheet for each program you are comparing. Fill in the
-            institution-provided numbers; leave rows blank where they don&apos;t apply.
-          </Lead>
+          <h2 id="cost-comparison-table" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Cost Comparison Table
+          </h2>
           <div className="overflow-x-auto mt-4">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-[#061846] text-white">
+                <tr className="bg-[#071B35] text-white">
                   <th className="text-left p-3">Cost Component</th>
-                  <th className="text-left p-3">Per Term</th>
-                  <th className="text-left p-3">Per Year</th>
-                  <th className="text-left p-3">Full Program</th>
+                  <th className="text-left p-3">Program A</th>
+                  <th className="text-left p-3">Program B</th>
+                  <th className="text-left p-3">Program C</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  'Tuition (credit hours × rate)',
-                  'Mandatory fees (technology, lab, student activity)',
-                  'Books & supplies',
-                  'Course materials & software',
-                  'Housing / rent',
-                  'Utilities & internet',
-                  'Food / groceries',
-                  'Transportation (commute or relocation)',
-                  'Childcare or dependent care',
-                  'Health insurance (if not covered)',
-                  'Exam / certification fees',
-                  'Graduation & diploma fees',
-                  'Total estimated cost',
+                  'Tuition (per credit)',
+                  'Total Credits',
+                  'Mandatory Fees',
+                  'Books & Materials',
+                  'Housing',
+                  'Transportation',
+                  'Technology Fees',
+                  'Total Estimated Cost',
                 ].map((row, idx, arr) => (
-                  <tr key={row} className={`border-b border-gray-200 ${idx % 2 === 1 ? 'bg-gray-50' : ''} ${idx === arr.length - 1 ? 'font-bold text-[#061846]' : ''}`}>
+                  <tr
+                    key={row}
+                    className={`border-b border-gray-200 ${idx % 2 === 1 ? 'bg-gray-50' : ''} ${idx === arr.length - 1 ? 'font-bold text-[#071B35]' : ''}`}
+                  >
                     <td className="p-3">{row}</td>
-                    <td className="p-3 text-gray-400">$________</td>
-                    <td className="p-3 text-gray-400">$________</td>
-                    <td className="p-3 text-gray-400">$________</td>
+                    <td className="p-3 text-gray-400">&mdash;</td>
+                    <td className="p-3 text-gray-400">&mdash;</td>
+                    <td className="p-3 text-gray-400">&mdash;</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Actual costs vary by institution, program, and location. Confirm pricing directly with
-            each institution&apos;s bursar or financial aid office.
+            Use the same comparison period (e.g., per academic year or total program). Separate
+            confirmed figures (from the school&apos;s website) from estimated or pending figures. Never
+            treat missing values as zero.
           </p>
         </Section>
 
         <Section>
-          <H2 id="hidden-costs">Hidden Costs to Consider</H2>
-          <Lead>
-            Per-credit tuition often hides costs that don&apos;t appear in marketing materials.
-            Watch for these:
-          </Lead>
-          <CheckList
-            items={[
-              'Mandatory fees that scale with credit hours (technology, lab, distance-learning, graduation fees)',
-              'Residency requirements that force relocation or on-campus residencies',
-              'Cohort lock-step scheduling that extends time-to-completion if you miss one term',
-              'Re-take fees for failed courses that push total credits above the published program length',
-              'Software subscriptions required for specific courses (e.g., design, statistics, project management)',
-              'Proctored exam fees, certification exam fees, or licensure application fees',
-              'Opportunity cost: lost wages or delayed civilian career progression while enrolled',
-              'Health insurance if your civilian employer plan doesn\'t cover students',
-              'Childcare or dependent care during class and study time',
-              'Travel to mandatory on-campus sessions or residencies in hybrid programs',
-            ]}
-          />
+          <h2 id="academic-budget" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Academic Budget
+          </h2>
+          <div className="bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg mt-3">
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Tuition</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Technology fee</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Lab fee</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Student activity fee</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Graduation fee</span></li>
+            </ul>
+            <p className="text-sm text-gray-600 mt-3">Contact institution for current rates.</p>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="financial-aid-resources">Financial Aid Resources for Veterans</H2>
-          <Lead>
-            Beyond VA education benefits, several official resources can help lower your net cost.
-          </Lead>
-          <ul className="ml-6 space-y-3 list-disc text-gray-700">
-            <li>
-              <a href="https://studentaid.gov/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">Federal Student Aid (FAFSA)</a> — many veterans qualify for federal grants and loans; completing the FAFSA is required by most institutions.
-            </li>
-            <li>
-              <a href="https://www.va.gov/education/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">VA Education Benefits</a> — the VA determines eligibility for Post-9/11, MGIB, VR&amp;E, Yellow Ribbon, and DEA.
-            </li>
-            <li>
-              <a href="https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">Principles of Excellence</a> — institutions that have committed to specific veteran-student protections.
-            </li>
-            <li>
-              <a href="https://www.benefits.va.gov/VETERANS/jp.asp" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">Edith Nourse Rogers STEM Scholarship</a> — for veterans who have used or are near the end of Post-9/11 entitlement in certain STEM fields (VA determines eligibility).
-            </li>
-            <li>
-              <span className="font-medium">State veteran education benefits</span> — many states offer tuition waivers or reduced tuition at public institutions; check with your state Department of Veterans Affairs.
-            </li>
-            <li>
-              <span className="font-medium">Institutional veteran scholarships &amp; discounts</span> — many schools offer their own veteran aid; ask the financial aid office and the veteran services office.
-            </li>
+          <h2 id="living-budget" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Living Budget
+          </h2>
+          <div className="bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg mt-3">
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Housing (on/off campus)</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Food/meals</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Transportation</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Health insurance</span></li>
+              <li className="flex gap-2"><span className="text-[#071B35] font-semibold">Personal expenses</span></li>
+            </ul>
+            <p className="text-sm text-gray-600 mt-3">Living costs vary significantly by location.</p>
+          </div>
+        </Section>
+
+        <Section>
+          <h2 id="overlooked-costs" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Overlooked Costs Checklist
+          </h2>
+          <ul className="space-y-3 mt-4">
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Application fees (ask about veteran waivers)</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Transcript request fees</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Books and digital materials</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Parking permits</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Professional certification exam fees</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Background checks (some programs)</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Technology requirements (laptop, software)</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Travel for campus visits or residencies</span></li>
           </ul>
-          <p className="text-xs text-gray-500 mt-3">
-            UCSG does not administer any of these programs. Confirm eligibility and current terms
-            with each program directly.
+        </Section>
+
+        <Section>
+          <h2 id="funding-considerations" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Funding Considerations
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Multiple funding sources may apply: VA education benefits, scholarships, employer tuition
+            assistance, and institutional aid. Do not double-count funding. Verify each source separately.
           </p>
+          <div className="bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg mt-3">
+            <p className="text-sm text-[#071B35]">
+              UCSG does not determine VA eligibility or payment amounts. Contact the VA for benefit
+              verification.
+            </p>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="step-by-step">Step-by-Step Cost Comparison Process</H2>
-          <Steps
-            items={[
-              {
-                title: 'List 3–5 candidate programs',
-                body: (
-                  <span>
-                    Pick programs you&apos;ve already vetted on accreditation and fit (see our{' '}
-                    <InternalLink id="choosing-a-school">school selection guide</InternalLink>).
-                    Don&apos;t add new candidates at this stage.
-                  </span>
-                ),
-              },
-              {
-                title: 'Request official cost of attendance (COA) from each institution',
-                body: (
-                  <span>
-                    The financial aid office publishes a COA each year — it includes tuition, fees,
-                    books, housing, transportation, and personal expenses. Use this as your
-                    starting point.
-                  </span>
-                ),
-              },
-              {
-                title: 'Apply the cost breakdown template above to each program',
-                body: (
-                  <span>
-                    Standardize the categories so you&apos;re comparing apples to apples. Note any
-                    costs that appear in one program but not another.
-                  </span>
-                ),
-              },
-              {
-                title: 'Estimate VA benefit contribution (without quoting VA rates)',
-                body: (
-                  <span>
-                    Identify which VA education benefits you may be eligible for and note them in
-                    the cost sheet. The VA determines actual eligibility and payment rates — do
-                    not quote numbers from third-party sources.
-                  </span>
-                ),
-              },
-              {
-                title: 'Apply for federal and institutional aid',
-                body: (
-                  <span>
-                    File the FAFSA and apply to each institution&apos;s institutional aid
-                    application by the deadline. Aid awards can change your net cost materially.
-                  </span>
-                ),
-              },
-              {
-                title: 'Compare net cost (total minus confirmed aid) across programs',
-                body: (
-                  <span>
-                    The lowest sticker tuition is rarely the lowest net cost. Compare after aid —
-                    then factor in program length, format fit, and career alignment. See our{' '}
-                    <InternalLink id="program-comparison">program comparison guide</InternalLink>.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="space-y-3 mt-4">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>How do I know the total cost of a program?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Request a cost breakdown from the institution&apos;s financial aid office. Include
+                tuition, fees, and estimated living expenses for your location.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can UCSG calculate my VA benefit amount?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                No. VA benefit amounts are determined by the VA based on your eligibility, enrollment
+                status, and program. Contact the VA for current figures.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What if I don&apos;t know some costs?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Mark unknown figures as &apos;pending&apos; or &apos;unconfirmed.&apos; Never treat a
+                missing value as zero. Contact the institution for current rates.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Should I include living expenses?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Yes. Housing, food, and transportation are significant costs. Factor them into your
+                total budget comparison.
+              </div>
+            </details>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Will UCSG quote specific tuition numbers or VA payment rates?',
-                a: (
-                  <span>
-                    No. Tuition rates change annually and vary by program, residency, and delivery
-                    format. VA payment rates are published at va.gov and updated annually. UCSG
-                    shows you where to find official numbers and how to build a side-by-side
-                    comparison — but we do not quote specific dollar amounts.
-                  </span>
-                ),
-              },
-              {
-                q: 'Is the lowest-tuition program always the best financial choice?',
-                a: (
-                  <span>
-                    No. A lower-tuition program may have higher fees, longer time-to-completion, or
-                    weaker transfer-credit acceptance that increases your total cost. Compare total
-                    net cost — including opportunity cost — not just the per-credit rate.
-                  </span>
-                ),
-              },
-              {
-                q: 'How do I know if a program is approved for VA education benefits?',
-                a: (
-                  <span>
-                    Use the VA&apos;s{' '}
-                    <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">School Comparison Tool</a>{' '}
-                    and confirm with the institution&apos;s School Certifying Official. Approval is
-                    granted at the institution-and-program level, not at the student level.
-                  </span>
-                ),
-              },
-              {
-                q: 'What if I have to retake a class — does VA cover it?',
-                a: (
-                  <span>
-                    VA rules around repeating courses are specific and depend on the reason for
-                    repetition (failure vs. grade improvement vs. program requirement). Confirm with
-                    your SCO and the VA Education Service before retaking any course. UCSG does not
-                    make coverage determinations.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-700">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'education-benefits' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Explore Education Benefits &rarr;
+            </button>
+            <span className="text-gray-300" aria-hidden="true">|</span>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Start Free Assessment &rarr;
+            </button>
+          </div>
         </Section>
       </Body>
     ),
@@ -1610,310 +1777,175 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            <strong>Military transfer credit</strong> is the practice of converting your military
-            training, MOS/AFSC/rating schools, professional certifications, and college courses
-            completed during service into college credit at a civilian institution. The American
-            Council on Education (ACE) publishes credit recommendations for military training, and
-            most institutions accept the{' '}
-            <a href="https://jst.doded.mil/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">
-              Joint Services Transcript (JST)
-            </a>{' '}
-            as the official record. But <strong>each institution sets its own transfer-credit
-            policy</strong> — there is no guarantee that any specific course or training will
-            transfer, or at what level.
-          </p>
-          <Lead>
-            UCSG does not guarantee that military experience will translate into college credit at
-            any institution. The receiving institution&apos;s registrar and academic departments
-            make the final determination.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              Always request your JST and any prior college transcripts before applying. Submit
-              official copies directly to each institution&apos;s admissions or registrar office
-              for evaluation.
-            </p>
-          </Callout>
-        </Section>
-
-        <Section>
-          <H2 id="what-is-jst">What Is the Joint Services Transcript (JST)?</H2>
-          <Lead>
-            The JST is the official transcript for Army, Navy, Marine Corps, and Coast Guard
-            service members and veterans. It documents military courses, occupations, and ACE
-            credit recommendations. The Air Force uses the Community College of the Air Force (CCAF)
-            transcript for enlisted coursework.
-          </Lead>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">What the JST includes</h3>
-              <ul className="mt-2 ml-4 list-disc text-sm text-gray-700 space-y-1">
-                <li>Personal &amp; service information</li>
-                <li>Military course completions with ACE credit recommendations</li>
-                <li>Occupational experience with ACE recommendations</li>
-                <li>Completed CLEP / DSST / certification exams</li>
-                <li>Other learning experiences</li>
-              </ul>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">What the JST does NOT include</h3>
-              <ul className="mt-2 ml-4 list-disc text-sm text-gray-700 space-y-1">
-                <li>College courses you took at a civilian institution (request separately)</li>
-                <li>Clearance or classified training (not transcriptable)</li>
-                <li>On-the-job training that has no ACE recommendation</li>
-                <li>Skills without formal documentation</li>
-                <li>Personal fitness / PT results</li>
-              </ul>
-            </div>
-          </div>
-        </Section>
-
-        <Section>
-          <H2 id="request-jst">How to Request Your JST</H2>
-          <Steps
-            items={[
-              {
-                title: 'Visit the official JST site',
-                body: (
-                  <span>
-                    Go to{' '}
-                    <a href="https://jst.doded.mil/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">jst.doded.mil</a>{' '}
-                    — the official Department of Defense JST portal. Do not use third-party
-                    &quot;military transcript&quot; sites that charge fees.
-                  </span>
-                ),
-              },
-              {
-                title: 'Create an account or log in with credentials',
-                body: (
-                  <span>
-                    Use your DoD ID, branch of service, and personal information to verify your
-                    identity. Veterans can typically access their JST indefinitely after
-                    separation.
-                  </span>
-                ),
-              },
-              {
-                title: 'Review your transcript for accuracy',
-                body: (
-                  <span>
-                    Check that all your military courses, occupations, and completed exams are
-                    listed. If something is missing, contact your branch&apos;s personnel or
-                    education office to request corrections before submitting to a school.
-                  </span>
-                ),
-              },
-              {
-                title: 'Send official JST to each institution',
-                body: (
-                  <span>
-                    Use the &quot;Transcripts&quot; or &quot;Send Transcript&quot; function inside
-                    the JST portal to designate receiving institutions. Most institutions require
-                    an <em>official</em> electronic copy sent directly from JST — a printed PDF
-                    you upload is often not accepted.
-                  </span>
-                ),
-              },
-              {
-                title: 'Also request civilian college transcripts',
-                body: (
-                  <span>
-                    If you took any college courses before or during service, request official
-                    transcripts from each institution you attended. Many veterans forget
-                    dual-enrollment, AP, or early-college credits from high school.
-                  </span>
-                ),
-              },
-              {
-                title: 'Request CLEP / DSST score reports if applicable',
-                body: (
-                  <span>
-                    CLEP scores are administered by College Board; DSST by Prometric. Request
-                    official score reports sent directly to the receiving institution.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="questions-admissions">Questions to Ask Admissions</H2>
-          <Lead>
-            Bring these questions to your admissions counselor and the registrar&apos;s transfer
-            credit evaluator. Get answers in writing.
-          </Lead>
-          <CheckList
-            items={[
-              'Do you accept the Joint Services Transcript (JST) as an official document?',
-              'Do you grant credit based on ACE credit recommendations for military courses and occupations?',
-              'Is there a maximum number of transfer credits you will accept toward a degree?',
-              'How do you handle military credit — do you apply it to general education, electives, or major requirements?',
-              'Do you accept credit from CLEP, DSST, or other challenge exams?',
-              'Do you offer prior learning assessment (PLA) for non-classroom learning?',
-              'What is your residency requirement — the minimum number of credits I must earn at your institution to graduate?',
-              'How long does the transfer-credit evaluation take, and when will I receive an official credit transfer report?',
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="credit-policies-comparison">Comparison of Credit Evaluation Policies</H2>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-[#061846] text-white">
-                  <th className="text-left p-3">Policy Area</th>
-                  <th className="text-left p-3">Typical Liberal Policy</th>
-                  <th className="text-left p-3">Typical Restrictive Policy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">JST acceptance</td>
-                  <td className="p-3">Official JST accepted as primary source</td>
-                  <td className="p-3">JST reviewed course-by-course, partial acceptance</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">ACE recommendations</td>
-                  <td className="p-3">Generally honored at recommended credit levels</td>
-                  <td className="p-3">Departmental review required; may apply as elective only</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Max transfer credits</td>
-                  <td className="p-3">Up to 75–90 credits toward bachelor&apos;s</td>
-                  <td className="p-3">Capped at 60 credits or fewer</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Residency requirement</td>
-                  <td className="p-3">25%–30% of credits at the institution</td>
-                  <td className="p-3">50% or more of credits at the institution</td>
-                </tr>
-                <tr className="border-b border-gray-200 even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">CLEP / DSST</td>
-                  <td className="p-3">Accepted for many general education requirements</td>
-                  <td className="p-3">Limited or none accepted</td>
-                </tr>
-                <tr className="even:bg-gray-50">
-                  <td className="p-3 font-semibold text-[#061846]">Prior Learning Assessment (PLA)</td>
-                  <td className="p-3">Portfolio-based credit available for non-classroom learning</td>
-                  <td className="p-3">No PLA program</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            These are common patterns only — each institution sets its own policy. Confirm with the
-            registrar&apos;s office at each school.
+          <h2 id="previous-experience" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Your Previous Experience May Matter
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Your military training, professional certifications, and prior college coursework may
+            translate into college credit. Each institution sets its own evaluation policy &mdash;
+            UCSG cannot guarantee credit transfer.
           </p>
         </Section>
 
         <Section>
-          <H2 id="pla-guide">Prior Learning Assessment (PLA) Guide</H2>
-          <Lead>
-            Prior Learning Assessment is a structured way for institutions to award credit for
-            learning acquired outside the classroom — through work, military training, certifications,
-            volunteer service, or self-study. Common PLA methods include:
-          </Lead>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Portfolio-based PLA</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                You assemble a portfolio documenting college-level learning from experience, which
-                faculty evaluate for credit. Most common at adult-focused institutions.
-              </p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Exam-based PLA</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                CLEP, DSST, AP, IB, and institutional challenge exams. Most transfer-friendly
-                nationwide.
-              </p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Certification-based PLA</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Industry certifications (e.g., CompTIA, PMI, Cisco, nursing credentials) mapped to
-                course credit through ACE or institutional crosswalks.
-              </p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Articulation agreements</h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Formal transfer agreements between community colleges, military branches, and
-                four-year institutions that pre-map credit equivalencies.
-              </p>
-            </div>
-          </div>
-        </Section>
-
-        <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Will my JST automatically transfer to every school?',
-                a: (
-                  <span>
-                    No. The JST is the official transcript, but each institution decides what
-                    credit (if any) to award. Some schools accept ACE recommendations broadly;
-                    others review course-by-course. Always ask each institution&apos;s transfer
-                    policy in writing.
-                  </span>
-                ),
-              },
-              {
-                q: 'Does UCSG evaluate or award transfer credit?',
-                a: (
-                  <span>
-                    No. UCSG is not a degree-granting institution and does not evaluate military
-                    transcripts or award credit. We help you understand the process, gather the
-                    right documents, and ask the right questions of the institution.
-                  </span>
-                ),
-              },
-              {
-                q: 'How long does transfer-credit evaluation take?',
-                a: (
-                  <span>
-                    Typically 2–6 weeks after the institution receives your official transcripts.
-                    Submit transcripts early — ideally before enrollment — to know your actual
-                    remaining credits before registering.
-                  </span>
-                ),
-              },
-              {
-                q: 'Can I get credit for certifications I earned in the military?',
-                a: (
-                  <span>
-                    Often yes — through ACE crosswalks or institutional PLA policies. Confirm with
-                    each institution. Submit a copy of your certification to the registrar or
-                    veteran services office for evaluation.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="official-source">Official Source</H2>
-          <p>
-            <a
-              href="https://jst.doded.mil/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#0874F9] hover:underline font-medium"
-            >
-              Joint Services Transcript (JST) — Official DoD Portal →
-            </a>
+          <h2 id="records-checklist" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Records Checklist
+          </h2>
+          <ul className="space-y-3 mt-4">
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Joint Services Transcript (JST) &mdash; request at jst.doted.mil</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Community College of the Air Force (CCAF) transcripts (Air Force)</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Coast Guard Institute transcripts</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Prior college transcripts (from every institution attended)</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>CLEP/DANTES exam score reports</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Professional certifications (industry-recognized)</span></li>
+          </ul>
+          <p className="text-xs text-gray-500 mt-3">
+            Do not assume every service branch uses JST. Air Force uses CCAF; Coast Guard uses Coast
+            Guard Institute. Verify which transcript applies to your branch.
           </p>
-          <p className="text-xs text-gray-500 mt-2">
-            Source: U.S. Department of Defense. ACE credit recommendations are published by the
-            American Council on Education. Each institution determines whether to honor ACE
+        </Section>
+
+        <Section>
+          <h2 id="ace-recommendations" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Recommendation and Award Credit
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Some institutions award credit for military training based on ACE (American Council on
+            Education) recommendations. However, institutions are not required to accept ACE
             recommendations.
           </p>
+          <div className="bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg mt-3">
+            <p className="text-sm text-[#071B35]">
+              Do not promise credit amounts or completion savings. Each institution sets its own
+              transfer-credit policy &mdash; contact the receiving institution for their specific
+              policy.
+            </p>
+          </div>
+        </Section>
+
+        <Section>
+          <h2 id="credit-evaluation-status" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Credit Evaluation Status
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-3 mt-4">
+            <div className="rounded-lg border-l-4 border-[#39C5E8] bg-[#F8FAFC] p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">Accepted</h3>
+              <p className="text-sm text-gray-600 mt-1">Credit awarded toward your degree.</p>
+            </div>
+            <div className="rounded-lg border-l-4 border-[#D6A84B] bg-[#F8FAFC] p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">Applied as Elective</h3>
+              <p className="text-sm text-gray-600 mt-1">Credit counts but not toward a specific requirement.</p>
+            </div>
+            <div className="rounded-lg border-l-4 border-gray-400 bg-[#F8FAFC] p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">Not Accepted</h3>
+              <p className="text-sm text-gray-600 mt-1">Institution did not award credit.</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-3">
+            Even accepted credits may not shorten your time to completion if they don&apos;t apply to
+            specific degree requirements.
+          </p>
+        </Section>
+
+        <Section>
+          <h2 id="questions-to-ask" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Questions to Ask Schools
+          </h2>
+          <ul className="space-y-3 mt-4">
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Do you evaluate JST/CCAF transcripts for credit?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Do you use ACE recommendations?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>What is your prior learning assessment (PLA) process?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Is there a maximum number of transfer credits accepted?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Do transfer credits count toward my major requirements?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>What are the residency requirements (minimum credits at your institution)?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>How do transfer credits affect graduation requirements?</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Is there a fee for transcript evaluation?</span></li>
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="official-resources" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Official Military Learning Resources
+          </h2>
+          <ul className="ml-6 space-y-3 list-disc text-gray-700 mt-3">
+            <li>
+              <a href="https://jst.doded.mil/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">JST &mdash; jst.doded.mil</a>
+            </li>
+            <li>
+              <a href="https://www.acenet.edu/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">ACE Military Guide &mdash; acenet.edu</a>
+            </li>
+            <li>
+              <a href="https://www.dodedu.mil/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">DoD Voluntary Education &mdash; dodedu.mil</a>
+            </li>
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="space-y-3 mt-4">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Will my military training automatically count for college credit?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                No. Each institution evaluates independently. Some use ACE recommendations; others
+                have their own evaluation process.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What is a JST?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                The Joint Services Transcript is an official record of military training and
+                experience. Request yours at jst.doted.mil.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can UCSG guarantee my credits will transfer?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                No. Transfer credit decisions are made by the receiving institution. We help you ask
+                the right questions and prepare your records.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Do all branches use the same transcript system?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                No. Army, Navy, and Marines use JST. Air Force uses the Community College of the Air
+                Force (CCAF). Coast Guard uses the Coast Guard Institute. Verify which applies to you.
+              </div>
+            </details>
+          </div>
+        </Section>
+
+        <Section>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-700">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'bachelors-degree' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Explore Bachelor&apos;s Degree Path &rarr;
+            </button>
+            <span className="text-gray-300" aria-hidden="true">|</span>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Start Free Assessment &rarr;
+            </button>
+          </div>
         </Section>
       </Body>
     ),
@@ -1933,266 +1965,186 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            <strong>Choosing a college as a veteran</strong> is different from choosing a college
-            as a traditional 18-year-old. You bring transferable credits, military training, life
-            experience, possibly a family or civilian job, and — often — VA education benefits that
-            must be applied correctly. Veteran-friendly schools are those that have built
-            infrastructure specifically for your situation: a dedicated veteran services office,
-            School Certifying Officials on staff, and transfer-credit policies that honor military
-            experience.
+          <h2 id="choosing-right-school" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Choosing the Right School as a Veteran
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Selecting the right institution is one of the most important decisions in your education
+            journey. Use this framework to compare schools systematically &mdash; don&apos;t rely on
+            marketing claims or &apos;military-friendly&apos; badges without verification.
           </p>
-          <Lead>
-            The 10-factor framework below helps you cut through marketing materials and compare
-            schools on what actually matters. Use it side-by-side with the VA&apos;s School
-            Comparison Tool.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              Always verify a school&apos;s VA-approval status, accreditation, and program
-              availability directly with the institution and the VA. UCSG does not endorse
-              specific institutions.
-            </p>
-          </Callout>
         </Section>
 
         <Section>
-          <H2 id="ten-factor-framework">The 10-Factor Comparison Framework</H2>
-          <div className="space-y-5 mt-4">
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">1. Degree Fit</h3>
-              <p className="text-gray-600 mt-1">Does the school offer the exact degree and concentration you want? &quot;Close enough&quot; programs often lead to credit transfer issues or career misalignment later. Confirm the program title, CIP code, and curriculum map match your career goal.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">2. Accreditation Type</h3>
-              <p className="text-gray-600 mt-1">Regional accreditation is generally the most transfer-friendly and recognized by other institutions and graduate programs. National accreditation varies; programmatic accreditation (e.g., ABET, AACSB) matters for specific fields. Confirm accreditation type with the Council for Higher Education Accreditation (chea.org).</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">3. VA Program Approval</h3>
-              <p className="text-gray-600 mt-1">VA approval is institution-and-program specific. A school may be approved for undergraduate programs but not for the specific graduate program you want. Use the VA&apos;s School Comparison Tool to confirm, then verify with the School Certifying Official (SCO).</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">4. Delivery Format</h3>
-              <p className="text-gray-600 mt-1">Online, hybrid, or on-campus? Synchronous or asynchronous? Cohort or self-paced? Match the format to your work schedule, family obligations, and learning style. Some VA benefit structures differ by format — confirm with the SCO.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">5. Total Estimated Cost</h3>
-              <p className="text-gray-600 mt-1">Compare total cost of attendance — tuition, fees, books, housing — not just per-credit rate. Confirm pricing directly with the bursar&apos;s office. Use our <InternalLink id="cost-planning">cost planning template</InternalLink>.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">6. Transfer-Credit Policy</h3>
-              <p className="text-gray-600 mt-1">How many credits will transfer, and at what level? Ask specifically about JST, ACE recommendations, and prior learning assessment (PLA). Get the answer in writing — verbal estimates from admissions reps don&apos;t bind the registrar.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">7. Veteran Services Office</h3>
-              <p className="text-gray-600 mt-1">Is there a dedicated veteran services office with named staff? How quickly does the SCO process enrollment certifications? Are there veteran-specific orientations, peer mentoring, or study spaces?</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">8. Career Alignment &amp; Outcomes</h3>
-              <p className="text-gray-600 mt-1">Ask the career services office about graduate placement in your target field. Don&apos;t accept vague claims — ask for programmatic outcome data by department. UCSG does not endorse specific outcome statistics.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">9. Class Format &amp; Scheduling</h3>
-              <p className="text-gray-600 mt-1">Term length (8-week, 12-week, 16-week)? Evening or weekend classes? Lock-step cohort or flexible pacing? These factors determine whether you can work full-time while enrolled.</p>
-            </div>
-            <div>
-              <h3 className="font-heading font-semibold text-[#061846]">10. Financial Aid &amp; Scholarships</h3>
-              <p className="text-gray-600 mt-1">Does the school offer institutional veteran scholarships or tuition discounts? Is the school a Principles of Excellence signatory? Are Yellow Ribbon slots available for your program? Get the answers before enrollment.</p>
-            </div>
+          <h2 id="career-goals-first" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Your Career Goals Come First
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Before comparing schools, clarify your career objectives. What field do you want to enter?
+            What credentials are required? What salary range is realistic in that field?
+          </p>
+          <div className="bg-[#F8FAFC] border-l-4 border-[#39C5E8] p-4 sm:p-5 rounded-r-lg mt-3">
+            <p className="text-sm text-[#071B35]">
+              Your career goals should drive your school selection &mdash; not the other way around.
+            </p>
           </div>
         </Section>
 
         <Section>
-          <H2 id="red-flags">Red Flags to Watch For</H2>
-          <Lead>
-            These patterns suggest a school may not be a good fit for veteran students — investigate
-            further before committing.
-          </Lead>
-          <CheckList
-            items={[
-              'High-pressure sales tactics, "enroll today or lose your seat" pressure',
-              'Guarantees of specific job placement, salary, or benefit amounts',
-              'Reluctance to put transfer-credit estimates in writing',
-              'No dedicated veteran services office or named SCO',
-              'Program not currently VA-approved (or status uncertain)',
-              'Lack of programmatic accreditation in a field that requires it (health, business, engineering, law)',
-              'Vague answers about total cost, fees, or time-to-completion',
-              'Pushy enrollment reps who quote VA payment rates without verifying your eligibility',
-              'Complaints on the VA\'s Feedback Tool or state attorney general sites',
-              'No published outcomes data, or outcomes data that lumps all programs together',
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="green-flags">Green Flags to Look For</H2>
-          <CheckList
-            items={[
-              'Named veteran services staff with published contact information',
-              'School Certifying Official available for a pre-enrollment conversation',
-              'Published, written transfer-credit policy that explicitly mentions JST and ACE',
-              'Signatory of the VA Principles of Excellence',
-              'Yellow Ribbon participation with clear contribution amounts',
-              'Active Student Veterans of America (SVA) chapter on campus',
-              'Dedicated veteran orientation, peer mentoring, or tutoring',
-              'Career services office with veteran-specific placement support',
-              'Transparent cost-of-attendance breakdown available on request',
-              'Regional accreditation (most transfer-friendly)',
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="step-by-step">Step-by-Step School Selection Process</H2>
-          <Steps
-            items={[
-              {
-                title: 'Define your goal and non-negotiables',
-                body: (
-                  <span>
-                    Write down your career goal, format preference (online/hybrid/on-campus),
-                    budget ceiling, and start date. These constraints filter the universe of schools
-                    immediately.
-                  </span>
-                ),
-              },
-              {
-                title: 'Build a long list of 10–15 candidate schools',
-                body: (
-                  <span>
-                    Use the VA School Comparison Tool, College Navigator (nces.ed.gov), and
-                    referrals from your network. Include a mix of public, private, online, and
-                    on-campus options.
-                  </span>
-                ),
-              },
-              {
-                title: 'Filter to 5 using the 10-factor framework',
-                body: (
-                  <span>
-                    Eliminate schools that fail on degree fit, accreditation, VA approval, or
-                    format. Don&apos;t spend time evaluating costs at schools that fail on basics.
-                  </span>
-                ),
-              },
-              {
-                title: 'Request official information from each shortlisted school',
-                body: (
-                  <span>
-                    Ask for: cost of attendance, transfer-credit policy, VA program approval letter,
-                    veteran services contact, and programmatic outcomes data. Get answers in
-                    writing.
-                  </span>
-                ),
-              },
-              {
-                title: 'Build a side-by-side comparison sheet',
-                body: (
-                  <span>
-                    Use the matrix in our{' '}
-                    <InternalLink id="program-comparison">program comparison guide</InternalLink> to
-                    compare the 5 shortlisted schools on all 10 factors.
-                  </span>
-                ),
-              },
-              {
-                title: 'Talk with 2–3 School Certifying Officials',
-                body: (
-                  <span>
-                    Phone or video conversations with the SCO tell you more than marketing pages.
-                    Ask about Yellow Ribbon availability, enrollment certification timelines, and
-                    veteran-student support.
-                  </span>
-                ),
-              },
-              {
-                title: 'Visit (in person or virtually) the top 2–3',
-                body: (
-                  <span>
-                    For on-campus programs, visit. For online programs, ask for a demo of the
-                    learning platform and a sample syllabus. Gut feel matters as much as data.
-                  </span>
-                ),
-              },
-              {
-                title: 'Decide and apply',
-                body: (
-                  <span>
-                    Pick one primary and one backup. Submit applications and transcripts early —
-                    benefit certification takes 4–8 weeks after enrollment.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'How can I tell if a school is truly veteran-friendly?',
-                a: (
-                  <span>
-                    Look for a named veteran services office, a published School Certifying
-                    Official contact, a written transfer-credit policy that explicitly mentions
-                    JST and ACE, Yellow Ribbon participation, and a Student Veterans of America
-                    (SVA) chapter. Also check the VA&apos;s Feedback Tool for complaint history.
-                  </span>
-                ),
-              },
-              {
-                q: 'Should I prioritize regional or national accreditation?',
-                a: (
-                  <span>
-                    For most students, regionally accredited institutions are more
-                    transfer-friendly and more broadly recognized by graduate programs and
-                    employers. Some nationally accredited institutions serve specific niches
-                    (faith-based, vocational). Confirm accreditation type at chea.org and
-                    consider your long-term education and career goals.
-                  </span>
-                ),
-              },
-              {
-                q: 'Can UCSG recommend specific schools?',
-                a: (
-                  <span>
-                    UCSG does not endorse or recommend specific institutions. We provide the
-                    comparison framework, the questions to ask, and the official sources to verify
-                    claims. Your selection should be based on your goals, constraints, and verified
-                    data.
-                  </span>
-                ),
-              },
-              {
-                q: 'What if I am choosing between an online and an on-campus program?',
-                a: (
-                  <span>
-                    Read our <InternalLink id="online-hybrid-degrees">online &amp; hybrid degree guide</InternalLink>{' '}
-                    for a side-by-side comparison. Consider VA housing allowance differences,
-                    your work schedule, family obligations, and learning style. There is no
-                    one-size-fits-all answer.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="official-source">Official Source</H2>
-          <p>
-            <a
-              href="https://www.va.gov/school-finding/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#0874F9] hover:underline font-medium"
-            >
-              Use the VA School Comparison Tool →
-            </a>
+          <h2 id="ten-factor-framework" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            10-Factor Selection Framework
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 mt-4">
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">1. Degree fit</h3>
+              <p className="text-sm text-gray-600 mt-1">Does the program align with your career goals and required credentials?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">2. Accreditation</h3>
+              <p className="text-sm text-gray-600 mt-1">Verify the institution&apos;s accreditation status through recognized accrediting bodies. Check if the accreditation type meets your transfer and career requirements.</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">3. Program approval</h3>
+              <p className="text-sm text-gray-600 mt-1">Is the specific program approved for VA education benefits?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">4. Delivery format</h3>
+              <p className="text-sm text-gray-600 mt-1">Online, hybrid, or on-campus? Which fits your schedule and learning style?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">5. Total estimated cost</h3>
+              <p className="text-sm text-gray-600 mt-1">Tuition, fees, books, housing &mdash; what&apos;s the all-in cost?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">6. Transfer-credit policy</h3>
+              <p className="text-sm text-gray-600 mt-1">Will your prior credits transfer? What&apos;s the maximum accepted?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">7. Graduation requirements</h3>
+              <p className="text-sm text-gray-600 mt-1">How many credits to complete? What are the residency requirements?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">8. Veteran services</h3>
+              <p className="text-sm text-gray-600 mt-1">Is there a dedicated veteran services office or SCO (School Certifying Official)?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">9. Academic support</h3>
+              <p className="text-sm text-gray-600 mt-1">Tutoring, advising, career services, disability services?</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <h3 className="font-heading font-semibold text-[#071B35]">10. Career alignment</h3>
+              <p className="text-sm text-gray-600 mt-1">Do graduates find jobs in your target field? What&apos;s the employment rate?</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-3">
+            Avoid unsupported &apos;best school&apos; rankings or military-friendly badges. Verify
+            claims through official sources.
           </p>
-          <SourceNote />
+        </Section>
+
+        <Section>
+          <h2 id="official-research" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Official Research Resources
+          </h2>
+          <ul className="ml-6 space-y-3 list-disc text-gray-700 mt-3">
+            <li>
+              <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">VA School Comparison Tool &mdash; va.gov/school-finding</a>
+            </li>
+            <li>
+              <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">College Scorecard &mdash; collegescorecard.ed.gov</a>
+            </li>
+            <li>
+              <a href="https://nces.ed.gov/collegenavigator/" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">College Navigator &mdash; nces.ed.gov/collegenavigator</a>
+            </li>
+            <li>
+              <a href="https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp" target="_blank" rel="noopener noreferrer" className="text-[#39C5E8] hover:underline font-medium">Principles of Excellence &mdash; benefits.va.gov</a>
+            </li>
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="document-checklist" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Document Checklist
+          </h2>
+          <ul className="space-y-3 mt-4">
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Program information sheets from each school</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>VA benefit eligibility confirmation</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Transfer credit evaluation results</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Total cost breakdown from financial aid office</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Veteran services contact information</span></li>
+            <li className="flex gap-3 text-gray-700"><CheckCircle2 className="h-5 w-5 text-[#39C5E8] shrink-0 mt-0.5" /><span>Accreditation verification</span></li>
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 id="faq" className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="space-y-3 mt-4">
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What&apos;s the difference between regional and national accreditation?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Verify the institution&apos;s accreditation status through recognized accrediting
+                bodies. Check if the accreditation type meets your transfer and career
+                requirements &mdash; do not assume a universal answer. Each institution sets its
+                own transfer-credit policy. Contact the receiving institution for their specific
+                policy before enrolling.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>How do I verify a school is VA-approved?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Use the VA School Comparison Tool at va.gov/school-finding to check if a specific
+                program is approved for VA education benefits.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What is a School Certifying Official (SCO)?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                An SCO is the school staff member who certifies your enrollment to the VA. Every
+                VA-approved school has one. Contact them early in the enrollment process.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-gray-200 bg-white p-4 open:bg-[#F8FAFC]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Should I trust &apos;military-friendly&apos; designations?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-3 text-gray-600 leading-relaxed">
+                Some designations are meaningful; others are marketing. Verify actual veteran
+                services, staff, and policies rather than relying on badges alone.
+              </div>
+            </details>
+          </div>
+        </Section>
+
+        <Section>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-700">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'program-comparison' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Open Program Comparison Tool &rarr;
+            </button>
+            <span className="text-gray-300" aria-hidden="true">|</span>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
+              className="text-[#39C5E8] hover:underline font-medium"
+            >
+              Start Free Assessment &rarr;
+            </button>
+          </div>
         </Section>
       </Body>
     ),
@@ -2212,239 +2164,181 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            A <strong>veteran college comparison</strong> is only as good as the criteria you use.
-            This page gives you a single, expandable comparison matrix with the rows you actually
-            need to evaluate a degree program — accreditation type, CIP code, delivery format,
-            total credits, transfer policy, veteran services, and more. Fill it in for each program
-            you are considering; the side-by-side view usually makes the right answer obvious.
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Compare Veteran Education Programs
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Use this interactive worksheet to compare programs side by side. Enter information
+            from each school&rsquo;s official website. Mark each field as confirmed, estimated,
+            or pending.
           </p>
-          <Lead>
-            The matrix below is intentionally left blank. Use it as a template — copy the structure
-            into your own spreadsheet and fill in the data directly from each institution&apos;s
-            official sources.
-          </Lead>
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              UCSG does not endorse specific programs or institutions. Confirm all data directly
-              with each institution and the VA. Program details change — re-verify before
-              enrollment.
-            </p>
-          </Callout>
         </Section>
 
         <Section>
-          <H2 id="expanded-comparison-table">Expanded Program Comparison Table</H2>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-[#061846] text-white">
-                  <th className="text-left p-3">Criterion</th>
-                  <th className="text-left p-3">Program A</th>
-                  <th className="text-left p-3">Program B</th>
-                  <th className="text-left p-3">Program C</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  'Institution name',
-                  'Degree type & level',
-                  'CIP code (Classification of Instructional Programs)',
-                  'Accreditation type (regional / national / programmatic)',
-                  'Delivery format (online / hybrid / on-campus)',
-                  'Total credits required',
-                  'Tuition per credit hour',
-                  'Mandatory fees (per term)',
-                  'Total estimated program cost',
-                  'Transfer credits accepted (maximum)',
-                  'JST / ACE credit acceptance',
-                  'Program length (full-time vs part-time)',
-                  'VA program approval status',
-                  'Yellow Ribbon participation',
-                  'Veteran services office',
-                  'School Certifying Official (named contact)',
-                  'Career outcomes / placement data',
-                  'Application deadline (next cohort)',
-                  'Start terms offered',
-                  'Residency requirement (minimum credits at institution)',
-                ].map((row, idx) => (
-                  <tr key={row} className={`border-b border-gray-200 ${idx % 2 === 1 ? 'bg-gray-50' : ''}`}>
-                    <td className="p-3 font-medium text-[#061846]">{row}</td>
-                    <td className="p-3 text-gray-400">—</td>
-                    <td className="p-3 text-gray-400">—</td>
-                    <td className="p-3 text-gray-400">—</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            How to Use This Worksheet
+          </h2>
+          <ol className="mt-4 space-y-4">
+            {[
+              'Gather program information from official school websites',
+              'Enter data for each program in the columns below',
+              'Mark each field\u2019s status (confirmed/estimated/pending)',
+              'Compare and discuss with an education advisor',
+            ].map((step, i) => (
+              <li key={i} className="flex gap-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#39C5E8] text-sm font-bold text-white">
+                  {i + 1}
+                </span>
+                <span className="pt-1.5 text-gray-700 leading-relaxed">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Program Comparison Worksheet
+          </h2>
+          <ProgramComparisonWorksheet />
+        </Section>
+
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Comparison Guidance
+          </h2>
+          <ul className="mt-4 space-y-2">
+            {[
+              'Compare the same time period (per year or total program)',
+              'Mark each figure\u2019s verification status',
+              'Note what\u2019s included vs excluded in tuition',
+              'Consider non-financial factors (location, culture, support)',
+            ].map((tip, i) => (
+              <li key={i} className="flex gap-2 text-gray-700">
+                <span className="text-[#39C5E8] font-bold shrink-0" aria-hidden="true">
+                  ✓
+                </span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Priorities and Unresolved Questions
+          </h2>
+          <div className="mt-4 rounded-r-lg border-l-4 border-[#39C5E8] bg-[#F8FAFC] p-4">
+            <p className="text-sm text-[#071B35]">
+              What matters most to you? Write down your top 3 priorities before comparing. Common
+              priorities: cost, format flexibility, time to completion, career outcomes, veteran
+              support.
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            The CIP code is the National Center for Education Statistics&apos; taxonomic code that
-            identifies the field of study. It helps you confirm you are comparing apples-to-apples
-            programs across institutions.
-          </p>
+          <ol className="mt-4 space-y-2">
+            {[
+              'Which factors are deal-breakers?',
+              'Which factors are nice-to-have?',
+              'What\u2019s your timeline for enrollment?',
+              'What questions remain unanswered?',
+            ].map((q, i) => (
+              <li key={i} className="flex gap-2 text-gray-700">
+                <span className="text-[#39C5E8] font-bold shrink-0" aria-hidden="true">
+                  {i + 1}.
+                </span>
+                <span>{q}</span>
+              </li>
+            ))}
+          </ol>
         </Section>
 
         <Section>
-          <H2 id="common-pitfalls">Common Comparison Pitfalls</H2>
-          <Lead>
-            Even with a solid matrix, veterans sometimes compare programs in ways that produce
-            misleading conclusions. Avoid these common pitfalls:
-          </Lead>
-          <CheckList
-            items={[
-              'Comparing sticker tuition instead of net cost after financial aid and VA benefits',
-              'Ignoring residency requirements that force extra terms of enrollment',
-              'Assuming transfer credits transfer at full value — some schools accept them only as electives',
-              'Comparing programs at different credit-hour lengths without normalizing per credit',
-              'Believing marketing-page outcome data without verifying with the career services office',
-              'Forgetting to confirm CIP code alignment — similar program names can mean very different curricula',
-              'Treating Yellow Ribbon participation as a guarantee — confirm slot availability before enrolling',
-              'Overlooking format implications for VA housing allowance (online vs. on-campus structures differ)',
-              'Underestimating opportunity cost — longer programs mean more time out of the civilian workforce',
-              'Failing to confirm programmatic accreditation in fields where it matters (health, business, engineering, law)',
-            ]}
-          />
-          <Callout>
-            <p className="text-sm text-[#061846]">
-              A comparison sheet is only as good as the official data behind it. If a school
-              refuses to confirm a number in writing, treat the row as unknown and investigate
-              further before enrolling.
-            </p>
-          </Callout>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="mt-4 space-y-3">
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is this worksheet connected to any school database?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                No. You enter information manually from official school websites. The worksheet
+                helps you organize and compare &mdash; it doesn&rsquo;t pull data automatically.
+              </p>
+            </details>
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Will my worksheet data be saved?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                By default, your data stays in your browser&rsquo;s memory during your session. If
+                you close the page, the data is lost. Use the Print button to save a physical copy.
+              </p>
+            </details>
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can I share this with an advisor?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                Print the worksheet and bring it to your consultation. We can review it together
+                and discuss next steps.
+              </p>
+            </details>
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>What if I can&rsquo;t find some information?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                Mark it as &lsquo;Pending&rsquo; or &lsquo;Unknown.&rsquo; Never assume or invent
+                data. Contact the institution&rsquo;s admissions office for missing information.
+              </p>
+            </details>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="how-to-use">How to Use This Table</H2>
-          <Steps
-            items={[
-              {
-                title: 'Pre-fill the institution name and degree level',
-                body: (
-                  <span>
-                    Decide on 3 programs (or up to 5) that already passed the 10-factor school
-                    selection filter from our{' '}
-                    <InternalLink id="choosing-a-school">choosing a school guide</InternalLink>.
-                  </span>
-                ),
-              },
-              {
-                title: 'Find the CIP code from each institution\'s catalog',
-                body: (
-                  <span>
-                    The CIP code is published in the institution&apos;s program catalog or on the
-                    NCES College Navigator (nces.ed.gov/collegenavigator). CIP codes let you
-                    confirm you are comparing the same field across schools.
-                  </span>
-                ),
-              },
-              {
-                title: 'Verify accreditation type at chea.org or the U.S. Department of Education database',
-                body: (
-                  <span>
-                    Note whether accreditation is regional (most transfer-friendly), national, or
-                    programmatic (ABET, AACSB, CCNE, etc.). Programmatic accreditation matters in
-                    fields that require licensure.
-                  </span>
-                ),
-              },
-              {
-                title: 'Confirm VA program approval status with the VA School Comparison Tool',
-                body: (
-                  <span>
-                    Use{' '}
-                    <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline">va.gov/school-finding</a>{' '}
-                    and verify with each institution&apos;s School Certifying Official. Approval is
-                    program-specific — don&apos;t assume.
-                  </span>
-                ),
-              },
-              {
-                title: 'Get veteran services contact info in writing',
-                body: (
-                  <span>
-                    Ask each institution for the name, email, and phone of the veteran services
-                    coordinator and the SCO. Schools that can&apos;t name a contact person are a
-                    red flag.
-                  </span>
-                ),
-              },
-              {
-                title: 'Compare total estimated program cost — not per-credit rate',
-                body: (
-                  <span>
-                    Use our{' '}
-                    <InternalLink id="cost-planning">cost planning template</InternalLink> to
-                    standardize the cost categories. Apply estimated VA benefit contribution
-                    separately; the VA determines actual eligibility.
-                  </span>
-                ),
-              },
-              {
-                title: 'Review career outcomes data by program — not institution-wide',
-                body: (
-                  <span>
-                    Institution-wide employment stats hide wide variation between departments. Ask
-                    the career services office for program-specific outcomes data. UCSG does not
-                    endorse specific outcome statistics.
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </Section>
-
-        <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Why include the CIP code in the comparison?',
-                a: (
-                  <span>
-                    The CIP code is a six-digit taxonomic identifier published by the National
-                    Center for Education Statistics. Two programs with similar titles at different
-                    schools may have different CIP codes — meaning different curricula,
-                    accreditation, and VA approval status. Comparing CIP codes confirms you are
-                    comparing equivalent programs.
-                  </span>
-                ),
-              },
-              {
-                q: 'How do I know the data I\'m entering is accurate?',
-                a: (
-                  <span>
-                    Verify every cell against an official source: the institution&apos;s catalog
-                    (for CIP, credits, format), the bursar (for tuition and fees), the registrar
-                    (for transfer policy), the VA School Comparison Tool (for VA approval), and the
-                    career services office (for outcomes). Avoid marketing pages as primary
-                    sources.
-                  </span>
-                ),
-              },
-              {
-                q: 'Can UCSG fill in the comparison table for me?',
-                a: (
-                  <span>
-                    UCSG&apos;s free veteran degree assessment gathers your goals and constraints
-                    and helps you identify which institutions to compare — but we do not collect
-                    live program data on your behalf. We give you the framework, the questions to
-                    ask, and the official sources to verify. <InternalLink id="assessment">Start the assessment →</InternalLink>
-                  </span>
-                ),
-              },
-              {
-                q: 'Should I compare more than 3 programs?',
-                a: (
-                  <span>
-                    Comparing 3–5 programs is usually optimal. Fewer than 3 and you lack meaningful
-                    contrast; more than 5 and the table becomes unwieldy. After the first pass,
-                    drop the weakest two and deepen your research on the top 2–3.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Need Help Comparing?
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent('ucsg-navigate', {
+                    detail: { view: 'veterans', id: 'book-consultation' },
+                  }),
+                )
+              }
+              className="inline-flex items-center rounded-md bg-[#071B35] px-6 py-3 text-sm font-semibold text-white hover:bg-[#0d2a5a]"
+            >
+              BOOK A CONSULTATION
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent('ucsg-navigate', {
+                    detail: { view: 'veterans', id: 'assessment' },
+                  }),
+                )
+              }
+              className="inline-flex items-center rounded-md border border-[#D6A84B] bg-white px-6 py-3 text-sm font-semibold text-[#8A6B26] hover:bg-[#D6A84B]/10"
+            >
+              START FREE ASSESSMENT
+            </button>
+          </div>
         </Section>
       </Body>
     ),
@@ -2464,78 +2358,109 @@ const INFO_PAGE_CONTENT: Record<string, {
     children: (
       <Body>
         <Section>
-          <p className="text-gray-700 leading-relaxed">
-            The UCSG <strong>Veteran Education Resource Center</strong> organizes our published
-            guides by category. Every guide links back to the relevant official VA or DoD source so
-            you can verify what you read. We do not publish benefit amounts, eligibility
-            determinations, or program-specific success statistics — those are set by the VA, the
-            institution, or the appropriate government agency.
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Veteran Education Resource Center
+          </h2>
+          <p className="mt-3 text-gray-700 leading-relaxed">
+            Browse veteran education guides covering college comparison, VA benefits, transfer
+            credit, degree planning, and cost comparison. All resources link to real implemented
+            pages on this site.
           </p>
-          <Lead>
-            Use the category descriptions below to find the guide you need, then jump to the
-            expanded article cards further down the page.
-          </Lead>
         </Section>
 
         <Section>
-          <H2 id="categories">Resource Categories</H2>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Degree Planning</h3>
-              <p className="text-sm text-gray-600 mt-1">Roadmaps, planning processes, and questions to ask your DSO before choosing a program.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">VA Education Benefits</h3>
-              <p className="text-sm text-gray-600 mt-1">Where to find official information on Post-9/11 GI Bill®, MGIB, VR&amp;E, and the Yellow Ribbon Program.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Transfer Credit</h3>
-              <p className="text-sm text-gray-600 mt-1">JST transcripts, ACE recommendations, prior learning assessment, and questions for admissions.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">School Selection</h3>
-              <p className="text-sm text-gray-600 mt-1">10-factor framework, red and green flags, and step-by-step school selection.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Cost Planning</h3>
-              <p className="text-sm text-gray-600 mt-1">Cost breakdown template, hidden costs, and financial aid resources for veterans.</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 p-4">
-              <h3 className="font-heading font-semibold text-[#061846]">Program Comparison</h3>
-              <p className="text-sm text-gray-600 mt-1">Side-by-side matrix, CIP codes, and how to use the comparison table.</p>
-            </div>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Topic Jump Links
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {[
+              { id: 'degree-planning', label: 'Degree Planning' },
+              { id: 'education-benefits', label: 'Education Benefits' },
+              { id: 'military-transfer-credit', label: 'Military Credit' },
+              { id: 'choosing-a-school', label: 'School Selection' },
+              { id: 'cost-planning', label: 'Cost Planning' },
+              { id: 'program-comparison', label: 'Program Comparison' },
+            ].map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent('ucsg-navigate', {
+                      detail: { view: 'veterans', id: t.id },
+                    }),
+                  )
+                }
+                className="rounded-full border border-gray-200 bg-[#F8FAFC] px-4 py-2 text-sm font-medium text-[#071B35] hover:border-[#39C5E8] hover:bg-white"
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
         </Section>
 
         <Section>
-          <H2 id="article-library">Article Library</H2>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Grouped Resource Cards
+          </h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: 'How to Compare Colleges as a Veteran', summary: 'A 10-factor framework covering accreditation, VA approval, transfer policy, veteran services, and career outcomes — built to cut through marketing claims.', tag: 'School Selection' },
-              { title: 'Questions Veterans Should Ask Before Choosing a Degree', summary: 'A structured list of questions covering career goals, format fit, transfer credit, cost, and benefit certification timelines.', tag: 'Degree Planning' },
-              { title: 'Understanding VA Education Benefits: Where to Start', summary: 'A plain-language orientation to Post-9/11 GI Bill®, MGIB, VR&amp;E, DEA, and Yellow Ribbon — with links to every official VA page.', tag: 'VA Benefits' },
-              { title: 'Yellow Ribbon Program: Questions to Ask a School', summary: 'Eight questions that help you confirm participation, contribution amounts, slot availability, and renewal terms at each school.', tag: 'VA Benefits' },
-              { title: 'VR&E Education Planning: Official Resources to Review', summary: 'What Veteran Readiness &amp; Employment covers, who qualifies, and where to find official VA information.', tag: 'VA Benefits' },
-              { title: 'Military Transcripts and Transfer Credit: What to Ask', summary: 'How to request your JST, what questions to ask admissions, and how prior learning assessment works.', tag: 'Transfer Credit' },
-              { title: 'Bachelor\'s Degree Completion Planning for Veterans', summary: 'A six-step planning process for veterans returning to finish a four-year degree they started years ago.', tag: 'Degree Planning' },
-              { title: 'MBA vs Specialized Master\'s: A Veteran\'s Planning Guide', summary: 'A side-by-side comparison of program structure, cost, prerequisite expectations, and career outcomes.', tag: 'Degree Planning' },
-              { title: 'Online vs Hybrid Degrees: Questions to Compare', summary: 'Asynchronous vs synchronous, cohort vs self-paced, full-time vs part-time — and the VA benefit implications of each format.', tag: 'School Selection' },
-              { title: 'Veteran Degree Planning Checklist', summary: 'A printable checklist that walks you from goal-setting through application submission — including documents to gather and what not to share.', tag: 'Degree Planning' },
-              { title: 'How to Compare Total Degree Cost', summary: 'A cost breakdown template with hidden costs, opportunity cost, and a step-by-step cost comparison process.', tag: 'Cost Planning' },
-              { title: 'What to Ask a School Certifying Official', summary: 'VA benefit certification timelines, enrollment change reporting, Yellow Ribbon participation, and your single point of contact.', tag: 'VA Benefits' },
-            ].map((article) => (
-              <div key={article.title} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="font-heading font-semibold text-[#061846]">{article.title}</h3>
-                  <span className="shrink-0 rounded-full bg-[#EDF5FF] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#0874F9]">{article.tag}</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-2 leading-relaxed">{article.summary}</p>
-                <p className="text-xs text-gray-400 mt-3">UCSG Editorial Team · Resource Center</p>
+              {
+                id: 'choosing-a-school',
+                title: 'How to Compare Colleges as a Veteran',
+                summary:
+                  'Use the 10-factor selection framework to evaluate schools on accreditation, cost, format, and veteran services.',
+              },
+              {
+                id: 'education-benefits',
+                title: 'Understanding VA Education Benefits',
+                summary:
+                  'Learn about VA education benefit programs, how to apply, and what questions to ask the VA.',
+              },
+              {
+                id: 'military-transfer-credit',
+                title: 'Military Transcripts and Transfer Credit',
+                summary:
+                  'Understand JST, CCAF, and prior learning assessment. Questions to ask admissions about credit evaluation.',
+              },
+              {
+                id: 'bachelors-degree',
+                title: 'Bachelor\u2019s Degree Completion Planning',
+                summary:
+                  'Steps to complete your bachelor\u2019s degree, including transfer credit, format comparison, and cost planning.',
+              },
+              {
+                id: 'program-comparison',
+                title: 'Compare Veteran Education Programs',
+                summary:
+                  'Use the interactive comparison worksheet to evaluate programs side by side with verified data.',
+              },
+              {
+                id: 'cost-planning',
+                title: 'Education Cost Planning',
+                summary:
+                  'Budget for tuition, fees, housing, and overlooked costs. Separate confirmed, estimated, and pending figures.',
+              },
+            ].map((c) => (
+              <div
+                key={c.id}
+                className="flex flex-col rounded-lg border border-gray-200 bg-white p-5 transition hover:border-[#39C5E8] hover:shadow-md"
+              >
+                <h3 className="font-heading text-lg font-semibold text-[#071B35]">{c.title}</h3>
+                <p className="mt-2 flex-1 text-sm text-gray-600 leading-relaxed">{c.summary}</p>
+                <p className="mt-4 text-xs text-gray-400">UCSG Editorial Team</p>
                 <button
-                  className="mt-3 text-sm text-[#0874F9] hover:underline font-medium"
-                  onClick={() => track.ctaClick({ cta_type: 'resource_read', cta_source: 'veteran_resources', cta_text: article.title })}
+                  type="button"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent('ucsg-navigate', {
+                        detail: { view: 'veterans', id: c.id },
+                      }),
+                    )
+                  }
+                  className="mt-3 inline-flex items-center text-sm font-medium text-[#39C5E8] hover:underline"
                 >
-                  Read Guide →
+                  Read Guide &rarr;
                 </button>
               </div>
             ))}
@@ -2543,73 +2468,147 @@ const INFO_PAGE_CONTENT: Record<string, {
         </Section>
 
         <Section>
-          <H2 id="official-directory">Official Resource Directory</H2>
-          <Lead>
-            Every UCSG veteran guide cross-references these official sources. Bookmark them.
-          </Lead>
-          <ul className="ml-6 space-y-3 list-disc text-gray-700">
-            <li>
-              <a href="https://www.va.gov/education/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">va.gov/education</a> — main VA education benefits hub.
-            </li>
-            <li>
-              <a href="https://www.va.gov/education/yellow-ribbon-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">va.gov/education/yellow-ribbon-program</a> — official Yellow Ribbon Program page.
-            </li>
-            <li>
-              <a href="https://www.va.gov/education/about-vre-program/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">va.gov/education/about-vre-program</a> — official VR&amp;E (Chapter 31) page.
-            </li>
-            <li>
-              <a href="https://www.va.gov/school-finding/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">va.gov/school-finding</a> — VA School Comparison Tool.
-            </li>
-            <li>
-              <a href="https://jst.doded.mil/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">jst.doded.mil</a> — official Joint Services Transcript portal.
-            </li>
-            <li>
-              <a href="https://studentaid.gov/" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">studentaid.gov</a> — Federal Student Aid (FAFSA) portal.
-            </li>
-            <li>
-              <a href="https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp" target="_blank" rel="noopener noreferrer" className="text-[#0874F9] hover:underline font-medium">VA Principles of Excellence</a> — institutional commitments to veteran students.
-            </li>
-          </ul>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Who Can Help
+          </h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                role: 'Admissions Office',
+                desc: 'Application requirements, deadlines, fee waivers',
+              },
+              {
+                role: 'Registrar',
+                desc: 'Transcript evaluation, transfer credit, enrollment verification',
+              },
+              {
+                role: 'School Certifying Official (SCO)',
+                desc: 'VA benefit certification, enrollment reporting',
+              },
+              {
+                role: 'VA Education Case Manager',
+                desc: 'Benefit eligibility, payment questions',
+              },
+              {
+                role: 'UCSG Education Advisor',
+                desc: 'Program comparison, planning guidance, application support',
+              },
+            ].map((r) => (
+              <div key={r.role} className="rounded-lg border border-gray-200 bg-white p-4">
+                <h3 className="font-heading font-semibold text-[#071B35]">{r.role}</h3>
+                <p className="mt-1 text-sm text-gray-600 leading-relaxed">{r.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded-r-lg border-l-4 border-[#39C5E8] bg-[#F8FAFC] p-4">
+            <p className="text-sm text-[#071B35]">
+              Contact each role for their specific area. UCSG provides educational planning
+              support &mdash; we do not make VA or institutional decisions.
+            </p>
+          </div>
         </Section>
 
         <Section>
-          <H2 id="faq">Frequently Asked Questions</H2>
-          <Faq
-            items={[
-              {
-                q: 'Are UCSG\'s resource guides official VA guidance?',
-                a: (
-                  <span>
-                    No. UCSG guides are independent editorial content created to help you navigate
-                    official VA and DoD information. They are not affiliated with, endorsed by, or
-                    sponsored by the VA or DoD. Always verify specific eligibility, rates, and
-                    program details at the official VA or DoD source linked in each guide.
-                  </span>
-                ),
-              },
-              {
-                q: 'How often are these guides updated?',
-                a: (
-                  <span>
-                    Guides are reviewed periodically for accuracy. VA benefit rates and program
-                    details change annually; UCSG does not quote specific VA payment amounts in
-                    any guide. Always confirm current numbers at va.gov.
-                  </span>
-                ),
-              },
-              {
-                q: 'Where should I start if I\'m new to veteran education planning?',
-                a: (
-                  <span>
-                    Start with our <InternalLink id="degree-planning">degree planning guide</InternalLink>{' '}
-                    for the six-step planning process, then read the{' '}
-                    <InternalLink id="education-benefits">VA education benefits guide</InternalLink>{' '}
-                    to understand which official sources to verify your benefits with.
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            FAQ
+          </h2>
+          <div className="mt-4 space-y-3">
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Are these resources free?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                Yes. All guides on this site are free to read. The veteran assessment is also free
+                with no enrollment commitment.
+              </p>
+            </details>
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can UCSG help me contact schools?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                UCSG provides guidance on what to ask and how to prepare. We can help you organize
+                your approach, but you should contact schools directly for official information.
+              </p>
+            </details>
+            <details className="rounded-lg border border-gray-200 bg-white p-4">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Where can I find official VA resources?</span>
+                <span className="text-[#39C5E8] font-bold text-lg leading-none" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-gray-600 leading-relaxed">
+                Visit{' '}
+                <a
+                  href="https://www.va.gov/education"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#39C5E8] font-medium hover:underline"
+                >
+                  va.gov/education
+                </a>{' '}
+                for the most current information on VA education benefits. Always verify with
+                official sources before making decisions.
+              </p>
+            </details>
+          </div>
+        </Section>
+
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Get Started
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent('ucsg-navigate', {
+                    detail: { view: 'veterans', id: 'assessment' },
+                  }),
+                )
+              }
+              className="inline-flex items-center rounded-md bg-[#071B35] px-6 py-3 text-sm font-semibold text-white hover:bg-[#0d2a5a]"
+            >
+              START FREE ASSESSMENT
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent('ucsg-navigate', {
+                    detail: { view: 'veterans', id: 'book-consultation' },
+                  }),
+                )
+              }
+              className="inline-flex items-center rounded-md border border-[#D6A84B] bg-white px-6 py-3 text-sm font-semibold text-[#8A6B26] hover:bg-[#D6A84B]/10"
+            >
+              BOOK A CONSULTATION
+            </button>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#071B35]">
+            <a href="tel:917-565-4788" className="hover:underline">
+              917-565-4788
+            </a>
+            <a
+              href="https://wa.me/13478376354"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              WhatsApp
+            </a>
+            <a href="mailto:info@universalconsultingservices.com" className="hover:underline">
+              info@universalconsultingservices.com
+            </a>
+          </div>
         </Section>
       </Body>
     ),
@@ -2643,8 +2642,12 @@ const INFO_PAGE_CONTENT: Record<string, {
             className="mt-6 bg-[#0874F9] hover:bg-[#0660D4] text-white font-medium px-6 py-3 rounded-lg transition-colors"
             onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
           >
-            REGISTER FOR NEXT WORKSHOP
+            NOTIFY ME ABOUT FUTURE WORKSHOPS
           </button>
+          <p className="text-white/70 mt-4 text-sm leading-relaxed">
+            Workshop dates will be announced when confirmed. We&apos;ll notify you when
+            registration opens.
+          </p>
         </motion.div>
 
         <Section>
@@ -2864,9 +2867,9 @@ const INFO_PAGE_CONTENT: Record<string, {
                 q: 'When is the next workshop?',
                 a: (
                   <span>
-                    Upcoming workshop dates will be announced on this page. Register through the
-                    workshop feature card at the top of the page to be notified when the next
-                    session is scheduled.
+                    Upcoming workshop dates will be announced on this page. Use the
+                    &quot;Notify Me About Future Workshops&quot; button at the top of the page to be
+                    notified when the next session is scheduled.
                   </span>
                 ),
               },
@@ -2875,21 +2878,27 @@ const INFO_PAGE_CONTENT: Record<string, {
         </Section>
 
         <Section>
-          <H2 id="register">Register for the Next Workshop</H2>
+          <H2 id="register">Notify Me About Future Workshops</H2>
           <Lead>
-            Spots are limited. Complete the free veteran degree assessment to begin the
-            registration process — we&apos;ll send you the next workshop schedule.
+            Complete the free veteran degree assessment to request a seat at an upcoming session.
+            Workshop dates will be announced when confirmed. We&apos;ll notify you when
+            registration opens.
           </Lead>
           <button
             className="mt-4 inline-flex items-center gap-2 bg-[#0874F9] hover:bg-[#0660D4] text-white font-semibold px-6 py-3 rounded-lg transition-colors"
             onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'veterans', id: 'assessment' } }))}
           >
-            REGISTER FOR NEXT WORKSHOP
+            NOTIFY ME ABOUT FUTURE WORKSHOPS
           </button>
+          <p className="mt-4 text-sm text-gray-500 leading-relaxed">
+            We do not confirm specific dates, group sizes, presenters, or agendas in advance.
+            Details for each session are shared with registered attendees once the session is
+            finalized.
+          </p>
         </Section>
       </Body>
     ),
-    ctaText: 'REGISTER FOR WORKSHOP',
+    ctaText: 'NOTIFY ME ABOUT WORKSHOPS',
     ctaHref: 'assessment',
   },
 
@@ -3142,27 +3151,225 @@ const INFO_PAGE_CONTENT: Record<string, {
   },
 
   /* ============================================================= */
-  /* BOOK-CONSULTATION (unchanged — uses info layout)               */
+  /* BOOK-CONSULTATION (auto-opens calendar via BookConsultationView) */
   /* ============================================================= */
   'book-consultation': {
     heroImage: CAMPUS_IMG,
-    eyebrow: 'BOOK A CONSULTATION',
-    headline: 'Book a Veteran Education Consultation',
+    eyebrow: 'BOOK A VETERAN EDUCATION CONSULTATION',
+    headline: 'Talk With Joy About Your Education Goals',
     subheadline:
-      'Discuss your degree goals and next steps with an education advisor. Free, no obligation.',
+      'Schedule a free consultation with Joy Chowdhury, U.S. Army Veteran and founder of UCSG. Discuss your degree goals, education background, and next steps.',
     children: (
-      <div className="space-y-6">
-        <div className="bg-[#EDF5FF] rounded-xl p-8 text-center">
-          <p className="text-lg font-heading font-semibold text-[#061846]">Ready to talk?</p>
-          <p className="text-gray-600 mt-2">Click below to open the booking calendar.</p>
-          <button
-            className="mt-4 bg-[#0874F9] hover:bg-[#0660D4] text-white font-medium px-8 py-3 rounded-lg transition-colors"
-            onClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'contact' } }))}
-          >
-            OPEN BOOKING CALENDAR
-          </button>
-        </div>
-      </div>
+      <Body>
+        {/* Booking calendar */}
+        <Section>
+          <div className="rounded-2xl bg-gradient-to-b from-[#071B35] to-[#0B2545] p-6 sm:p-8 text-center">
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <div className="h-px w-6 bg-[#D6A84B]/60" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D6A84B]">
+                SCHEDULE A FREE CONSULTATION
+              </span>
+              <div className="h-px w-6 bg-[#D6A84B]/60" />
+            </div>
+            <h2 className="font-heading text-2xl font-bold text-white">
+              Book Your Veteran Education Consultation
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-white/70 leading-relaxed">
+              Joy Chowdhury, U.S. Army Veteran and founder of UCSG, will review your degree goals,
+              education background, and next steps. Free, no enrollment commitment.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                track.ctaClick({
+                  cta_type: 'calendar_open',
+                  cta_source: 'book_consultation_hero',
+                  cta_text: 'OPEN BOOKING CALENDAR',
+                });
+                window.dispatchEvent(
+                  new CustomEvent('ucsg-navigate', { detail: { view: 'contact' } }),
+                );
+              }}
+              className="group mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-[#39C5E8] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#39C5E8]/25 transition-all duration-300 hover:bg-[#2BAFD0] hover:shadow-xl hover:shadow-[#39C5E8]/35"
+              aria-label="Open the booking calendar"
+            >
+              OPEN BOOKING CALENDAR
+            </button>
+            <p className="mt-3 text-xs text-white/50">
+              All times shown in your local timezone. Opening the calendar does not confirm an
+              appointment — you select a slot and confirm it inside the booking tool.
+            </p>
+          </div>
+        </Section>
+
+        {/* Preparation panel */}
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            How to Prepare for Your Consultation
+          </h2>
+          <p className="mt-3 text-gray-600 leading-relaxed">
+            A few minutes of preparation helps Joy give you the most useful guidance. Bring what
+            you have — don&apos;t worry about what you don&apos;t.
+          </p>
+          <ul className="space-y-2 mt-4">
+            {[
+              'Write down your one-sentence degree goal: "I want to earn a [degree] in [field] so I can work as [role]"',
+              'List your prior college coursework, military training, and any CLEP/DSST exams already passed',
+              'Have your Joint Services Transcript (JST) on hand if you have one — request it at jst.doded.mil',
+              'Note your GI Bill® chapter (e.g., Post-9/11, MGIB) if known — UCSG does not determine eligibility',
+              'Bring 2–3 questions you most want answered (cost, format, transfer credit, timeline)',
+            ].map((item) => (
+              <li key={item} className="flex gap-2 text-gray-700">
+                <span className="text-[#39C5E8] font-bold shrink-0" aria-hidden="true">
+                  ✓
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        {/* Consultation topics */}
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            What We Can Discuss
+          </h2>
+          <p className="mt-3 text-gray-600 leading-relaxed">
+            Topics Joy can help you think through during your free consultation.
+          </p>
+          <ul className="grid gap-3 sm:grid-cols-2 mt-4">
+            {[
+              'Your short-term and long-term career goals',
+              'How military experience and prior coursework might count toward a degree',
+              'Online, hybrid, and on-campus format trade-offs',
+              'How to think about total program cost — not just per-credit tuition',
+              'Questions to ask a School Certifying Official (SCO)',
+              'How to compare accredited programs side-by-side',
+            ].map((topic) => (
+              <li
+                key={topic}
+                className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-gray-700"
+              >
+                <span className="text-[#39C5E8] font-bold mr-2" aria-hidden="true">
+                  ›
+                </span>
+                {topic}
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        {/* Timezone + compliance callout */}
+        <Section>
+          <div className="rounded-lg border-l-4 border-[#39C5E8] bg-[#EDF5FF] p-4 sm:p-5">
+            <p className="text-sm text-[#071B35]">
+              All times shown in your local timezone. UCSG is an independent education consulting
+              organization and is not affiliated with the VA. The VA determines all benefit
+              eligibility, entitlement, and payment decisions. Opening the calendar does not
+              confirm an appointment — you select and confirm your slot inside the booking tool.
+            </p>
+          </div>
+        </Section>
+
+        {/* Direct contact fallback */}
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Prefer to Reach Out Directly?
+          </h2>
+          <p className="mt-3 text-gray-600 leading-relaxed">
+            If the calendar doesn&apos;t load, contact Joy directly using any of these methods:
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3 mt-4">
+            <a
+              href="tel:+19175654788"
+              className="rounded-lg border border-slate-200 bg-white p-4 hover:border-[#39C5E8] transition-colors"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#D6A84B]">
+                Call/Text
+              </p>
+              <p className="mt-1 text-sm font-medium text-[#071B35]">917-565-4788</p>
+            </a>
+            <a
+              href="https://wa.me/13478376354"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg border border-slate-200 bg-white p-4 hover:border-[#39C5E8] transition-colors"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#D6A84B]">
+                WhatsApp
+              </p>
+              <p className="mt-1 text-sm font-medium text-[#071B35]">Chat with us</p>
+            </a>
+            <a
+              href="mailto:info@universalconsultingservices.com"
+              className="rounded-lg border border-slate-200 bg-white p-4 hover:border-[#39C5E8] transition-colors"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#D6A84B]">Email</p>
+              <p className="mt-1 text-sm font-medium text-[#071B35] break-all">
+                info@universalconsultingservices.com
+              </p>
+            </a>
+          </div>
+        </Section>
+
+        {/* FAQ */}
+        <Section>
+          <h2 className="font-heading text-2xl font-bold text-[#071B35] mt-2 scroll-mt-24">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-3 mt-4">
+            <details className="group rounded-lg border border-slate-200 bg-white p-4 open:bg-[#F8FBFF]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Is the consultation free?</span>
+                <span
+                  className="text-[#39C5E8] font-bold text-lg leading-none"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="mt-3 text-sm text-gray-600 leading-relaxed">
+                Yes. The veteran education consultation is free, with no enrollment commitment. Joy
+                will review your goals and offer guidance — the next move is always yours.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-slate-200 bg-white p-4 open:bg-[#F8FBFF]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Do I need my DD-214 or SSN to talk with Joy?</span>
+                <span
+                  className="text-[#39C5E8] font-bold text-lg leading-none"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="mt-3 text-sm text-gray-600 leading-relaxed">
+                No. UCSG does not request, collect, or store DD-214 forms, SSNs, VA claim numbers,
+                disability ratings, or medical information. You submit those directly to the VA or
+                your chosen institution. Joy will only ask about your degree goals, prior
+                coursework, and preferred format.
+              </div>
+            </details>
+            <details className="group rounded-lg border border-slate-200 bg-white p-4 open:bg-[#F8FBFF]">
+              <summary className="cursor-pointer list-none font-heading font-semibold text-[#071B35] flex items-start justify-between gap-3">
+                <span>Can Joy tell me if I qualify for GI Bill® benefits?</span>
+                <span
+                  className="text-[#39C5E8] font-bold text-lg leading-none"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="mt-3 text-sm text-gray-600 leading-relaxed">
+                No. UCSG is independent and not affiliated with the VA. The VA determines all
+                benefit eligibility and payment decisions. Joy can help you find official
+                information at va.gov/education and prepare questions to ask your School Certifying
+                Official — but the VA is the final authority on benefits.
+              </div>
+            </details>
+          </div>
+        </Section>
+      </Body>
     ),
     ctaText: 'TAKE THE ASSESSMENT FIRST',
     ctaHref: 'assessment',

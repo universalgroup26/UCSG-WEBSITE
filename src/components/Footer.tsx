@@ -233,6 +233,97 @@ export default function Footer({ onContactClick }: Props) {
         </div>
       </div>
 
+      {/* Veteran Education Planning section — crawlable real anchor links */}
+      <div className="bg-[#071B35]">
+        <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+            {/* Left: heading + subtext + contact rail */}
+            <div>
+              <h3 className="font-heading text-base font-semibold uppercase tracking-wider text-[#D6A84B]">
+                Veteran Education Planning
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-white/80">
+                UCSG was founded by U.S. Army Veteran Joy Chowdhury. Talk With Joy
+                about your degree goals.
+              </p>
+              <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
+                <li>
+                  <a
+                    href="tel:+19175654788"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-[#39C5E8] hover:underline"
+                  >
+                    <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Call/Text: 917-565-4788
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://wa.me/13478376354"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-[#39C5E8] hover:underline"
+                  >
+                    <MessageCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="mailto:info@universalconsultingservices.com"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-[#39C5E8] hover:underline"
+                  >
+                    <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    info@universalconsultingservices.com
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Right: quick links (REAL <a href> tags for crawlability) */}
+            <div className="lg:border-l lg:border-white/10 lg:pl-12">
+              <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-white/90">
+                Veteran Quick Links
+              </h4>
+              <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <li>
+                  <a
+                    href="/veterans"
+                    className="block rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white hover:bg-white/10 hover:border-[#39C5E8]/40 transition-colors"
+                  >
+                    Veteran Overview
+                    <span className="mt-1 block text-xs font-normal text-[#39C5E8]">
+                      /veterans
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/veterans/assessment"
+                    className="block rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white hover:bg-white/10 hover:border-[#39C5E8]/40 transition-colors"
+                  >
+                    Free Assessment
+                    <span className="mt-1 block text-xs font-normal text-[#39C5E8]">
+                      /veterans/assessment
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/veterans/book-consultation"
+                    className="block rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white hover:bg-white/10 hover:border-[#39C5E8]/40 transition-colors"
+                  >
+                    Book Consultation
+                    <span className="mt-1 block text-xs font-normal text-[#39C5E8]">
+                      /veterans/book-consultation
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
       <div className="bg-[#040E28]">
         <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
