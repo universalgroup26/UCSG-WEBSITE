@@ -198,7 +198,7 @@ export default function VeteranHubPage() {
               id="veteran-hero-heading"
               className="mt-4 font-heading text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl"
             >
-              Your Next Mission Could Start With Education.
+              Veteran Education Planning for Your Next Mission
             </motion.h1>
 
             <motion.p
@@ -208,9 +208,8 @@ export default function VeteranHubPage() {
               custom={2}
               className="mt-5 max-w-xl font-sans text-base leading-relaxed text-slate-300 sm:text-lg"
             >
-              Explore degree options, compare programs, understand official
-              education resources and build a clear plan for your next academic
-              chapter.
+              Compare degree paths, prepare military-credit questions, and
+              organize your next college decision with veteran-led guidance.
             </motion.p>
 
             <motion.p
@@ -242,7 +241,7 @@ export default function VeteranHubPage() {
                 }}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D6A84B] px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#071B35] transition-all hover:brightness-110 hover:shadow-lg hover:shadow-[#D6A84B]/20"
               >
-                Start My Veteran Degree Assessment
+                Start My Free Assessment
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
 
@@ -256,7 +255,7 @@ export default function VeteranHubPage() {
                 }}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[#39C5E8]/60 bg-transparent px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#39C5E8] transition-all hover:border-[#39C5E8] hover:bg-[#39C5E8]/10"
               >
-                Talk With a Veteran Education Advisor
+                Talk With Joy
               </button>
             </motion.div>
 

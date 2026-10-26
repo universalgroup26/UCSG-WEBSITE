@@ -1149,6 +1149,14 @@ const INFO_PAGE_CONTENT: Record<string, {
                 approval status.
               </p>
             </details>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a href="/veterans/yellow-ribbon" className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Yellow Ribbon Program →</a>
+          <a href="/veterans/vre" className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">VR&E (Chapter 31) →</a>
+          <a href="/veterans/book-consultation" className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Book a Consultation →</a>
+        </div>
+
+
           </div>
         </Section>
 

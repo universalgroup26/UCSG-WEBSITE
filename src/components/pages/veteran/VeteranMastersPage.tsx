@@ -1,429 +1,912 @@
 'use client';
 
+/* ===================================================================================
+ *  VeteranMastersPage — Master's & MBA Degree Planning for Veterans
+ *  Route: /veterans/masters-mba
+ *  Design system: deep navy #071B35 · gold #D6A84B · cyan #39C5E8 · white/#F8FAFC
+ *  Standalone page (does NOT use VeteranInfoPage wrapper — new design system).
+ * =================================================================================== */
+
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import {
-  Target,
-  ClipboardCheck,
-  Scale,
+  ArrowRight,
+  Phone,
+  MessageCircle,
+  Mail,
+  ChevronDown,
+  type LucideIcon,
+  GraduationCap,
+  Briefcase,
+  FileText,
   Clock,
   DollarSign,
-  BadgeCheck,
-  ArrowRight,
-  CheckCircle2,
-  Briefcase,
-  GraduationCap,
+  BookOpen,
   Compass,
-  AlertTriangle,
-  Calendar,
+  ClipboardList,
+  CalendarClock,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { AnimatedHeading } from '@/components/animations/TextReveal';
 import { track } from '@/lib/analytics';
-import VeteranInfoPage, { ComplianceDisclosure } from './VeteranInfoPage';
+import { ComplianceDisclosure } from './VeteranInfoPage';
 
 /* ------------------------------------------------------------------ */
-/*  Data                                                               */
+/*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const planningFactors = [
-  {
-    icon: Target,
-    title: 'Career Goals First',
-    description:
-      'A graduate degree is an investment in a specific career outcome. We help you articulate what you want to do next — then evaluate whether a master\'s or MBA is the right path.',
-    color: '#0874F9',
-  },
-  {
-    icon: ClipboardCheck,
-    title: 'Graduate Admission',
-    description:
-      'Admission to master\'s-level programs typically requires a regionally accredited bachelor\'s, statement of purpose, resume, recommendations, and sometimes standardized test scores.',
-    color: '#061846',
-  },
-  {
-    icon: Scale,
-    title: 'MBA vs. Specialized Master\'s',
-    description:
-      'An MBA offers broad leadership training; a specialized master\'s (MS in Finance, MS in Data Analytics, etc.) goes deeper in one field. We help you choose based on career goals.',
-    color: '#D6A84B',
-  },
-  {
-    icon: Compass,
-    title: 'Format & Schedule',
-    description:
-      'Full-time, part-time, online, hybrid, executive — graduate programs come in many shapes. Choose one that fits your work, family, and benefit-eligibility situation.',
-    color: '#0874F9',
-  },
-  {
-    icon: Clock,
-    title: 'Time to Completion',
-    description:
-      'Most master\'s degrees take 1–2 years full-time, 2–4 years part-time. Time-to-completion affects total cost and benefit usage — know the timeline before enrolling.',
-    color: '#061846',
-  },
-  {
-    icon: DollarSign,
-    title: 'Cost Planning',
-    description:
-      'Map tuition, fees, and books against your available resources. Graduate tuition varies widely between public, private, and executive programs.',
-    color: '#D6A84B',
-  },
-];
+const NAVY = '#071B35';
+const GOLD = '#D6A84B';
+const CYAN = '#39C5E8';
+const CLOUD = '#F8FAFC';
 
-const mbaVsSpecialized = [
-  {
-    label: 'MBA',
-    points: [
-      'Broad management and leadership curriculum',
-      'Cohort-based learning with peer networking',
-      'Often requires 2–5 years of work experience',
-      'Strong for generalist leadership paths',
-    ],
-    color: '#061846',
-  },
-  {
-    label: 'Specialized Master\'s',
-    points: [
-      'Deep technical focus in one discipline',
-      'May not require work experience',
-      'Often shorter (1 year) than an MBA',
-      'Strong for early-career or technical pivots',
-    ],
-    color: '#0874F9',
-  },
-];
+const PHONE_HREF = 'tel:+19175654788';
+const PHONE_LABEL = '917-565-4788';
+const WHATSAPP_HREF = 'https://wa.me/13478376354';
+const EMAIL_HREF = 'mailto:info@universalconsultingservices.com';
+const EMAIL_LABEL = 'info@universalconsultingservices.com';
 
-const gradSteps = [
-  {
-    step: 1,
-    title: 'Clarify Your Career Outcome',
-    description:
-      'A graduate degree is a means to an end. Define the role, industry, or function you\'re targeting — then evaluate programs that lead there.',
-  },
-  {
-    step: 2,
-    title: 'Audit Your Undergraduate Record',
-    description:
-      'Most programs require a regionally accredited bachelor\'s. Some require a minimum GPA, prerequisite coursework, or specific undergraduate preparation.',
-  },
-  {
-    step: 3,
-    title: 'Choose MBA vs. Specialized Master\'s',
-    description:
-      'We compare curriculum, cohort, format, and outcomes across MBA and specialized programs so you can choose the path that fits your goals.',
-  },
-  {
-    step: 4,
-    title: 'Compare Programs & Formats',
-    description:
-      'Full-time, part-time, online, hybrid, executive — each format fits a different life. We compare accredited programs side-by-side.',
-  },
-  {
-    step: 5,
-    title: 'Verify Benefit Eligibility',
-    description:
-      'Graduate-level study has different benefit rules. Verify your entitlement directly with the VA before enrollment — UCSG cannot determine benefits.',
-  },
-  {
-    step: 6,
-    title: 'Apply & Plan Enrollment',
-    description:
-      'Once you\'ve selected target programs, we help organize applications, statements of purpose, transcripts, and recommendation timelines.',
-  },
-];
+const HERO_IMAGE = '/images/hero-veteran-campus.jpg';
 
 /* ------------------------------------------------------------------ */
-/*  Main Component                                                     */
+/*  Navigation helpers (dispatch CustomEvent for GlobalShell router)   */
 /* ------------------------------------------------------------------ */
 
-export default function VeteranMastersPage({ onBack }: { onBack?: () => void }) {
-  const handleComparePrograms = () => {
-    track.ctaClick({
-      cta_type: 'assessment',
-      cta_source: 'veteran_masters_compare',
-      cta_text: 'Compare Graduate Programs',
-    });
+function navTo(id?: string) {
+  return () =>
     window.dispatchEvent(
       new CustomEvent('ucsg-navigate', {
-        detail: { view: 'veterans', id: 'program-comparison' },
+        detail: id ? { view: 'veterans', id } : { view: 'veterans' },
       })
     );
+}
+
+function navHome() {
+  return () =>
+    window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'home' } }));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reveal animation variants                                          */
+/* ------------------------------------------------------------------ */
+
+const reveal = {
+  initial: { opacity: 0, y: 12 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true } as const,
+  transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Section data                                                       */
+/* ------------------------------------------------------------------ */
+
+/** MBA vs Specialized Master's comparison rows */
+const comparisonRows: { aspect: string; mba: string; specialized: string }[] = [
+  {
+    aspect: 'Focus',
+    mba: 'Broad business leadership & management curriculum',
+    specialized: 'Deep technical focus in one discipline',
+  },
+  {
+    aspect: 'Duration',
+    mba: 'Varies by program and enrollment',
+    specialized: 'Varies by program and enrollment',
+  },
+  {
+    aspect: 'Prerequisites',
+    mba: "Bachelor's degree; some programs prefer professional experience",
+    specialized: "Bachelor's degree; field-specific prerequisites may apply",
+  },
+  {
+    aspect: 'Career Outcomes',
+    mba: 'Generalist leadership & management roles',
+    specialized: 'Specialist or technical field pivot',
+  },
+  {
+    aspect: 'Format Options',
+    mba: 'Full-time, part-time, executive, online, hybrid',
+    specialized: 'Full-time, part-time, online, hybrid',
+  },
+  {
+    aspect: 'Typical Cost Range',
+    mba: 'Varies widely by institution',
+    specialized: 'Varies widely by institution',
+  },
+];
+
+/** 6 numbered steps for the graduate admission checklist */
+const admissionSteps: { title: string; description: string }[] = [
+  {
+    title: "Review bachelor's transcript requirements",
+    description:
+      "Confirm your regionally accredited bachelor's transcript meets the program's minimum GPA and any prerequisite coursework expectations before applying.",
+  },
+  {
+    title: 'Check GRE/GMAT waiver policies',
+    description:
+      'Many programs waive standardized test requirements for veterans with professional experience. Always ask admissions — never assume.',
+  },
+  {
+    title: 'Prepare letters of recommendation',
+    description:
+      'Identify 2–3 recommenders who can speak to your leadership, work ethic, or academic ability. Military supervisors and faculty are both valid choices.',
+  },
+  {
+    title: 'Write a statement of purpose',
+    description:
+      'Your statement should connect your military leadership experience to your graduate goals. Be specific about the role or field you want next — not just the credential.',
+  },
+  {
+    title: 'Submit resume/CV',
+    description:
+      'Treat your military experience as professional experience. Translate roles, responsibilities, and outcomes into civilian-readable language.',
+  },
+  {
+    title: 'Meet application deadlines',
+    description:
+      'Graduate deadlines are often earlier and stricter than undergraduate. Track each program\u2019s priority, regular, and final deadlines separately.',
+  },
+];
+
+/** Schedule cards: full-time vs part-time */
+const scheduleCards: {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  color: string;
+}[] = [
+  {
+    icon: Clock,
+    title: 'Full-Time',
+    description:
+      'Maximum course load each term. Fastest path to completion, but demands the most weekly time and may limit work or family flexibility.',
+    color: CYAN,
+  },
+  {
+    icon: CalendarClock,
+    title: 'Part-Time',
+    description:
+      'Reduced course load spread across more terms. Slower completion but more flexibility for working professionals, family obligations, or drill schedules.',
+    color: GOLD,
+  },
+];
+
+/** Cost factors for graduate study */
+const costFactors: {
+  icon: LucideIcon;
+  label: string;
+  description: string;
+}[] = [
+  {
+    icon: DollarSign,
+    label: 'Tuition per credit',
+    description:
+      'The base cost per credit hour. Multiply by total credits required for the degree to estimate tuition expense.',
+  },
+  {
+    icon: FileText,
+    label: 'Total credits',
+    description:
+      'Most graduate programs require between 30 and 60 credits. Total credits directly drive total tuition cost.',
+  },
+  {
+    icon: Briefcase,
+    label: 'Fees',
+    description:
+      'Technology, lab, registration, and graduation fees. Often billed per term rather than per credit.',
+  },
+  {
+    icon: BookOpen,
+    label: 'Books & materials',
+    description:
+      'Required textbooks, access codes, and software. Some programs include materials; most bill them separately.',
+  },
+];
+
+/** 4 FAQ Q&As */
+const faqs: { q: string; a: string }[] = [
+  {
+    q: 'Do I need the GMAT or GRE for admission?',
+    a: "Many programs offer waivers, especially for veterans with professional experience. Check with each institution's admissions office.",
+  },
+  {
+    q: 'Can my military experience count toward a master\u2019s degree?',
+    a: 'Some programs evaluate military training for transfer credit. Request your JST and ask admissions about their credit evaluation policy.',
+  },
+  {
+    q: 'What\u2019s the difference between an MBA and a specialized master\u2019s?',
+    a: 'An MBA provides broad business leadership skills. A specialized master\u2019s (like MS in CS or Data Analytics) focuses on a specific field. Your career goals should guide the choice.',
+  },
+  {
+    q: 'Are online master\u2019s programs eligible for VA benefits?',
+    a: "Benefit eligibility depends on the program's approval status and your enrollment. Verify with the VA and the institution's School Certifying Official.",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Small inline presentational helpers                                */
+/* ------------------------------------------------------------------ */
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+  textColor = 'text-white',
+  descColor = 'text-white/70',
+  align = 'left',
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  textColor?: string;
+  descColor?: string;
+  align?: 'left' | 'center';
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+      className={align === 'center' ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}
+    >
+      <div
+        className={`mb-3 flex items-center gap-2 ${
+          align === 'center' ? 'justify-center' : 'justify-start'
+        }`}
+      >
+        <span className="h-px w-6" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+        <span
+          className="text-xs font-semibold uppercase tracking-[0.22em]"
+          style={{ color: GOLD }}
+        >
+          {eyebrow}
+        </span>
+      </div>
+      <h2
+        className={`font-heading text-3xl font-bold leading-tight tracking-tight sm:text-4xl ${textColor}`}
+      >
+        {title}
+      </h2>
+      {description && (
+        <p className={`mt-4 text-base leading-relaxed sm:text-lg ${descColor}`}>{description}</p>
+      )}
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main component                                                     */
+/* ------------------------------------------------------------------ */
+
+export default function VeteranMastersPage() {
+  /* ── CTA handlers with analytics ── */
+  const handleAssessmentCta = (source: string) => {
+    track.ctaClick({
+      cta_type: 'assessment',
+      cta_source: source,
+      cta_text: 'COMPARE GRADUATE PROGRAMS',
+    });
+    navTo('assessment')();
+  };
+
+  const handleClosingAssessmentCta = () => {
+    track.ctaClick({
+      cta_type: 'assessment',
+      cta_source: 'veteran_masters_closing_primary',
+      cta_text: 'START FREE ASSESSMENT',
+    });
+    navTo('assessment')();
+  };
+
+  const handlePhoneCta = () => {
+    track.ctaClick({
+      cta_type: 'phone',
+      cta_source: 'veteran_masters_closing_secondary',
+      cta_text: 'TALK WITH AN ADVISOR',
+      cta_url: PHONE_HREF,
+    });
   };
 
   return (
-    <VeteranInfoPage
-      pageId="masters"
-      eyebrow="GRADUATE DEGREE PATHS"
-      headline={
-        <>
-          Master&apos;s &amp; MBA Degree Planning{' '}
-          <span className="text-[#D6A84B]">for Veterans</span>
-        </>
-      }
-      subheadline={
-        <>
-          A graduate degree can sharpen your leadership, deepen your technical skill, or open a new
-          career lane. The right program depends on the outcome you want — not just the credential
-          itself.
-        </>
-      }
-      ctaText="COMPARE GRADUATE PROGRAMS"
-      ctaHref="assessment"
-      secondaryCtaText="TALK WITH A VETERAN EDUCATION ADVISOR"
-      secondaryCtaHref="book-consultation"
-      onBack={onBack}
-    >
-      {/* ─────────── Planning Factors ─────────── */}
-      <section className="py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedHeading
-            badge="WHAT TO THINK THROUGH"
-            title="Six Factors Before You Apply"
-            description="A master's or MBA is a major investment. These are the six factors we help you think through before you submit an application."
-            badgeColor="#0874F9"
-          />
+    <div className="min-h-screen bg-white">
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  1. Breadcrumb + 2. Hero (two-column: text left, image right)   */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="relative overflow-hidden"
+        style={{ backgroundColor: NAVY }}
+        aria-labelledby="masters-hero-heading"
+      >
+        {/* Soft decorative glow */}
+        <div
+          className="pointer-events-none absolute -left-32 top-0 h-[420px] w-[420px] rounded-full blur-[120px]"
+          style={{ backgroundColor: `${CYAN}10` }}
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute right-0 top-1/3 h-[360px] w-[360px] rounded-full blur-[120px]"
+          style={{ backgroundColor: `${GOLD}0F` }}
+          aria-hidden="true"
+        />
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
-            {planningFactors.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-                  whileHover={{ y: -4 }}
+        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+          {/* ── Breadcrumb ── */}
+          <nav aria-label="Breadcrumb" className="text-sm">
+            <ol className="flex flex-wrap items-center gap-1.5 text-white/60 sm:gap-2.5">
+              <li>
+                <button
+                  type="button"
+                  onClick={navHome()}
+                  className="font-medium transition-colors hover:text-white"
                 >
-                  <Card className="group h-full border-transparent bg-white shadow-sm transition-all duration-300 hover:shadow-lg">
-                    <CardContent className="p-6">
-                      <div
-                        className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
-                        style={{ backgroundColor: `${item.color}10` }}
-                      >
-                        <Icon
-                          className="h-6 w-6 transition-transform duration-300 group-hover:scale-110"
-                          style={{ color: item.color }}
-                        />
-                      </div>
-                      <h3 className="font-heading text-lg font-bold text-[#0F172A]">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">
-                        {item.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+                  Home
+                </button>
+              </li>
+              <li aria-hidden="true" className="text-white/40">
+                /
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={navTo()}
+                  className="font-medium transition-colors hover:text-white"
+                >
+                  Veteran Education
+                </button>
+              </li>
+              <li aria-hidden="true" className="text-white/40">
+                /
+              </li>
+              <li aria-current="page" className="font-medium" style={{ color: GOLD }}>
+                Master&apos;s &amp; MBA
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        {/* ── Hero two-column grid ── */}
+        <div className="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+            {/* Left column — text */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+              className="order-1"
+              style={{ backgroundColor: NAVY }}
+            >
+              <div className="mb-5 flex items-center gap-2">
+                <GraduationCap className="h-5 w-5" style={{ color: GOLD }} aria-hidden="true" />
+                <span
+                  className="text-xs font-semibold uppercase tracking-[0.22em]"
+                  style={{ color: GOLD }}
+                >
+                  GRADUATE DEGREE PLANNING
+                </span>
+              </div>
+
+              <h1
+                id="masters-hero-heading"
+                className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem]"
+              >
+                Master&apos;s &amp; MBA Degree Planning{' '}
+                <span style={{ color: GOLD }}>for Veterans</span>
+              </h1>
+
+              <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg">
+                Compare MBA and specialized master&apos;s programs. Understand admission
+                requirements, format options, and how your military experience translates to
+                graduate-level leadership.
+              </p>
+
+              <div className="mt-8">
+                <button
+                  type="button"
+                  onClick={() => handleAssessmentCta('veteran_masters_hero_primary')}
+                  className="group inline-flex items-center justify-center gap-2 rounded-lg px-7 py-3.5 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071B35] sm:text-base"
+                  style={{
+                    backgroundColor: GOLD,
+                    color: NAVY,
+                    ['--tw-ring-color' as string]: CYAN,
+                  } as React.CSSProperties}
+                >
+                  COMPARE GRADUATE PROGRAMS
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+
+              {/* Inline contact quick-links under the CTA */}
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/70">
+                <a
+                  href={PHONE_HREF}
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+                >
+                  <Phone className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                  {PHONE_LABEL}
+                </a>
+                <a
+                  href={WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+                >
+                  <MessageCircle className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                  Talk With Joy on WhatsApp
+                </a>
+                <a
+                  href={EMAIL_HREF}
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+                >
+                  <Mail className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                  Email an advisor
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Right column — image */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] as const }}
+              className="order-2"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl sm:aspect-[16/10]">
+                <Image
+                  src={HERO_IMAGE}
+                  alt="Graduation cap and compass on a college campus — symbolizing graduate degree planning for veterans"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ─────────── MBA vs Specialized ─────────── */}
-      <section className="bg-[#F8FAFC] py-16 sm:py-20 lg:py-24">
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  3. MBA vs Specialized Master's Comparison Table                */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="py-16 sm:py-20 lg:py-24"
+        aria-labelledby="masters-comparison-heading"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedHeading
-            badge="KEY DECISION"
-            title="MBA or Specialized Master's?"
-            description="These two paths serve different career outcomes. The right choice depends on whether you want broad leadership training or deep technical specialization."
-            badgeColor="#D6A84B"
+          <SectionHeading
+            eyebrow="KEY DECISION"
+            title={
+              <span id="masters-comparison-heading">
+                MBA or Specialized Master&apos;s?
+              </span>
+            }
+            description="Two paths serving different career outcomes. The right choice depends on whether you want broad leadership training or deep technical specialization."
+            textColor="text-[#071B35]"
+            descColor="text-gray-600"
           />
 
-          <div className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-2">
-            {mbaVsSpecialized.map((track_item, i) => (
-              <motion.div
-                key={track_item.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-              >
-                <Card className="h-full border-transparent bg-white shadow-sm">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="mb-5 flex items-center gap-3">
-                      <div
-                        className="flex h-10 w-10 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: `${track_item.color}10` }}
-                      >
-                        <GraduationCap
-                          className="h-5 w-5"
-                          style={{ color: track_item.color }}
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <h3 className="font-heading text-xl font-bold text-[#0F172A]">
-                        {track_item.label}
-                      </h3>
-                    </div>
-                    <ul className="space-y-3">
-                      {track_item.points.map((point) => (
-                        <li key={point} className="flex items-start gap-3">
-                          <CheckCircle2
-                            className="mt-0.5 h-5 w-5 shrink-0"
-                            style={{ color: track_item.color }}
-                          />
-                          <span className="text-sm leading-relaxed text-[#374151]">{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mx-auto mt-12 max-w-2xl text-center"
+            {...reveal}
+            className="mt-12 overflow-hidden rounded-xl border border-gray-200 shadow-sm lg:mt-16"
           >
-            <p className="text-sm leading-relaxed text-[#6B7280]">
-              <Calendar className="mr-1 inline h-4 w-4 text-[#D6A84B]" aria-hidden="true" />
-              Some specialized master&apos;s programs accept students directly from undergraduate
-              study. Most MBA programs prefer 2–5 years of professional experience.
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-left text-sm sm:text-base">
+                <thead>
+                  <tr style={{ backgroundColor: NAVY }}>
+                    <th
+                      scope="col"
+                      className="px-4 py-4 font-heading text-sm font-semibold uppercase tracking-wider text-white sm:px-6 sm:text-base"
+                    >
+                      Aspect
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-4 font-heading text-sm font-semibold uppercase tracking-wider text-white sm:px-6 sm:text-base"
+                    >
+                      MBA
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-4 font-heading text-sm font-semibold uppercase tracking-wider text-white sm:px-6 sm:text-base"
+                    >
+                      Specialized Master&apos;s (MS, MSCS, etc.)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row, i) => (
+                    <tr
+                      key={row.aspect}
+                      className={i % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'}
+                      style={i % 2 !== 0 ? { backgroundColor: CLOUD } : undefined}
+                    >
+                      <th
+                        scope="row"
+                        className="border-t border-gray-200 px-4 py-4 align-top font-heading text-sm font-semibold text-[#071B35] sm:px-6 sm:text-base"
+                      >
+                        {row.aspect}
+                      </th>
+                      <td className="border-t border-gray-200 px-4 py-4 align-top leading-relaxed text-gray-700 sm:px-6">
+                        {row.mba}
+                      </td>
+                      <td className="border-t border-gray-200 px-4 py-4 align-top leading-relaxed text-gray-700 sm:px-6">
+                        {row.specialized}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+
+          {/* Compliance note under table */}
+          <motion.div
+            {...reveal}
+            className="mx-auto mt-6 max-w-3xl rounded-r-lg p-4"
+            style={{ backgroundColor: CLOUD, borderLeft: `4px solid ${CYAN}` }}
+          >
+            <p className="text-sm leading-relaxed text-gray-600">
+              <strong className="text-[#071B35]">Note:</strong> Program details vary by
+              institution. Contact the school for current information on duration, prerequisites,
+              format availability, and cost.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* ─────────── Graduate Planning Steps ─────────── */}
-      <section className="py-16 sm:py-20 lg:py-24">
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  4. Admission Checklist — "What You'll Need to Apply"           */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="py-16 sm:py-20 lg:py-24"
+        style={{ backgroundColor: CLOUD }}
+        aria-labelledby="masters-admission-heading"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedHeading
-            badge="THE PROCESS"
-            title="Graduate Planning, Step-by-Step"
-            description="A clear path from &quot;I want a master&apos;s&quot; to a confident application decision."
-            badgeColor="#061846"
+          <SectionHeading
+            eyebrow="ADMISSION CHECKLIST"
+            title={
+              <span id="masters-admission-heading">What You&apos;ll Need to Apply</span>
+            }
+            description="Graduate admission is document-driven. Gather these materials before applying — and ask admissions about veteran-specific waivers."
+            textColor="text-[#071B35]"
+            descColor="text-gray-600"
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
-            {gradSteps.map((step, i) => (
+            {admissionSteps.map((step, i) => (
               <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 24 }}
+                key={step.title}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+                transition={{
+                  delay: i * 0.08,
+                  duration: 0.5,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                }}
               >
-                <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#0874F9]/30 hover:shadow-md">
-                  <div className="mb-3 flex items-center gap-3">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0874F9] text-xs font-bold text-white">
-                      {step.step}
+                <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#39C5E8] text-base font-bold text-white">
+                      {i + 1}
                     </span>
-                    <span className="text-xs font-medium uppercase tracking-wider text-[#6B7280]">
-                      Step {step.step}
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Step {i + 1}
                     </span>
                   </div>
-                  <h3 className="font-heading text-base font-bold text-[#061846]">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">{step.description}</p>
+                  <h3 className="font-heading text-base font-bold text-[#071B35]">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">{step.description}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ─────────── Benefit Verification Callout ─────────── */}
-      <section className="bg-[#F8FAFC] py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          {/* Application fee waiver note */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+            {...reveal}
+            className="mx-auto mt-10 max-w-3xl rounded-r-lg p-4"
+            style={{ backgroundColor: '#FFFFFF', borderLeft: `4px solid ${GOLD}` }}
           >
-            <Card className="border-[#D6A84B]/20 bg-white shadow-sm">
-              <CardContent className="p-6 sm:p-10">
-                <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-                  <div className="lg:col-span-1">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#D6A84B]/10">
-                      <BadgeCheck className="h-6 w-6 text-[#D6A84B]" aria-hidden="true" />
-                    </div>
-                    <h3 className="mt-4 font-heading text-xl font-bold text-[#061846]">
-                      Verify Your Benefit Eligibility
-                    </h3>
-                  </div>
-                  <div className="lg:col-span-2">
-                    <p className="text-sm leading-relaxed text-[#6B7280]">
-                      Graduate-level education has different rules for benefit usage than
-                      undergraduate study. Some benefit categories have annual or lifetime caps,
-                      monthly-while-in-school requirements, or specific program-eligibility
-                      restrictions.
-                    </p>
-                    <p className="mt-3 text-sm leading-relaxed text-[#6B7280]">
-                      Always verify your entitlement directly with the U.S. Department of Veterans
-                      Affairs before enrolling. UCSG cannot determine, estimate, or guarantee
-                      benefit eligibility, entitlement amounts, or coverage for any program.
-                    </p>
-                    <div className="mt-5 rounded-lg bg-[#FFFBEB] p-4">
-                      <div className="flex items-start gap-2.5">
-                        <AlertTriangle
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[#D6A84B]"
-                          aria-hidden="true"
-                        />
-                        <p className="text-xs leading-relaxed text-[#92400E]">
-                          Benefit eligibility is determined solely by the VA. Verify your status
-                          through the VA&apos;s eBenefits portal or by calling 1-888-442-4551.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <p className="text-sm leading-relaxed text-gray-600">
+              <ClipboardList
+                className="mr-1.5 inline h-4 w-4 align-text-bottom"
+                style={{ color: GOLD }}
+                aria-hidden="true"
+              />
+              <strong className="text-[#071B35]">Tip:</strong> Some programs offer application fee
+              waivers for veterans. Ask admissions.
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* ─────────── Mini CTA ─────────── */}
-      <section className="py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <motion.h2
-            className="font-heading text-2xl font-bold text-[#061846] sm:text-3xl lg:text-4xl"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-          >
-            Compare Graduate Programs Side-by-Side
-          </motion.h2>
-          <motion.p
-            className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#6B7280]"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            We help you compare MBA and specialized master&apos;s programs across cost, format,
-            time-to-completion, and career outcomes — then map a path forward.
-          </motion.p>
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  5. Schedule & Cost Section — "Time and Investment"             */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="py-16 sm:py-20 lg:py-24"
+        aria-labelledby="masters-schedule-cost-heading"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="TIME AND INVESTMENT"
+            title={
+              <span id="masters-schedule-cost-heading">
+                Schedule &amp; Cost Considerations
+              </span>
+            }
+            description="Tuition per credit is just one line. Add total credits, fees, and books to see the real picture — and verify how your VA education benefits may apply."
+            textColor="text-[#071B35]"
+            descColor="text-gray-600"
+          />
+
+          {/* Schedule cards: Full-Time vs Part-Time */}
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16">
+            {scheduleCards.map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    delay: i * 0.1,
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1] as const,
+                  }}
+                >
+                  <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-7">
+                    <div className="mb-4 flex items-center gap-3">
+                      <div
+                        className="flex h-12 w-12 items-center justify-center rounded-xl"
+                        style={{ backgroundColor: `${card.color}15` }}
+                      >
+                        <Icon className="h-6 w-6" style={{ color: card.color }} aria-hidden="true" />
+                      </div>
+                      <h3 className="font-heading text-xl font-bold text-[#071B35]">{card.title}</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed text-gray-600">{card.description}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Cost factors grid */}
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {costFactors.map((factor, i) => {
+              const Icon = factor.icon;
+              return (
+                <motion.div
+                  key={factor.label}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    delay: i * 0.08,
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1] as const,
+                  }}
+                >
+                  <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                    <div
+                      className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: `${CYAN}15` }}
+                    >
+                      <Icon className="h-5 w-5" style={{ color: CYAN }} aria-hidden="true" />
+                    </div>
+                    <h3 className="font-heading text-sm font-bold text-[#071B35]">{factor.label}</h3>
+                    <p className="mt-1.5 text-xs leading-relaxed text-gray-600">
+                      {factor.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Tuition / benefit compliance statement */}
           <motion.div
-            className="mt-8 flex justify-center"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            {...reveal}
+            className="mx-auto mt-10 max-w-3xl rounded-r-lg p-4"
+            style={{ backgroundColor: CLOUD, borderLeft: `4px solid ${CYAN}` }}
           >
+            <p className="text-sm leading-relaxed text-gray-600">
+              <strong className="text-[#071B35]">Tuition varies by institution.</strong> Contact
+              institution for current tuition rates. VA education benefits may help offset costs —
+              verify with the VA before enrolling.
+            </p>
+          </motion.div>
+
+          <motion.div {...reveal} className="mt-8 text-center">
             <button
               type="button"
-              onClick={handleComparePrograms}
-              className="group flex items-center justify-center gap-2 rounded-lg bg-[#061846] px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#092B68] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 sm:px-7"
+              onClick={navTo('cost-planning')}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:underline"
+              style={{ color: CYAN }}
             >
-              <Briefcase className="h-4 w-4" aria-hidden="true" />
-              Compare Graduate Programs
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                aria-hidden="true"
-              />
+              Cost Planning Guide →
             </button>
           </motion.div>
         </div>
       </section>
 
-      <ComplianceDisclosure className="-mt-8" />
-    </VeteranInfoPage>
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* Related Pages */}
+      <section className="mt-12 border-t border-gray-200 pt-8">
+        <h2 className="font-heading text-xl font-bold text-[#071B35]">Related Pages</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <a href="/veterans/online-hybrid-degrees" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Online & Hybrid Options →</a>
+          <a href="/veterans/program-comparison" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Compare Programs →</a>
+          <a href="/veterans/cost-planning" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Education Cost Planning →</a>
+        </div>
+      </section>
+
+      {/*  6. FAQ (4 Q&As using <details>/<summary>)                      */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="py-16 sm:py-20 lg:py-24"
+        style={{ backgroundColor: CLOUD }}
+        aria-labelledby="masters-faq-heading"
+      >
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="FREQUENTLY ASKED"
+            title={<span id="masters-faq-heading">Master&apos;s &amp; MBA FAQ</span>}
+            description="Quick, plain-English answers to the questions veterans ask us most about graduate degree planning."
+            textColor="text-[#071B35]"
+            descColor="text-gray-600"
+            align="center"
+          />
+
+          <div className="mt-10 space-y-4">
+            {faqs.map((faq, i) => (
+              <motion.details
+                key={faq.q}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  delay: i * 0.08,
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                }}
+                className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
+              >
+                <summary
+                  className="flex cursor-pointer items-center justify-between gap-4 font-heading text-base font-semibold text-[#071B35] marker:hidden [&::-webkit-details-marker]:hidden sm:text-lg"
+                  style={{ listStyle: 'none' }}
+                >
+                  {faq.q}
+                  <ChevronDown
+                    className="h-5 w-5 shrink-0 transition-transform duration-300 group-open:rotate-180"
+                    style={{ color: CYAN }}
+                    aria-hidden="true"
+                  />
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:mt-4 sm:text-base">
+                  {faq.a}
+                </p>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  7. Closing CTA                                                  */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section
+        className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
+        style={{ backgroundColor: NAVY }}
+        aria-labelledby="masters-closing-heading"
+      >
+        {/* Decorative glows */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+          style={{ backgroundColor: `${CYAN}0A` }}
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute right-0 top-0 h-[320px] w-[320px] rounded-full blur-[100px]"
+          style={{ backgroundColor: `${GOLD}0A` }}
+          aria-hidden="true"
+        />
+
+        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <motion.div {...reveal}>
+            <div className="mb-4 flex items-center justify-center gap-2">
+              <Compass className="h-5 w-5" style={{ color: GOLD }} aria-hidden="true" />
+              <span
+                className="text-xs font-semibold uppercase tracking-[0.22em]"
+                style={{ color: GOLD }}
+              >
+                YOUR NEXT MISSION STARTS HERE
+              </span>
+            </div>
+
+            <h2
+              id="masters-closing-heading"
+              className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem]"
+            >
+              Ready to Compare Graduate Programs?
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
+              Start with a no-pressure assessment of your goals, prior learning, and the
+              graduate-degree pathways that fit your next chapter — or talk with an advisor who
+              understands military-connected students.
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
+              <button
+                type="button"
+                onClick={handleClosingAssessmentCta}
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-lg px-7 py-3.5 text-base font-semibold shadow-lg transition-all duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:w-auto"
+                style={{
+                  backgroundColor: GOLD,
+                  color: NAVY,
+                  ['--tw-ring-color' as string]: CYAN,
+                } as React.CSSProperties}
+              >
+                START FREE ASSESSMENT
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
+              </button>
+
+              <a
+                href={PHONE_HREF}
+                onClick={handlePhoneCta}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-7 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 sm:w-auto"
+              >
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                TALK WITH AN ADVISOR
+              </a>
+            </div>
+
+            {/* Secondary contact rail */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/60">
+              <a
+                href={PHONE_HREF}
+                className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <Phone className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                {PHONE_LABEL}
+              </a>
+              <a
+                href={WHATSAPP_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <MessageCircle className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                WhatsApp
+              </a>
+              <a
+                href={EMAIL_HREF}
+                className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <Mail className="h-4 w-4" style={{ color: CYAN }} aria-hidden="true" />
+                {EMAIL_LABEL}
+              </a>
+            </div>
+
+            <p className="mt-6 text-xs text-white/40">No enrollment commitment required.</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  8. Compliance disclosure (shared component)                    */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <ComplianceDisclosure />
+    </div>
   );
 }
