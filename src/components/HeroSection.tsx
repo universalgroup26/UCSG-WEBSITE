@@ -125,7 +125,7 @@ const slides: Slide[] = [
       navigateView: 'veterans',
     },
     image: {
-      src: '/images/hero-veteran-campus.jpg',
+      src: '/images/hero-veteran-campus.jpg?v=1',
       alt: 'U.S. military veteran transitioning from service to college campus, walking toward university buildings',
       priority: false,
       unoptimized: true,
@@ -148,7 +148,7 @@ const slides: Slide[] = [
       tel: '+13028935594',
     },
     image: {
-      src: '/images/hero-veteran-plan.jpg',
+      src: '/images/hero-veteran-plan.jpg?v=1',
       alt: 'Veterans reviewing a college plan together with an education advisor, discussing degree options and program comparison',
       priority: false,
       unoptimized: true,
@@ -172,7 +172,7 @@ const slides: Slide[] = [
       navigateId: 'book-consultation',
     },
     image: {
-      src: '/images/hero-veteran-future.jpg',
+      src: '/images/hero-veteran-future.jpg?v=1',
       alt: 'Diverse group building the future together, veterans and students collaborating on education planning in a modern setting',
       priority: false,
       unoptimized: true,
