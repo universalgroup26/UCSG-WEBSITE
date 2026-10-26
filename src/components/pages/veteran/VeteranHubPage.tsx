@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { ComplianceDisclosure } from './VeteranInfoPage';
+import { ParallaxLayer, PerspectiveCard, StickyPinScene, MagneticButton } from '@/components/motion';
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens                                                      */
@@ -270,16 +271,20 @@ export default function VeteranHubPage() {
             </motion.p>
           </div>
 
-          {/* Image column — hidden on mobile for clean text hero */}
+          {/* Image column — hidden on mobile for clean text hero.
+              ParallaxLayer wraps the hero image — speed 0.3 (capped per spec).
+              Mobile <1024px + reduced motion render a plain div (no parallax). */}
           <div className="relative hidden min-h-[520px] overflow-hidden lg:block">
-            <Image
-              src="/images/hero-veteran-campus.jpg"
-              alt="Veteran student on a university campus preparing for the next academic chapter"
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover object-center"
-            />
+            <ParallaxLayer speed={0.3} className="absolute inset-0">
+              <Image
+                src="/images/hero-veteran-campus.jpg"
+                alt="Veteran student on a university campus preparing for the next academic chapter"
+                fill
+                priority
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover object-center"
+              />
+            </ParallaxLayer>
             {/* Soft left-edge gradient to blend with text column */}
             <div
               className="absolute inset-0"
@@ -336,41 +341,48 @@ export default function VeteranHubPage() {
             {journeyCards.map((card, i) => {
               const Icon = card.icon;
               return (
-                <motion.a
+                <PerspectiveCard
                   key={card.target}
-                  href={`/veterans/${card.target}`}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: '-60px' }}
-                  custom={i}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    track.navClick({
-                      nav_type: 'veteran_hub',
-                      nav_target: card.target,
-                    });
-                    navigate('veterans', card.target);
-                  }}
-                  className="group flex flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-[#39C5E8]/40 hover:shadow-xl hover:shadow-slate-200/60"
+                  maxTilt={6}
+                  glow
+                  glowColor="#39C5E8"
+                  className="h-full"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#39C5E8]/10 text-[#39C5E8] transition-colors group-hover:bg-[#39C5E8]/15">
-                    <Icon className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 font-heading text-lg font-bold leading-snug text-[#071B35]">
-                    {card.title}
-                  </h3>
-                  <p className="mt-2 font-sans text-sm leading-relaxed text-slate-600">
-                    {card.description}
-                  </p>
-                  <span className="mt-5 inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-[#39C5E8]">
-                    {card.cta}
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </motion.a>
+                  <motion.a
+                    href={`/veterans/${card.target}`}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: '-60px' }}
+                    custom={i}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      track.navClick({
+                        nav_type: 'veteran_hub',
+                        nav_target: card.target,
+                      });
+                      navigate('veterans', card.target);
+                    }}
+                    className="group flex h-full flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-colors duration-300 hover:border-[#39C5E8]/40 hover:shadow-xl hover:shadow-slate-200/60"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#39C5E8]/10 text-[#39C5E8] transition-colors group-hover:bg-[#39C5E8]/15">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                    <h3 className="mt-5 font-heading text-lg font-bold leading-snug text-[#071B35]">
+                      {card.title}
+                    </h3>
+                    <p className="mt-2 font-sans text-sm leading-relaxed text-slate-600">
+                      {card.description}
+                    </p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-[#39C5E8]">
+                      {card.cta}
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </motion.a>
+                </PerspectiveCard>
               );
             })}
           </div>
@@ -656,7 +668,8 @@ export default function VeteranHubPage() {
             custom={3}
             className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
           >
-            <button
+            <MagneticButton
+              variant="custom"
               onClick={() => {
                 track.ctaClick({
                   cta_type: 'assessment',
@@ -665,12 +678,13 @@ export default function VeteranHubPage() {
                 });
                 navigate('veterans', 'assessment');
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D6A84B] px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#071B35] transition-all hover:brightness-110 hover:shadow-lg hover:shadow-[#D6A84B]/20"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D6A84B] px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#071B35] transition-colors hover:brightness-110 hover:shadow-lg hover:shadow-[#D6A84B]/20"
             >
               Start Free Assessment
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </button>
-            <button
+            </MagneticButton>
+            <MagneticButton
+              variant="custom"
               onClick={() => {
                 track.ctaClick({
                   cta_type: 'consultation',
@@ -678,10 +692,10 @@ export default function VeteranHubPage() {
                 });
                 navigate('veterans', 'book-consultation');
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#39C5E8]/60 bg-transparent px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#39C5E8] transition-all hover:border-[#39C5E8] hover:bg-[#39C5E8]/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#39C5E8]/60 bg-transparent px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#39C5E8] transition-colors hover:border-[#39C5E8] hover:bg-[#39C5E8]/10"
             >
               Book a Consultation
-            </button>
+            </MagneticButton>
           </motion.div>
 
           {/* Direct contact strip */}

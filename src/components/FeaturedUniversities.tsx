@@ -6,6 +6,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { universities, type UniversityData } from '@/lib/data/universities';
 import { track } from '@/lib/analytics';
+import { ParallaxLayer, MagneticButton } from '@/components/motion';
 
 interface FeaturedUniversitiesProps {
   onUniversityClick?: (uni: UniversityData) => void;
@@ -272,15 +273,19 @@ export default function FeaturedUniversities({
       ref={sectionRef}
       className="relative w-full overflow-hidden py-16 md:py-20"
     >
-      {/* Full-section background image */}
-      <Image
-        src="/images/bg-universities.png"
-        alt=""
-        role="presentation"
-        fill
-        className="object-cover"
-        aria-hidden="true"
-      />
+      {/* Full-section background image — ParallaxLayer for depth.
+          Speed 0.2 caps offset at 20% of layer height. Mobile + reduced
+          motion disable (see ParallaxLayer.tsx). */}
+      <ParallaxLayer speed={0.2} className="pointer-events-none absolute inset-0">
+        <Image
+          src="/images/bg-universities.png"
+          alt=""
+          role="presentation"
+          fill
+          className="object-cover"
+          aria-hidden="true"
+        />
+      </ParallaxLayer>
 
       {/* White overlay (~90% opacity) */}
       <div
@@ -312,27 +317,21 @@ export default function FeaturedUniversities({
           <AutoScrollRail onUniversityClick={onUniversityClick} />
         )}
 
-        {/* View All CTA */}
+        {/* View All CTA — MagneticButton (preserves the existing onClick +
+            variant via the 'custom' variant + className override). */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.4 }}
           className="mt-10 flex justify-center md:mt-14"
         >
-          <button
-            type="button"
+          <MagneticButton
+            variant="custom"
             onClick={handleViewAll}
-            className={
-              'inline-flex items-center gap-2 rounded-full px-8 py-3 ' +
-              'bg-[#0874F9] text-sm font-semibold text-white ' +
-              'shadow-md shadow-[#0874F9]/20 transition-all duration-200 ' +
-              'hover:bg-[#0658CC] hover:shadow-lg hover:shadow-[#0874F9]/30 ' +
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 ' +
-              'active:scale-[0.97]'
-            }
+            className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#0874F9] text-sm font-semibold text-white shadow-md shadow-[#0874F9]/20 transition-colors hover:bg-[#0658CC] hover:shadow-lg hover:shadow-[#0874F9]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2"
           >
             View All 90+ Programs
-          </button>
+          </MagneticButton>
         </motion.div>
       </div>
     </section>

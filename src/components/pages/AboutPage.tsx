@@ -28,6 +28,7 @@ import { Badge } from '@/components/ui/badge';
 import { AnimatedHeading } from '@/components/animations/TextReveal';
 import { universities } from '@/lib/data/universities';
 import { track } from '@/lib/analytics';
+import { ParallaxLayer, PerspectiveCard, StickyPinScene, MagneticButton } from '@/components/motion';
 
 /* ------------------------------------------------------------------
  * About Page Slider Data
@@ -513,33 +514,38 @@ function AboutHeroSlider() {
       onTouchEnd={handleTouchEnd}
     >
       {/* ===== Background Slides ===== */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: ABOUT_CROSSFADE_DURATION, ease: 'easeInOut' }}
-          className="absolute inset-0"
-        >
-          <motion.div className="absolute inset-0" variants={bgVariants} initial="initial" animate="animate">
-            <Image
-              src={activeSlide.src}
-              alt={activeSlide.alt}
-              fill
-              sizes="100vw"
-              className="object-cover object-center"
-              priority={current === 0}
-              unoptimized
-            />
-          </motion.div>
+      {/* ParallaxLayer wraps the slideshow background — speed 0.3 caps
+          offset at 30% of layer height (per spec max ≤ 0.3). Mobile + reduced
+          motion render a plain div (see ParallaxLayer.tsx). */}
+      <ParallaxLayer speed={0.3} className="absolute inset-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: ABOUT_CROSSFADE_DURATION, ease: 'easeInOut' }}
+            className="absolute inset-0"
+          >
+            <motion.div className="absolute inset-0" variants={bgVariants} initial="initial" animate="animate">
+              <Image
+                src={activeSlide.src}
+                alt={activeSlide.alt}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority={current === 0}
+                unoptimized
+              />
+            </motion.div>
 
-          {/* Navy overlay — heavier on mobile */}
-          <div className="absolute inset-0 md:hidden" style={{ background: ABOUT_OVERLAY_MOBILE }} aria-hidden="true" />
-          <div className="absolute inset-0 hidden md:block" style={{ background: ABOUT_OVERLAY_DESKTOP }} aria-hidden="true" />
-        </motion.div>
-      </AnimatePresence>
+            {/* Navy overlay — heavier on mobile */}
+            <div className="absolute inset-0 md:hidden" style={{ background: ABOUT_OVERLAY_MOBILE }} aria-hidden="true" />
+            <div className="absolute inset-0 hidden md:block" style={{ background: ABOUT_OVERLAY_DESKTOP }} aria-hidden="true" />
+          </motion.div>
+        </AnimatePresence>
+      </ParallaxLayer>
 
       {/* ===== Content ===== */}
       <div className="relative z-10 flex min-h-[480px] sm:min-h-[520px] lg:min-h-[560px] items-center">
@@ -1061,23 +1067,29 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             {values.map((value) => {
               const Icon = value.icon;
               return (
-                <motion.div
+                <PerspectiveCard
                   key={value.title}
-                  variants={staggerItem}
-                  whileHover={{ y: -4 }}
-                  className="group rounded-2xl border border-[#061846]/8 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#0874F9]/20"
+                  maxTilt={5}
+                  glow
+                  glowColor="#0874F9"
+                  className="h-full"
                 >
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#061846]/5 transition-colors duration-300 group-hover:bg-[#0874F9]/10">
-                    <Icon className="h-6 w-6 text-[#061846] transition-colors duration-300 group-hover:text-[#0874F9]" />
-                  </div>
+                  <motion.div
+                    variants={staggerItem}
+                    className="group h-full rounded-2xl border border-[#061846]/8 bg-white p-6 shadow-sm transition-colors duration-300 hover:shadow-lg hover:border-[#0874F9]/20"
+                  >
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#061846]/5 transition-colors duration-300 group-hover:bg-[#0874F9]/10">
+                      <Icon className="h-6 w-6 text-[#061846] transition-colors duration-300 group-hover:text-[#0874F9]" />
+                    </div>
 
-                  <h3 className="font-heading text-lg font-bold text-[#061846]">{value.title}</h3>
+                    <h3 className="font-heading text-lg font-bold text-[#061846]">{value.title}</h3>
 
-                  {/* Gold underline */}
-                  <div className="mt-2 h-0.5 w-8 rounded-full bg-[#D6A84B] transition-all duration-300 group-hover:w-12" />
+                    {/* Gold underline */}
+                    <div className="mt-2 h-0.5 w-8 rounded-full bg-[#D6A84B] transition-all duration-300 group-hover:w-12" />
 
-                  <p className="mt-3 text-sm leading-relaxed text-[#6B7280]">{value.description}</p>
-                </motion.div>
+                    <p className="mt-3 text-sm leading-relaxed text-[#6B7280]">{value.description}</p>
+                  </motion.div>
+                </PerspectiveCard>
               );
             })}
           </motion.div>
@@ -1137,7 +1149,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             free, no-obligation assessment.
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons — MagneticButton (preserves existing onClick handlers). */}
           <motion.div
             className="mt-8 flex flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-5"
             variants={fadeUp}
@@ -1146,23 +1158,25 @@ export default function AboutPage({ onBack }: AboutPageProps) {
             viewport={{ once: true, amount: 0.3 }}
             custom={3}
           >
-            <button
-              type="button"
+            <MagneticButton
+              variant="custom"
               onClick={handleAssessmentClick}
-              className="group flex w-full items-center justify-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-all duration-300 hover:bg-[#0660D4] hover:shadow-xl hover:shadow-[#0874F9]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+              className="group w-full items-center justify-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-colors hover:bg-[#0660D4] focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
             >
               Start Free 60-Second Assessment
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
-            </button>
+            </MagneticButton>
 
-            <a
+            <MagneticButton
+              variant="custom"
               href="tel:+13028935594"
+              external
               onClick={handlePhoneClick}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+              className="w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
             >
               <Phone className="h-4 w-4" aria-hidden="true" />
               Talk With Our Team
-            </a>
+            </MagneticButton>
           </motion.div>
 
           {/* Availability note */}

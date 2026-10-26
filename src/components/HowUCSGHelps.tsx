@@ -2,8 +2,9 @@
 
 import { useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useTransform, type MotionValue } from 'framer-motion';
 import { track } from '@/lib/analytics';
+import { StickyPinScene } from '@/components/motion';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -43,8 +44,8 @@ const steps = [
 
 export default function HowUCSGHelps() {
   const sectionRef = useRef<HTMLElement>(null);
-  const connectorRef = useRef<HTMLDivElement>(null);
-  const connectorInView = useInView(connectorRef, { once: true, amount: 0.3 });
+  // connectorRef + connectorInView moved into <StepsContent> below —
+  // they drive the sticky-pin-scrubbed horizontal connector line.
 
   // Section view tracking
   useEffect(() => {
@@ -127,66 +128,91 @@ export default function HowUCSGHelps() {
           </div>
         </motion.div>
 
-        {/* Steps — horizontal on desktop, vertical on mobile */}
-        <div className="relative">
-          {/* Desktop animated horizontal connector line (behind circles) */}
-          <div
-            ref={connectorRef}
-            className="absolute top-6 left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] hidden h-0.5 origin-left lg:block"
-            aria-hidden="true"
-          >
-            <motion.div
-              className="h-full w-full rounded-full bg-gradient-to-r from-[#0874F9]/40 via-[#0874F9]/25 to-[#0874F9]/40"
-              initial={{ scaleX: 0 }}
-              animate={connectorInView ? { scaleX: 1 } : { scaleX: 0 }}
-              transition={{
-                duration: 1.2,
-                ease: [0.22, 1, 0.36, 1] as const,
-                delay: 0.4,
-              }}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-4 lg:gap-6">
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.number}
-                className="relative flex gap-5 lg:flex-col lg:items-center lg:text-center lg:gap-0"
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                custom={index + 2}
-              >
-                {/* Mobile vertical line segment + circle */}
-                <div className="relative flex shrink-0 flex-col items-center lg:mb-4">
-                  {/* Vertical connector (mobile + tablet) */}
-                  {index < steps.length - 1 && (
-                    <div
-                      className="absolute top-12 bottom-0 left-1/2 w-0.5 -translate-x-1/2 bg-[#0874F9]/20 lg:hidden"
-                      aria-hidden="true"
-                    />
-                  )}
-                  {/* Numbered circle */}
-                  <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#0874F9] text-lg font-bold text-white shadow-md shadow-[#0874F9]/25">
-                    {step.number}
-                  </div>
-                </div>
-
-                {/* Text content */}
-                <div className="flex-1 pb-4 lg:pb-0">
-                  <h3 className="font-heading text-lg font-semibold leading-snug text-[#061846]">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-base leading-relaxed text-slate-600">
-                    {step.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        {/* Steps — horizontal on desktop, vertical on mobile.
+            Wrapped in StickyPinScene so the desktop horizontal connector
+            line scrubs scaleX against scrollYProgress (render-prop pattern
+            feeds the MotionValue to <StepsConnector> below). Mobile + reduced
+            motion render the steps in-flow without the sticky pin. */}
+        <StickyPinScene pinFor="100vh">
+          {(scrollYProgress) => <StepsContent scrollYProgress={scrollYProgress} />}
+        </StickyPinScene>
       </div>
     </section>
+  );
+}
+
+/**
+ * StepsContent — the inner steps grid + desktop horizontal connector line.
+ * Receives scrollYProgress (0..1 across the pinned region) from the parent
+ * <StickyPinScene> render-prop, and derives the connector's scaleX from it
+ * so the line draws as the user scrolls (instead of firing once on view).
+ */
+function StepsContent({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+  const connectorRef = useRef<HTMLDivElement>(null);
+  const connectorInView = useInView(connectorRef, { once: true, amount: 0.3 });
+  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  return (
+    <div className="relative w-full">
+      {/* Desktop animated horizontal connector line (behind circles) */}
+      <div
+        ref={connectorRef}
+        className="absolute top-6 left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] hidden h-0.5 origin-left lg:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          className="h-full w-full rounded-full bg-gradient-to-r from-[#0874F9]/40 via-[#0874F9]/25 to-[#0874F9]/40"
+          style={{ scaleX }}
+          // Fallback for the no-sticky-pin case (mobile / reduced motion):
+          // if scrollYProgress stays at 0 (no pin), the line still draws once
+          // when in view via the connectorInView check below.
+          animate={connectorInView ? { scaleX: 1 } : undefined}
+          transition={{
+            duration: 1.2,
+            ease: [0.22, 1, 0.36, 1] as const,
+            delay: 0.4,
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-4 lg:gap-6">
+        {steps.map((step, index) => (
+          <motion.div
+            key={step.number}
+            className="relative flex gap-5 lg:flex-col lg:items-center lg:text-center lg:gap-0"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            custom={index + 2}
+          >
+            {/* Mobile vertical line segment + circle */}
+            <div className="relative flex shrink-0 flex-col items-center lg:mb-4">
+              {/* Vertical connector (mobile + tablet) */}
+              {index < steps.length - 1 && (
+                <div
+                  className="absolute top-12 bottom-0 left-1/2 w-0.5 -translate-x-1/2 bg-[#0874F9]/20 lg:hidden"
+                  aria-hidden="true"
+                />
+              )}
+              {/* Numbered circle */}
+              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#0874F9] text-lg font-bold text-white shadow-md shadow-[#0874F9]/25">
+                {step.number}
+              </div>
+            </div>
+
+            {/* Text content */}
+            <div className="flex-1 pb-4 lg:pb-0">
+              <h3 className="font-heading text-lg font-semibold leading-snug text-[#061846]">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-base leading-relaxed text-slate-600">
+                {step.description}
+              </p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
 }

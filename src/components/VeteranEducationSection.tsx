@@ -36,6 +36,7 @@ import {
   Phone,
   MessageCircle,
 } from 'lucide-react';
+import { ParallaxLayer, PerspectiveCard, StickyPinScene, MagneticButton } from '@/components/motion';
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens                                                      */
@@ -66,10 +67,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 function useFadeUp() {
   const reduce = useReducedMotion();
   return {
-    hidden: reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
+    hidden: reduce
+      ? { opacity: 1, y: 0 }
+      : { opacity: 0, y: 14, rotateX: -12, transformPerspective: 1000 },
     visible: (i = 0) => ({
       opacity: 1,
       y: 0,
+      rotateX: 0,
       transition: {
         delay: reduce ? 0 : i * 0.09,
         duration: reduce ? 0 : 0.5,
@@ -114,6 +118,10 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 /** CTA anchor — real <a href> for crawlability + accessibility.
+ *  Now wraps <MagneticButton> from the motion primitive set so every call
+ *  site inherits the magnetic-cursor effect automatically. The `variant`
+ *  prop is forwarded unchanged so the gold/cyan/gold-border brand styles
+ *  remain visually identical to before.
  *  Lifts ~2px on hover with a soft shadow. Min 44px touch target. */
 function CtaButton({
   href,
@@ -126,24 +134,16 @@ function CtaButton({
   variant?: 'primary' | 'secondary' | 'gold';
   ariaLabel?: string;
 }) {
-  const base =
-    'inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px]';
-  const styles = {
-    primary: 'bg-[#D6A84B] text-[#071B35] hover:brightness-110 hover:shadow-[#D6A84B]/25 focus-visible:ring-[#D6A84B]',
-    secondary:
-      'border border-[#39C5E8]/60 bg-transparent text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#39C5E8]/10 focus-visible:ring-[#39C5E8]',
-    gold: 'border border-[#D6A84B] bg-transparent text-[#D6A84B] hover:bg-[#D6A84B]/10 focus-visible:ring-[#D6A84B]',
-  };
-  const isExternal = href.startsWith('http') || href.startsWith('tel:') || href.startsWith('mailto:');
   return (
-    <a
+    <MagneticButton
       href={href}
-      aria-label={ariaLabel}
-      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className={`${base} ${styles[variant]}`}
+      variant={variant}
+      ariaLabel={ariaLabel}
+      // Preserve the external-link behavior the original CtaButton had.
+      external={href.startsWith('http') || href.startsWith('tel:') || href.startsWith('mailto:')}
     >
       {children}
-    </a>
+    </MagneticButton>
   );
 }
 
@@ -563,18 +563,20 @@ function DegreePathCards() {
     <ul className="space-y-3">
       {paths.map((p) => (
         <li key={p.href}>
-          <a
-            href={p.href}
-            className="group flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39C5E8] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#39C5E8] focus-visible:ring-offset-2"
-          >
-            <span className="font-sans text-base font-semibold text-[#071B35]">
-              {p.label}
-            </span>
-            <ArrowRight
-              className="h-4 w-4 text-[#39C5E8] transition-transform duration-300 group-hover:translate-x-1"
-              aria-hidden="true"
-            />
-          </a>
+          <PerspectiveCard maxTilt={4} glow glowColor="#39C5E8">
+            <a
+              href={p.href}
+              className="group flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 transition-colors duration-300 hover:border-[#39C5E8] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#39C5E8] focus-visible:ring-offset-2"
+            >
+              <span className="font-sans text-base font-semibold text-[#071B35]">
+                {p.label}
+              </span>
+              <ArrowRight
+                className="h-4 w-4 text-[#39C5E8] transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </a>
+          </PerspectiveCard>
         </li>
       ))}
     </ul>

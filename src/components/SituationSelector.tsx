@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { ArrowLeftRight, Clock, GraduationCap, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { track } from '@/lib/analytics';
+import { ParallaxLayer, PerspectiveCard, StickyPinScene } from '@/components/motion';
 import { useEffect, useRef } from 'react';
 
 const fadeUp = {
@@ -88,16 +89,19 @@ export default function SituationSelector() {
       className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
       aria-label="Situation selector"
     >
-      {/* Background image */}
-      <Image
-        src="/images/bg-situation-selector.png"
-        alt=""
-        role="presentation"
-        fill
-        sizes="100vw"
-        className="pointer-events-none select-none object-cover"
-        aria-hidden="true"
-      />
+      {/* Background image — ParallaxLayer for depth (speed 0.4 caps offset
+          at 40% of layer height; mobile <1024px + reduced motion disable). */}
+      <ParallaxLayer speed={0.4} className="pointer-events-none absolute inset-0">
+        <Image
+          src="/images/bg-situation-selector.png"
+          alt=""
+          role="presentation"
+          fill
+          sizes="100vw"
+          className="object-cover select-none"
+          aria-hidden="true"
+        />
+      </ParallaxLayer>
 
       {/* White overlay — ~92% opacity */}
       <div
@@ -136,32 +140,39 @@ export default function SituationSelector() {
           {situations.map((situation, index) => {
             const Icon = situation.icon;
             return (
-              <motion.button
+              <PerspectiveCard
                 key={situation.id}
-                type="button"
-                className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-slate-200/80 bg-white/80 p-6 text-left shadow-sm backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-[#0874F9]/40 hover:shadow-lg hover:shadow-[#0874F9]/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2"
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                custom={index + 1}
-                onClick={() => handleCardClick(situation.id, situation.title)}
+                maxTilt={6}
+                glow
+                glowColor="#0874F9"
+                className="h-full"
               >
-                {/* Subtle top accent bar on hover */}
-                <span
-                  className="absolute left-0 top-0 h-[3px] w-0 rounded-b-full bg-[#D6A84B] transition-all duration-300 ease-out group-hover:w-full"
-                  aria-hidden="true"
-                />
-                <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0874F9] shadow-md shadow-[#0874F9]/20 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-[#0874F9]/30">
-                  <Icon className="h-5 w-5 text-white" aria-hidden="true" />
-                </div>
-                <h3 className="font-heading text-lg font-semibold leading-snug text-[#061846]">
-                  {situation.title}
-                </h3>
-                <p className="mt-2 text-base leading-relaxed text-slate-600">
-                  {situation.description}
-                </p>
-              </motion.button>
+                <motion.button
+                  type="button"
+                  className="group relative flex h-full flex-col items-start overflow-hidden rounded-xl border border-slate-200/80 bg-white/80 p-6 text-left shadow-sm backdrop-blur-sm transition-colors duration-300 ease-out hover:border-[#0874F9]/40 hover:shadow-lg hover:shadow-[#0874F9]/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2"
+                  variants={fadeUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
+                  custom={index + 1}
+                  onClick={() => handleCardClick(situation.id, situation.title)}
+                >
+                  {/* Subtle top accent bar on hover */}
+                  <span
+                    className="absolute left-0 top-0 h-[3px] w-0 rounded-b-full bg-[#D6A84B] transition-all duration-300 ease-out group-hover:w-full"
+                    aria-hidden="true"
+                  />
+                  <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0874F9] shadow-md shadow-[#0874F9]/20 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-[#0874F9]/30">
+                    <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-heading text-lg font-semibold leading-snug text-[#061846]">
+                    {situation.title}
+                  </h3>
+                  <p className="mt-2 text-base leading-relaxed text-slate-600">
+                    {situation.description}
+                  </p>
+                </motion.button>
+              </PerspectiveCard>
             );
           })}
         </div>

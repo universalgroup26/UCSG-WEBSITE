@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -159,6 +159,7 @@ function createParticles() {
 }
 
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
+  const prefersReducedMotion = useReducedMotion();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
@@ -182,8 +183,29 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     };
   }, []);
 
-  /* Resize + animation loop */
+  /* Reduced-motion fast path — skip the canvas animation entirely
+     and jump straight to the final state (UCSG logo + brand name visible),
+     then complete after a brief 400ms pause so users still see *something*
+     but aren't forced to wait through the multi-second city-light sequence. */
   useEffect(() => {
+    if (!prefersReducedMotion) return;
+    const timer = window.setTimeout(() => {
+      if (!completedRef.current) {
+        completedRef.current = true;
+        try {
+          sessionStorage.setItem('ucsg-loading-seen', '1');
+        } catch {
+          /* storage might be blocked */
+        }
+        onComplete();
+      }
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [prefersReducedMotion, onComplete]);
+
+  /* Resize + animation loop — only when motion is allowed. */
+  useEffect(() => {
+    if (prefersReducedMotion) return; // skip animation entirely
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
@@ -334,7 +356,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       cancelAnimationFrame(rafRef.current);
       clearTimeout(completeTimer);
     };
-  }, [onComplete]);
+  }, [onComplete, prefersReducedMotion]);
 
   /* Text animation variants */
   const containerVariants = {

@@ -13,10 +13,17 @@ import { track } from '@/lib/analytics';
 
 /* ------------------------------------------------------------------ */
 /*  Shared reveal animation                                           */
+/*  Upgraded to add 3D perspective — rotateX -4deg initial +           */
+/*  transformPerspective 1000. This single constant feeds every       */
+/*  <Section> across all 12 INFO_PAGE_CONTENT pages, so the upgrade    */
+/*  cascades to all veteran info routes automatically.                */
+/*  Reduced motion is honored globally by <MotionConfig reducedMotion */
+/*  ="user"> in layout.tsx — framer-motion itself strips transforms   */
+/*  when the OS prefers reduced motion.                                */
 /* ------------------------------------------------------------------ */
 const reveal = {
-  initial: { opacity: 0, y: 12 },
-  whileInView: { opacity: 1, y: 0 },
+  initial: { opacity: 0, y: 12, rotateX: -4, transformPerspective: 1000 },
+  whileInView: { opacity: 1, y: 0, rotateX: 0 },
   viewport: { once: true },
   transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
 };

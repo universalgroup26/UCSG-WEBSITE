@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Phone, Shield } from 'lucide-react';
 import { track } from '@/lib/analytics';
+import { ParallaxLayer, MagneticButton, StickyPinScene } from '@/components/motion';
 
 /* ------------------------------------------------------------------ */
 /*  Shared compliance disclosure — must appear on every veteran page  */
@@ -166,12 +167,14 @@ export default function VeteranInfoPage({
 
       {/* ─────────── Hero ─────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#061846] via-[#092B68] to-[#061846]">
-        {/* Optional hero background image with navy overlay */}
+        {/* Optional hero background image with navy overlay.
+            ParallaxLayer wraps the overlay image — speed 0.25 (capped per spec).
+            On mobile <1024px + prefers-reduced-motion it renders as a static div. */}
         {heroImage && (
-          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <ParallaxLayer speed={0.25} className="pointer-events-none absolute inset-0">
             <img src={heroImage} alt="" className="h-full w-full object-cover opacity-25" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#061846]/90 via-[#092B68]/85 to-[#061846]/95" />
-          </div>
+          </ParallaxLayer>
         )}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -212,8 +215,8 @@ export default function VeteranInfoPage({
 
             <motion.h1
               className="font-heading text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 16, rotateX: -8, transformPerspective: 1000 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
             >
               {headline}
@@ -237,10 +240,15 @@ export default function VeteranInfoPage({
       <main className="pb-8">{children}</main>
 
       {/* ─────────── CTA Section ─────────── */}
-      <section
-        aria-label="Call to action"
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#061846] to-[#092B68] py-16 sm:py-20 lg:py-24"
-      >
+      {/* StickyPinScene wraps the CTA section — pins it for 80vh so the
+          closing message + CTAs stay on-screen as the user scrolls past.
+          Mobile <1024px + prefers-reduced-motion render the section in-flow
+          (see StickyPinScene.tsx). */}
+      <StickyPinScene pinFor="80vh" className="relative w-full bg-gradient-to-b from-[#061846] to-[#092B68]">
+        <section
+          aria-label="Call to action"
+          className="relative w-full overflow-hidden bg-transparent py-16 sm:py-20 lg:py-24"
+        >
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 z-[3] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0874F9]/[0.07] blur-3xl"
           aria-hidden="true"
@@ -290,26 +298,26 @@ export default function VeteranInfoPage({
             viewport={{ once: true, amount: 0.3 }}
             custom={3}
           >
-            <button
-              type="button"
+            <MagneticButton
+              variant="custom"
               onClick={handlePrimaryCta}
-              className="group flex w-full items-center justify-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-all duration-300 hover:bg-[#0660D4] hover:shadow-xl hover:shadow-[#0874F9]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+              className="group w-full rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-colors hover:bg-[#0660D4] focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
             >
               {ctaText}
               <ArrowRight
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
                 aria-hidden="true"
               />
-            </button>
+            </MagneticButton>
 
-            <button
-              type="button"
+            <MagneticButton
+              variant="custom"
               onClick={handleSecondaryCta}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+              className="w-full rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
             >
-              <Phone className="h-4 w-4" aria-hidden="true" />
+              <Phone className="mr-2 h-4 w-4" aria-hidden="true" />
               {secondaryCtaText}
-            </button>
+            </MagneticButton>
           </motion.div>
 
           <motion.p
@@ -323,7 +331,8 @@ export default function VeteranInfoPage({
             No enrollment commitment required.
           </motion.p>
         </div>
-      </section>
+        </section>
+      </StickyPinScene>
 
       <ComplianceDisclosure />
     </div>

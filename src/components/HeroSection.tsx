@@ -6,6 +6,7 @@ import { Phone, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Star } from 
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { track } from '@/lib/analytics';
+import { ParallaxLayer, MagneticButton } from '@/components/motion';
 
 /* ------------------------------------------------------------------
  * Types
@@ -561,51 +562,59 @@ export default function HeroSection({ onContactClick }: Props) {
       onBlur={handleFocusOut}
     >
       {/* ===== Background Slides ===== */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={current}
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: CROSSFADE_DURATION, ease: 'easeInOut' }}
-          className="absolute inset-0"
-        >
+      {/* ParallaxLayer wraps the entire background slideshow — speed=0.3 caps
+          the parallax offset at 30% of the layer's height (per spec max ≤ 0.3).
+          Mobile <1024px + prefers-reduced-motion disable it (see ParallaxLayer.tsx). */}
+      <ParallaxLayer speed={0.3} className="absolute inset-0">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
+            key={current}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: CROSSFADE_DURATION, ease: 'easeInOut' }}
             className="absolute inset-0"
-            variants={bgVariants}
-            initial="initial"
-            animate="animate"
           >
-            <Image
-              src={activeSlide.image.src}
-              alt={activeSlide.image.alt}
-              fill
-              sizes="100vw"
-              className="object-cover object-center"
-              priority={activeSlide.image.priority}
-              fetchPriority={activeSlide.image.priority ? 'high' : undefined}
-              unoptimized={activeSlide.image.unoptimized}
+            <motion.div
+              className="absolute inset-0"
+              variants={bgVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <Image
+                src={activeSlide.image.src}
+                alt={activeSlide.image.alt}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority={activeSlide.image.priority}
+                fetchPriority={activeSlide.image.priority ? 'high' : undefined}
+                unoptimized={activeSlide.image.unoptimized}
+              />
+            </motion.div>
+
+            {/* Navy overlay — heavier on mobile */}
+            <div
+              className="absolute inset-0 md:hidden"
+              style={{ background: OVERLAY_MOBILE }}
+              aria-hidden="true"
+            />
+            <div
+              className="absolute inset-0 hidden md:block"
+              style={{ background: OVERLAY_DESKTOP }}
+              aria-hidden="true"
             />
           </motion.div>
-
-          {/* Navy overlay — heavier on mobile */}
-          <div
-            className="absolute inset-0 md:hidden"
-            style={{ background: OVERLAY_MOBILE }}
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-0 hidden md:block"
-            style={{ background: OVERLAY_DESKTOP }}
-            aria-hidden="true"
-          />
-        </motion.div>
-      </AnimatePresence>
+        </AnimatePresence>
+      </ParallaxLayer>
 
       {/* ===== Content ===== */}
-      <div className="relative z-10 flex min-h-[720px] md:min-h-[680px] lg:min-h-[760px] items-center">
+      {/* ParallaxLayer on the content column — slightly faster (0.6) to create
+          depth between the background and the foreground text. */}
+      <ParallaxLayer speed={0.6} className="relative z-10">
+        <div className="flex min-h-[720px] md:min-h-[680px] lg:min-h-[760px] items-center">
         <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -685,25 +694,24 @@ export default function HeroSection({ onContactClick }: Props) {
                   delay: 0.45,
                 }}
               >
-                <Button
-                  size="lg"
-                  className="h-12 w-full rounded-lg bg-[#0874F9] px-6 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 hover:bg-[#0660D4] focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+                <MagneticButton
+                  variant="custom"
                   onClick={() => handlePrimaryCta(activeSlide)}
+                  className="h-12 w-full rounded-lg bg-[#0874F9] px-6 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-colors hover:bg-[#0660D4] focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
                 >
                   {activeSlide.primaryCta.label}
                   <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-12 w-full rounded-lg border-white/25 bg-transparent px-6 text-base font-semibold text-white hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+                </MagneticButton>
+                <MagneticButton
+                  variant="custom"
                   onClick={() => handleSecondaryCta(activeSlide)}
+                  className="h-12 w-full rounded-lg border border-white/25 bg-transparent px-6 text-base font-semibold text-white transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
                 >
                   {activeSlide.secondaryCta.type === 'tel' && (
                     <Phone className="mr-2 h-4 w-4" aria-hidden="true" />
                   )}
                   {activeSlide.secondaryCta.label}
-                </Button>
+                </MagneticButton>
               </motion.div>
 
               {/* Veteran Trust Badge */}
@@ -726,6 +734,7 @@ export default function HeroSection({ onContactClick }: Props) {
           </AnimatePresence>
         </div>
       </div>
+      </ParallaxLayer>
 
       {/* ===== Previous / Next Arrows ===== */}
       <button

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ArrowRight, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { track } from '@/lib/analytics';
+import { MagneticButton, StickyPinScene } from '@/components/motion';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -55,11 +56,12 @@ export default function FinalAssessmentCTA() {
   };
 
   return (
+    <StickyPinScene pinFor="80vh" className="relative w-full overflow-hidden bg-gradient-to-b from-[#061846] to-[#092B68]">
     <section
       id="final-cta"
       ref={sectionRef}
       aria-label="Final call to action"
-      className="relative w-full overflow-hidden bg-gradient-to-b from-[#061846] to-[#092B68] py-16 sm:py-20 lg:py-24"
+      className="relative w-full overflow-hidden bg-transparent py-16 sm:py-20 lg:py-24"
     >
       {/* Full-section background image */}
       <Image
@@ -138,28 +140,30 @@ export default function FinalAssessmentCTA() {
           viewport={{ once: true, amount: 0.3 }}
           custom={3}
         >
-          {/* Primary CTA — Assessment Modal */}
-          <button
-            type="button"
+          {/* Primary CTA — Assessment Modal (MagneticButton) */}
+          <MagneticButton
+            variant="custom"
             onClick={handleAssessmentClick}
-            className="group flex w-full items-center justify-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-all duration-300 hover:bg-[#0660D4] hover:shadow-xl hover:shadow-[#0874F9]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+            className="group w-full items-center justify-center gap-2 rounded-lg bg-[#0874F9] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0874F9]/25 transition-colors hover:bg-[#0660D4] focus-visible:ring-2 focus-visible:ring-[#0874F9] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
           >
             Start Free 60-Second Assessment
             <ArrowRight
               className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
               aria-hidden="true"
             />
-          </button>
+          </MagneticButton>
 
-          {/* Secondary CTA — Phone */}
-          <a
+          {/* Secondary CTA — Phone (MagneticButton with href for SEO) */}
+          <MagneticButton
+            variant="custom"
             href="tel:+13028935594"
+            external
             onClick={handlePhoneClick}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
+            className="w-full items-center justify-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061846] sm:w-auto sm:px-8"
           >
             <Phone className="h-4 w-4" aria-hidden="true" />
             Talk With Our Team
-          </a>
+          </MagneticButton>
         </motion.div>
 
         {/* Availability note */}
@@ -175,5 +179,6 @@ export default function FinalAssessmentCTA() {
         </motion.p>
       </div>
     </section>
+    </StickyPinScene>
   );
 }

@@ -13,7 +13,7 @@ import {
   Star,
   Building2,
 } from 'lucide-react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { ScrollProgress3D } from '@/components/motion';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -174,9 +174,9 @@ export default function Header({ onNavigate }: Props) {
 
   const megaTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Scroll tracking
-  const { scrollYProgress } = useScroll();
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  // Scroll-driven progress bar is now rendered by <ScrollProgress3D
+  // variant="ribbon" /> at the bottom of the header — it owns its own
+  // useScroll + useSpring internally (see src/components/motion/).
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -1199,11 +1199,10 @@ export default function Header({ onNavigate }: Props) {
           </div>
         </div>
 
-        {/* Scroll Progress Line */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-[2px] bg-[#0874F9]"
-          style={{ width: progressWidth }}
-        />
+        {/* Scroll Progress 3D Ribbon — replaces inline motion.div bar.
+            Renders fixed at top-of-page with perspective + rotateX lift
+            as scroll progresses (see src/components/motion/ScrollProgress3D.tsx). */}
+        <ScrollProgress3D variant="ribbon" />
       </div>
     </header>
   );
