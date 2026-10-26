@@ -106,6 +106,76 @@ const slides: Slide[] = [
       unoptimized: true,
     },
   },
+  {
+    eyebrow: 'VETERAN EDUCATION PLANNING',
+    headline: 'From Service to Campus — Your Next Mission Starts Here',
+    description:
+      'Veteran-led education guidance for U.S. military veterans exploring bachelor\u2019s, master\u2019s, and online degree programs. Compare options, understand benefits, and plan your next academic chapter.',
+    primaryCta: {
+      label: 'Start Veteran Assessment',
+      type: 'navigate',
+      navigateView: 'veterans',
+      navigateId: 'assessment',
+    },
+    secondaryCta: {
+      label: 'Explore Veteran Programs',
+      type: 'navigate',
+      navigateView: 'veterans',
+    },
+    image: {
+      src: '/images/hero-veteran-campus.jpg',
+      alt: 'U.S. military veteran transitioning from service to college campus, walking toward university buildings',
+      priority: false,
+      unoptimized: true,
+    },
+  },
+  {
+    eyebrow: 'VETERAN DEGREE PLANNING',
+    headline: 'Review Your Options. Plan Your Next Step.',
+    description:
+      'Compare degree paths, understand transfer credit policies, and explore education benefit resources \u2014 with guidance built on a veteran perspective.',
+    primaryCta: {
+      label: 'Build Your Degree Plan',
+      type: 'navigate',
+      navigateView: 'veterans',
+      navigateId: 'degree-planning',
+    },
+    secondaryCta: {
+      label: 'Talk With an Advisor',
+      type: 'tel',
+      tel: '+13028935594',
+    },
+    image: {
+      src: '/images/hero-veteran-plan.jpg',
+      alt: 'Veterans reviewing a college plan together with an education advisor, discussing degree options and program comparison',
+      priority: false,
+      unoptimized: true,
+    },
+  },
+  {
+    eyebrow: 'YOUR SERVICE WAS ONE CHAPTER',
+    headline: 'Let\u2019s Build What Comes Next \u2014 Together.',
+    description:
+      'UCSG was founded by U.S. Army Veteran Joy Chowdhury. Our veteran education initiative helps you compare programs, understand costs, and plan your educational future.',
+    primaryCta: {
+      label: 'Start Free Assessment',
+      type: 'navigate',
+      navigateView: 'veterans',
+      navigateId: 'assessment',
+    },
+    secondaryCta: {
+      label: 'Book a Consultation',
+      type: 'navigate',
+      navigateView: 'veterans',
+      navigateId: 'book-consultation',
+    },
+    image: {
+      src: '/images/hero-veteran-future.jpg',
+      alt: 'Diverse group building the future together, veterans and students collaborating on education planning in a modern setting',
+      priority: false,
+      unoptimized: true,
+    },
+  },
 ];
 
 /* ------------------------------------------------------------------
