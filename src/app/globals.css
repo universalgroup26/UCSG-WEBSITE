@@ -246,3 +246,36 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ------------------------------------------------------------------
+ * No-JS safety net — when JavaScript is unavailable (or for SEO
+ * crawlers that don't execute JavaScript), framer-motion's inline
+ * `opacity:0` initial states on motion.* elements would hide
+ * essential content. The `@media (scripting: none)` media feature
+ * (supported in Chrome 109+, Firefox 113+, Safari 17+) matches when
+ * scripting is unavailable, so we override inline opacity:0 → opacity:1
+ * and remove transforms so all content renders immediately.
+ *
+ * This is a pure CSS solution that needs no JavaScript to run — it
+ * works correctly even when JS is fully disabled.
+ * ------------------------------------------------------------------ */
+@media (scripting: none) {
+  [style*="opacity:0"],
+  [style*="opacity: 0"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Fallback for older browsers without @media (scripting: none)
+ * support — uses the .no-js / .js class pattern. The .no-js class is
+ * the default state on <html>; an inline script in the layout (if it
+ * runs) removes it and adds .js. If the script doesn't run (JS
+ * disabled), the override below keeps content visible.
+ * ------------------------------------------------------------------ */
+html.no-js [style*="opacity:0"],
+html.no-js [style*="opacity: 0"] {
+  opacity: 1 !important;
+  transform: none !important;
+}

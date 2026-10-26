@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import HeroSection from '@/components/HeroSection';
+import VeteranEducationSection from '@/components/VeteranEducationSection';
 import AboutUCSGSection from '@/components/AboutUCSGSection';
 import SituationSelector from '@/components/SituationSelector';
 import PersonalizedGuidance from '@/components/PersonalizedGuidance';
@@ -22,6 +23,16 @@ export default function HomePage() {
     <motion.div variants={pageVariants} initial="initial" animate="animate">
       {/* 1. Animated Hero Slideshow */}
       <HeroSection onContactClick={() => window.dispatchEvent(new CustomEvent('ucsg-navigate', { detail: { view: 'contact' } }))} />
+
+      {/* 1b. Veteran Education Section — placed immediately after the hero,
+           before detailed F-1 student content (AboutUCSGSection + later
+           sections including F1ResourceCenter). Veteran-led education
+           guidance for veterans, transitioning service members, and
+           military-connected students. */}
+      <section id="veteran-education" aria-label="Veteran Education Planning">
+        <VeteranEducationSection />
+      </section>
+      <div className="ucsg-section-divider" aria-hidden="true" />
 
       {/* 2. Founder Message and About UCSG */}
       <section id="about-ucsg">

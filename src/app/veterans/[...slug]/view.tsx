@@ -8,6 +8,7 @@ import VeteranMastersPage from '@/components/pages/veteran/VeteranMastersPage';
 import VeteranOnlineHybridPage from '@/components/pages/veteran/VeteranOnlineHybridPage';
 import VeteranAssessmentForm from '@/components/pages/veteran/VeteranAssessmentForm';
 import VeteranInfoPage from '@/components/pages/veteran/VeteranInfoPage';
+import AuthorByline from '@/components/pages/veteran/AuthorByline';
 import { track } from '@/lib/analytics';
 
 /* ------------------------------------------------------------------ */
@@ -101,19 +102,47 @@ function Faq({ items }: { items: { q: string; a: React.ReactNode }[] }) {
 
 function InternalLink({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <button
-      type="button"
-      onClick={navTo(id)}
-      className="text-[#0874F9] hover:underline font-medium"
+    <a
+      href={`/veterans/${id}`}
+      onClick={(e) => {
+        e.preventDefault();
+        navTo(id)();
+      }}
+      className="text-[#39C5E8] hover:underline font-medium"
     >
       {children}
-    </button>
+    </a>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Related Pages — crawlable <a href> cross-links block             */
+/* ------------------------------------------------------------------ */
+function RelatedPages({ links }: { links: { href: string; label: string }[] }) {
+  return (
+    <Section>
+      <h2 className="font-heading text-xl font-bold text-[#071B35]">Related Pages</h2>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {links.map((l) => (
+          <a
+            key={l.href}
+            href={l.href}
+            className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]"
+          >
+            {l.label} →
+          </a>
+        ))}
+      </div>
+    </Section>
   );
 }
 
 function Body({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12">{children}</div>
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12">
+      <AuthorByline />
+      {children}
+    </div>
   );
 }
 
@@ -125,14 +154,44 @@ function Section({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SourceNote({ children }: { children?: React.ReactNode }) {
+function SourceNote({
+  children,
+  references = [],
+}: {
+  children?: React.ReactNode;
+  references?: { url: string; label: string }[];
+}) {
   return (
-    <p className="text-xs text-gray-500">
-      Source: U.S. Department of Veterans Affairs (va.gov). Last verified:{' '}
-      {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}. Always verify
-      current benefit information directly with the VA.{' '}
-      {children ?? null}
-    </p>
+    <div className="space-y-3 text-xs text-gray-500">
+      <p>
+        Source: U.S. Department of Veterans Affairs (va.gov). Last verified:{' '}
+        {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}. Always verify
+        current benefit information directly with the VA.{' '}
+        {children ?? null}
+      </p>
+      {references.length > 0 && (
+        <div>
+          <p className="mb-1 font-semibold text-[#071B35]">Sources &amp; References</p>
+          <ul className="space-y-1.5">
+            {references.map((r) => (
+              <li key={r.url} className="leading-relaxed">
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[#39C5E8] hover:underline"
+                >
+                  {r.label}
+                </a>{' '}
+                <span className="text-gray-400">
+                  ({r.url.replace(/^https?:\/\//, '').replace(/\/$/, '')})
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -971,6 +1030,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             <InternalLink id="choosing-a-school">Review school selection framework →</InternalLink>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/military-transfer-credit', label: 'Military Transfer Credit' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+        ]} />
       </Body>
     ),
     ctaText: 'BUILD MY DEGREE PLAN',
@@ -1171,8 +1235,18 @@ const INFO_PAGE_CONTENT: Record<string, {
               Start your veteran assessment &rarr;
             </button>
           </p>
-          <SourceNote />
+          <SourceNote references={[
+            { url: 'https://www.va.gov/education/', label: 'VA Education and Training Benefits' },
+            { url: 'https://www.va.gov/education/about-gi-bill-benefits/', label: 'About GI Bill® Benefits' },
+            { url: 'https://www.va.gov/school-finding/', label: 'VA School Comparison Tool' },
+            { url: 'https://www.benefits.va.gov/GIBILL/Principles_of_Excellence.asp', label: 'Principles of Excellence' },
+          ]} />
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+          { href: '/veterans/program-comparison', label: 'Compare Programs Side-by-Side' },
+        ]} />
       </Body>
     ),
     ctaText: 'TALK WITH AN ADVISOR',
@@ -1373,8 +1447,17 @@ const INFO_PAGE_CONTENT: Record<string, {
               Official VA Yellow Ribbon Program Information &rarr;
             </a>
           </p>
-          <SourceNote />
+          <SourceNote references={[
+            { url: 'https://www.va.gov/education/yellow-ribbon-program/', label: 'VA Yellow Ribbon Program' },
+            { url: 'https://www.va.gov/education/about-gi-bill-benefits/', label: 'About Post-9/11 GI Bill® Benefits' },
+            { url: 'https://www.va.gov/education/', label: 'VA Education and Training Benefits' },
+          ]} />
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/education-benefits', label: 'VA Education Benefits' },
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+        ]} />
       </Body>
     ),
     ctaText: 'COMPARE MY OPTIONS',
@@ -1562,8 +1645,17 @@ const INFO_PAGE_CONTENT: Record<string, {
               Official VR&amp;E Program Information &rarr;
             </a>
           </p>
-          <SourceNote />
+          <SourceNote references={[
+            { url: 'https://www.va.gov/education/about-vre-program/', label: 'VR&E (Chapter 31) Program' },
+            { url: 'https://www.va.gov/education/', label: 'VA Education and Training Benefits' },
+            { url: 'https://www.va.gov/school-finding/', label: 'VA School Comparison Tool' },
+          ]} />
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/education-benefits', label: 'VA Education Benefits' },
+          { href: '/veterans/yellow-ribbon', label: 'Yellow Ribbon Program' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+        ]} />
       </Body>
     ),
     ctaText: 'TALK WITH AN ADVISOR',
@@ -1767,6 +1859,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             </button>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/program-comparison', label: 'Compare Programs Side-by-Side' },
+          { href: '/veterans/education-benefits', label: 'VA Education Benefits' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+        ]} />
       </Body>
     ),
     ctaText: 'START MY ASSESSMENT',
@@ -1955,6 +2052,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             </button>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/degree-planning', label: 'Degree Planning Guide' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+        ]} />
       </Body>
     ),
     ctaText: 'TALK WITH AN ADVISOR',
@@ -2154,6 +2256,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             </button>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/program-comparison', label: 'Compare Programs Side-by-Side' },
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/military-transfer-credit', label: 'Military Transfer Credit' },
+        ]} />
       </Body>
     ),
     ctaText: 'COMPARE MY OPTIONS',
@@ -2348,6 +2455,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             </button>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/choosing-a-school', label: 'Choosing the Right School' },
+          { href: '/veterans/degree-planning', label: 'Degree Planning Guide' },
+        ]} />
       </Body>
     ),
     ctaText: 'START MY ASSESSMENT',
@@ -2618,6 +2730,14 @@ const INFO_PAGE_CONTENT: Record<string, {
             </a>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/bachelors-degree', label: 'Bachelor\u2019s & Degree Completion' },
+          { href: '/veterans/masters-mba', label: 'Master\u2019s & MBA' },
+          { href: '/veterans/online-hybrid-degrees', label: 'Online & Hybrid Degrees' },
+          { href: '/veterans/yellow-ribbon', label: 'Yellow Ribbon Program' },
+          { href: '/veterans/vre', label: 'VR&E (Chapter 31)' },
+          { href: '/veterans/events', label: 'Workshops & Events' },
+        ]} />
       </Body>
     ),
     ctaText: 'START MY ASSESSMENT',
@@ -2904,6 +3024,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             finalized.
           </p>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/degree-planning', label: 'Degree Planning Guide' },
+          { href: '/veterans/cost-planning', label: 'Education Cost Planning' },
+          { href: '/veterans/resources', label: 'Veteran Resource Center' },
+        ]} />
       </Body>
     ),
     ctaText: 'NOTIFY ME ABOUT WORKSHOPS',
@@ -3152,6 +3277,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             ]}
           />
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/yellow-ribbon', label: 'Yellow Ribbon Program' },
+          { href: '/veterans/program-comparison', label: 'Compare Programs Side-by-Side' },
+          { href: '/veterans/events', label: 'Workshops & Events' },
+        ]} />
       </Body>
     ),
     ctaText: 'START MY ASSESSMENT',
@@ -3377,6 +3507,11 @@ const INFO_PAGE_CONTENT: Record<string, {
             </details>
           </div>
         </Section>
+        <RelatedPages links={[
+          { href: '/veterans/assessment', label: 'Free Veteran Assessment' },
+          { href: '/veterans/resources', label: 'Veteran Resource Center' },
+          { href: '/veterans/faq', label: 'Veteran Education FAQ' },
+        ]} />
       </Body>
     ),
     ctaText: 'TAKE THE ASSESSMENT FIRST',

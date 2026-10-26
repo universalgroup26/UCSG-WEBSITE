@@ -100,12 +100,21 @@ export async function generateMetadata({
     title,
     description: page.description,
     alternates: { canonical: `${SITE_URL}/veterans/${pageSlug}` },
+    authors: [
+      {
+        name: 'Joy Chowdhury',
+        url: `${SITE_URL}/about`,
+      },
+    ],
     openGraph: {
       title: `${title} | UCSG`,
       description: page.description,
       url: `${SITE_URL}/veterans/${pageSlug}`,
       type: 'article',
       images: [{ url: '/og-image.png', width: 1152, height: 864, alt: title }],
+      authors: ['Joy Chowdhury'],
+      publishedTime: '2024-10-15T00:00:00.000Z',
+      modifiedTime: new Date().toISOString(),
     },
     twitter: {
       card: 'summary_large_image',
@@ -130,5 +139,49 @@ export default async function VeteranSlugRoute({
   // "degree-planning" slug so VeteranSlugView finds the matching content in
   // INFO_PAGE_CONTENT (where the body copy lives under 'degree-planning').
   const viewSlug = pageSlug === 'degree-planning-guide' ? 'degree-planning' : pageSlug;
-  return <VeteranSlugView slug={viewSlug} />;
+
+  // Per-slug Article + BreadcrumbList JSON-LD for verifiable authorship.
+  const page = VETERAN_PAGES[pageSlug];
+  const url = `${SITE_URL}/veterans/${pageSlug}`;
+  const articleLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: page.title,
+    description: page.description,
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    image: `${SITE_URL}/og-image.png`,
+    datePublished: '2024-10-15',
+    dateModified: new Date().toISOString().split('T')[0],
+    author: { '@id': `${SITE_URL}/#joy-chowdhury` },
+    publisher: { '@id': `${SITE_URL}/#business` },
+  };
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Veteran Education',
+        item: `${SITE_URL}/veterans`,
+      },
+      { '@type': 'ListItem', position: 3, name: page.title, item: url },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <VeteranSlugView slug={viewSlug} />
+    </>
+  );
 }

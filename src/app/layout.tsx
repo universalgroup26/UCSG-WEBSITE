@@ -130,11 +130,7 @@ export default function RootLayout({
           longitude: -73.8831,
         },
         foundingDate: "2020",
-        founder: {
-          "@type": "Person",
-          name: "Joy Chowdhury",
-          jobTitle: "Founder & CEO",
-        },
+        founder: { "@id": `${SITE_URL}/#joy-chowdhury` },
         priceRange: "$",
         sameAs: [
           "https://www.instagram.com/universalconsultingsvc/",
@@ -242,6 +238,37 @@ export default function RootLayout({
             name: "Home",
             item: SITE_URL,
           },
+        ],
+      },
+      {
+        "@type": "Person",
+        "@id": `${SITE_URL}/#joy-chowdhury`,
+        name: "Joy Chowdhury",
+        givenName: "Joy",
+        familyName: "Chowdhury",
+        jobTitle: "Founder & CEO",
+        description:
+          "U.S. Army Veteran and Founder of Universal Consulting Service Group LLC (UCSG). Leads UCSG's veteran education initiative with a focus on degree planning, education benefit resources, and school selection for military-connected students.",
+        url: `${SITE_URL}/about`,
+        image: `${SITE_URL}/founder-full.png`,
+        worksFor: { "@id": `${SITE_URL}/#business` },
+        alumniOf: {
+          "@type": "Organization",
+          name: "United States Army",
+        },
+        knowsAbout: [
+          "Veteran education benefits",
+          "GI Bill",
+          "Yellow Ribbon Program",
+          "VR&E (Chapter 31)",
+          "Military transfer credit",
+          "Degree planning",
+          "School selection",
+        ],
+        sameAs: [
+          "https://www.linkedin.com/company/81566580/",
+          "https://www.instagram.com/universalconsultingsvc/",
+          "https://twitter.com/UniversalCons16",
         ],
       },
       {

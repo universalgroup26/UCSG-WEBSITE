@@ -510,6 +510,18 @@ export default function ContactPopup() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const scrollTriggersRef = useRef({ mid: false, end: false });
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', service: '', message: '' });
+  // Hydration-safe permanently-dismissed check. Initialize to false on both
+  // server and client (matches SSR which has no localStorage access). The
+  // real localStorage check is deferred to useEffect to avoid hydration
+  // mismatch (server renders the FloatingButton, client would render null
+  // for users who permanently dismissed the popup — different DOM at same
+  // position caused the React hydration error).
+  const [permanentlyDismissed, setPermanentlyDismissed] = useState(false);
+  useEffect(() => {
+    queueMicrotask(() => {
+      setPermanentlyDismissed(isPermanentlyDismissed());
+    });
+  }, []);
 
   const update = useCallback((field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -685,7 +697,7 @@ export default function ContactPopup() {
     setSubmitted(true);
   };
 
-  if (isPermanentlyDismissed()) return null;
+  if (permanentlyDismissed) return null;
 
   return (
     <>

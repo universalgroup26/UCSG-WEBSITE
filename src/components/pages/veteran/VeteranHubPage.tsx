@@ -336,14 +336,16 @@ export default function VeteranHubPage() {
             {journeyCards.map((card, i) => {
               const Icon = card.icon;
               return (
-                <motion.button
+                <motion.a
                   key={card.target}
+                  href={`/veterans/${card.target}`}
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: '-60px' }}
                   custom={i}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     track.navClick({
                       nav_type: 'veteran_hub',
                       nav_target: card.target,
@@ -368,7 +370,7 @@ export default function VeteranHubPage() {
                       aria-hidden="true"
                     />
                   </span>
-                </motion.button>
+                </motion.a>
               );
             })}
           </div>

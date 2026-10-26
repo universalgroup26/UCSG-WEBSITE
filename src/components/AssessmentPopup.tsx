@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { track } from '@/lib/analytics';
 import PersistentAssessmentButton from '@/components/PersistentAssessmentButton';
 import {
@@ -58,10 +58,29 @@ function isSessionDismissed(): boolean {
 
 export default function AssessmentPopup({ currentView }: Props) {
   const [popupOpen, setPopupOpen] = useState(false);
-  const initiallyDismissed = useMemo(() => isSessionDismissed() || isWithinSevenDayCooldown(), []);
-  const [showFab, setShowFab] = useState(initiallyDismissed);
-  const hasTriggered = useRef(initiallyDismissed);
+  // Initialize to false on both server and client to avoid hydration mismatch.
+  // The actual storage check (which can only run client-side) is deferred to
+  // the useEffect below, where it sets showFab + hasTriggered post-hydration.
+  const [showFab, setShowFab] = useState(false);
+  const hasTriggered = useRef(false);
   const triggerSource = useRef<string>('');
+  const hydratedRef = useRef(false);
+
+  // --- After hydration, read storage to determine if the popup should be
+  //     suppressed (recently dismissed) and whether to show the FAB. This
+  //     runs only on the client and uses queueMicrotask to defer setState
+  //     (avoids the react-hooks/set-state-in-effect cascading-render rule). ---
+  useEffect(() => {
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+    const dismissed = isSessionDismissed() || isWithinSevenDayCooldown();
+    queueMicrotask(() => {
+      if (dismissed) {
+        hasTriggered.current = true;
+        setShowFab(true);
+      }
+    });
+  }, []);
 
   const openPopup = useCallback((source: string) => {
     if (hasTriggered.current) return;

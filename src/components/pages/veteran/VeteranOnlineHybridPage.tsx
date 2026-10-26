@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { ComplianceDisclosure } from './VeteranInfoPage';
+import AuthorByline from './AuthorByline';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -431,6 +432,15 @@ export default function VeteranOnlineHybridPage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  Author byline                                                 */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section className="border-b border-gray-100 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+          <AuthorByline />
         </div>
       </section>
 
@@ -861,6 +871,23 @@ export default function VeteranOnlineHybridPage() {
 
             <p className="mt-6 text-xs text-white/40">No enrollment commitment required.</p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  Related Pages                                                */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section className="bg-white py-12 border-t border-gray-200">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-heading text-xl font-bold text-[#071B35]">Related Pages</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <a href="/veterans/degree-planning" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Degree Planning Guide →</a>
+            <a href="/veterans/cost-planning" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Education Cost Planning →</a>
+            <a href="/veterans/choosing-a-school" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Choosing the Right School →</a>
+            <a href="/veterans/program-comparison" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Compare Programs Side-by-Side →</a>
+            <a href="/veterans/military-transfer-credit" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Military Transfer Credit →</a>
+            <a href="/veterans/bachelors-degree" className="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-[#39C5E8] hover:border-[#39C5E8] hover:bg-[#F8FAFC]">Bachelor&apos;s & Degree Completion →</a>
+          </div>
         </div>
       </section>
 

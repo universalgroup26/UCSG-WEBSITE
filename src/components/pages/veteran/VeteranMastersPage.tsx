@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { ComplianceDisclosure } from './VeteranInfoPage';
+import AuthorByline from './AuthorByline';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -465,6 +466,15 @@ export default function VeteranMastersPage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  Author byline                                                 */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section className="border-b border-gray-100 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+          <AuthorByline />
         </div>
       </section>
 
