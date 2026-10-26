@@ -217,13 +217,19 @@ function ImageFeature1() {
     >
       <div className="relative overflow-hidden rounded-xl">
         {/* Image (full-width landscape). Width/height prevent layout shift. */}
-        <div className="relative aspect-[16/9] w-full">
+        {/* Responsive aspect ratios: portrait on mobile (so the veteran +
+            reflection + flag are large enough to read), landscape on desktop
+            (where the text overlay needs the wide dark navy space on the left).
+            object-position:right on mobile preserves the veteran (right side)
+            while cropping the empty dark space (left). On lg+, switch back to
+            object-center to show the full image with dark space for overlay. */}
+        <div className="relative aspect-[4/5] w-full sm:aspect-[3/2] lg:aspect-[16/9]">
           <Image
             src={IMG_1}
             alt="A veteran in civilian attire walking past a university building; the glass reflection shows him in military uniform, with the American flag flying above the campus."
             fill
             sizes="(min-width: 1280px) 1216px, 100vw"
-            className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            className="object-cover object-right lg:object-center transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           />
           {/* Left-side dark navy gradient overlay for text legibility.
               The image already has dark navy space on the left; this gradient
@@ -331,7 +337,10 @@ function AlternatingRow1() {
             viewport={{ once: true, margin: '-80px' }}
             className="group relative overflow-hidden rounded-2xl"
           >
-            <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+            {/* Responsive aspect ratios: square on mobile (preserves the
+                compass + graduation cap + flag foreground without cropping the
+                sides), landscape on desktop (fits the 2-col grid naturally). */}
+            <div className="relative aspect-square w-full sm:aspect-[3/2] lg:aspect-[16/10]">
               <Image
                 src={IMG_2}
                 alt="A brass compass with a glowing blue needle, a graduation cap with gold tassel, and a leather-bound book rest on an American flag; a university campus is visible in the background."
@@ -615,7 +624,10 @@ function AlternatingRow2() {
             viewport={{ once: true, margin: '-80px' }}
             className="group relative order-2 overflow-hidden rounded-2xl lg:order-none"
           >
-            <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+            {/* Responsive aspect ratios: square on mobile (preserves both
+                people + the soldier silhouettes on the glass wall behind them
+                without cropping the sides), landscape on desktop. */}
+            <div className="relative aspect-square w-full sm:aspect-[3/2] lg:aspect-[16/10]">
               <Image
                 src={IMG_3}
                 alt="Two people stand side by side in a modern educational building with large windows and an American flag in the background; silhouettes of soldiers are visible on the glass wall behind them, suggesting the connection between military service and education."
